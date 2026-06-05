@@ -1,153 +1,472 @@
+```html
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service & Compliance Framework - DataSuite Pro</title>
-    <!-- Live Tailwind Engine Asset -->
-    <script src="https://jsdelivr.net"></script>
-    <style>
-        :root {
-            --bg: #0b0f19;
-            --surface: #131c2e;
-            --surface-light: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --border: #1e293b;
-        }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        .glass-panel {
-            background: linear-gradient(135deg, rgba(19, 28, 46, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(51, 65, 85, 0.5);
-        }
-        .glow-accent {
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>DataSuite Pro | Enterprise Data Mutation Workspace</title>
+  <!-- SheetJS Core Engine -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <!-- Tailwind CSS v4 (via CDN for quick integration) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom override to enforce strict dark mode & modal security -->
+  <style>
+    /* Hardware-accelerated frosted glass + advanced modal lock */
+    body {
+      background-color: #020617; /* slate-950 base */
+      overflow-x: hidden;
+    }
+    .glass-modal {
+      backdrop-filter: blur(24px) brightness(0.7);
+      -webkit-backdrop-filter: blur(24px) brightness(0.7);
+      background: rgba(15, 23, 42, 0.85);
+      transition: all 0.2s ease;
+    }
+    .drag-active {
+      border-color: #3b82f6;
+      background-color: rgba(59,130,246,0.1);
+      transition: all 0.15s;
+    }
+    .premium-card-hover {
+      transition: transform 0.2s ease, border-color 0.2s;
+    }
+    .premium-card-hover:hover {
+      transform: translateY(-2px);
+      border-color: #3b82f6;
+    }
+    .data-preview-table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .data-preview-table th, .data-preview-table td {
+      border-bottom: 1px solid rgba(100,116,139,0.3);
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+    .data-preview-table tr:last-child td {
+      border-bottom: none;
+    }
+    /* custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 8px;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    .modal-lock {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
-<body class="min-h-full flex flex-col antialiased selection:bg-sky-500/30 selection:text-sky-200">
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased font-sans selection:bg-blue-500/30">
 
-    <!-- REQUIRED HIGH-TRUST TOP INTERFACE NAVIGATION HEADER -->
-    <header class="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl transition-all duration-200 ease-in-out px-4 lg:px-8 py-4">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            
-            <!-- Left Branding Layout -->
-            <div class="flex items-center gap-3">
-                <div class="h-9 w-9 rounded-lg bg-sky-500 flex items-center justify-center shadow-lg shadow-sky-500/20">
-                    <span class="text-slate-950 font-black text-xl tracking-tighter">D</span>
-                </div>
-                <span class="text-2xl font-black tracking-tight text-white">
-                    DataSuite<span class="text-sky-400 font-extrabold relative">Pro<span class="absolute -bottom-1 left-0 w-full h-[2px] bg-sky-400 shadow-sm shadow-sky-400"></span></span>
-                </span>
-            </div>
-
-            <!-- Centered Locked Compliance Tag -->
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-emerald-500/30 text-emerald-400 font-semibold text-xs tracking-wide uppercase shadow-inner">
-                <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                🔒 100% Client-Side Secure (GDPR/SOC2 Ready)
-            </div>
-
-            <!-- Right High-Contrast Navigation Link Button -->
-            <div>
-                <a href="/dashboard.html" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-sky-400 to-sky-500 text-slate-950 hover:from-sky-500 hover:to-sky-600 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 shadow-lg shadow-sky-500/20 border border-sky-300/30 hover:scale-102 group">
-                    Go to Functional Dashboard Workspace 
-                    <span class="ml-2 transform group-hover:translate-x-1 transition-transform duration-200">➔</span>
-                </a>
-            </div>
-
+  <!-- MAIN APPLICATION WRAPPER -->
+  <div class="max-w-[1600px] mx-auto px-6 py-5 relative z-10">
+    
+    <!-- HEADER MATRIX: Logo, real-time status, compliance badge -->
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-8 pb-4 border-b border-slate-800/70">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
+          <span class="font-bold text-white text-xl">D</span>
         </div>
-    </header>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">DataSuite Pro</h1>
+          <p class="text-xs text-slate-400">Enterprise Data Mutation Workspace</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-5 flex-wrap">
+        <!-- Real-time status monitors -->
+        <div class="flex gap-4 text-sm bg-slate-900/60 px-4 py-2 rounded-full border border-slate-800">
+          <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Live Memory</span></div>
+          <div class="flex items-center gap-1"><span class="font-mono font-semibold" id="rowCounterStatus">0</span><span>rows</span></div>
+          <div class="flex items-center gap-1"><span class="font-mono" id="colCounterStatus">0</span><span>cols</span></div>
+        </div>
+        <div class="bg-slate-900/70 rounded-full px-4 py-2 flex items-center gap-2 border border-green-500/40 shadow-sm">
+          <span class="text-green-400 text-sm">🛡️ 100% Client-Side Secure Sandbox</span>
+        </div>
+      </div>
+    </div>
 
-    <!-- MAIN MASTER LEGAL CONTENT CONTAINER -->
-    <main class="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+    <!-- DRAG-AND-DROP INGESTION NODE + METADATA TRACKING GRID -->
+    <div class="grid lg:grid-cols-3 gap-6 mb-8">
+      <div class="lg:col-span-2">
+        <div id="dropZone" class="border-2 border-dashed border-slate-600 rounded-2xl p-8 text-center cursor-pointer transition-all bg-slate-900/30 hover:border-blue-500/70 backdrop-blur-sm">
+          <div class="flex flex-col items-center gap-3">
+            <div class="text-5xl">📂</div>
+            <p class="text-lg font-medium">Drag & Drop or Click to Upload</p>
+            <p class="text-sm text-slate-400">Supports XLSX, CSV, JSON, TXT · Up to 50 rows free tier</p>
+            <input type="file" id="fileInput" accept=".xlsx,.csv,.json,.txt" class="hidden" />
+            <button id="uploadTriggerBtn" class="mt-2 bg-slate-800 hover:bg-slate-700 px-5 py-2 rounded-xl text-sm font-medium transition">Browse Files</button>
+          </div>
+        </div>
+      </div>
+      <!-- Active Metadata Tracking Grid -->
+      <div class="bg-slate-900/40 rounded-2xl border border-slate-800/70 p-5 backdrop-blur-sm">
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Active Dataset Metrics</h3>
+        <div class="mt-3 space-y-3">
+          <div class="flex justify-between border-b border-slate-800 pb-2"><span class="text-slate-300">File Name</span><span id="metaFileName" class="font-mono text-blue-300 truncate max-w-[160px]">—</span></div>
+          <div class="flex justify-between border-b border-slate-800 pb-2"><span class="text-slate-300">Active Rows</span><span id="metaRowCount" class="font-mono text-emerald-300 font-bold">0</span></div>
+          <div class="flex justify-between border-b border-slate-800 pb-2"><span class="text-slate-300">Column Count</span><span id="metaColCount" class="font-mono text-emerald-300">0</span></div>
+          <div class="flex justify-between"><span class="text-slate-300">Data Preview</span><span class="text-xs text-slate-500">First 5 rows</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-ROW DATA GRID PREVIEW TABLE -->
+    <div class="bg-slate-900/30 rounded-xl border border-slate-800 overflow-x-auto mb-8">
+      <table class="data-preview-table w-full text-sm">
+        <thead class="bg-slate-800/60 text-slate-200">
+          <tr id="previewHeaderRow"><th>Preview</th></tr>
+        </thead>
+        <tbody id="previewBody">
+          <tr><td class="text-center text-slate-500 py-6">No data loaded</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FOUR CORE FUNCTIONAL MODULES (Grid layout) -->
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <!-- MODULE 1: MULTI-FORMAT TRANSFORMER -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-5">
+        <div class="flex items-center gap-2 mb-3"><span class="text-xl">🔄</span><h3 class="font-bold">Multi-Format Transformer</h3><span class="text-[11px] bg-indigo-500/20 px-2 py-0.5 rounded-full">JSON/TXT → CSV/XLSX</span></div>
+        <p class="text-xs text-slate-400 mb-3">Convert active dataset to standardized CSV or XLSX (client-side)</p>
+        <div class="flex gap-3 flex-wrap">
+          <button id="exportToCSVBtn" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-sm transition">📄 Export as CSV</button>
+          <button id="exportToXLSXBtn" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-sm transition">📊 Export as XLSX</button>
+        </div>
+      </div>
+      <!-- MODULE 2: DATA SANITIZER & CLEANER -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-5">
+        <div class="flex items-center gap-2 mb-3"><span class="text-xl">🧹</span><h3 class="font-bold">Data Sanitizer & Cleaner</h3></div>
+        <p class="text-xs text-slate-400 mb-3">Remove blank rows, duplicates & trim whitespace</p>
+        <button id="sanitizeBtn" class="bg-blue-600/80 hover:bg-blue-600 px-5 py-2 rounded-lg text-sm font-medium transition">Run Cleaning Pass</button>
+      </div>
+      <!-- MODULE 3: FIELD STANDARDIZER (Phone E.164 + Date YYYY-MM-DD) -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-5">
+        <div class="flex items-center gap-2 mb-3"><span class="text-xl">📞</span><h3 class="font-bold">Field Standardizer</h3><span id="stdBadge" class="text-[10px] bg-amber-700/40 px-2 py-0.5 rounded-full">Starter+ Required</span></div>
+        <p class="text-xs text-slate-400 mb-3">Phone → E.164 & messy dates → YYYY-MM-DD (regex)</p>
+        <button id="standardizeBtn" class="bg-slate-700/70 hover:bg-slate-600 px-5 py-2 rounded-lg text-sm transition disabled:opacity-50" disabled>🔒 Unlock in Starter Plan</button>
+      </div>
+      <!-- MODULE 4: LOCAL SMART AI PIPELINE EXTRACTION & TARGET MAPPING -->
+      <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-5">
+        <div class="flex items-center gap-2 mb-3"><span class="text-xl">🧠</span><h3 class="font-bold">Local AI Pipeline</h3><span id="aiBadge" class="text-[10px] bg-purple-700/40 px-2 py-0.5 rounded-full">Enterprise+</span></div>
+        <p class="text-xs text-slate-400 mb-3">Extract emails / Map messy headers → Shopify/HubSpot shapes</p>
+        <button id="aiExtractBtn" class="bg-slate-700/70 hover:bg-slate-600 px-5 py-2 rounded-lg text-sm transition disabled:opacity-50" disabled>🔒 Enterprise Required</button>
+        <div id="mappingCanvas" class="mt-3 text-xs bg-slate-950/50 p-2 rounded border border-slate-700 hidden"><span class="text-slate-300">Column Mapper:</span> <span id="mappingStatus">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREMIUM INTERCEPT PAYWALL MODAL (frosted glass, initially hidden) -->
+  <div id="paywallModal" class="fixed inset-0 flex items-center justify-center z-50 hidden transition-all duration-300 modal-lock" style="backdrop-filter: blur(0px);">
+    <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-xl"></div>
+    <div class="relative glass-modal border border-slate-700 rounded-2xl max-w-md w-full mx-4 p-8 shadow-2xl transform transition-all">
+      <div class="text-center">
+        <div class="text-5xl mb-3">🔒</div>
+        <h2 class="text-2xl font-bold mb-2">Upgrade Required</h2>
+        <p class="text-slate-300 text-sm mb-5">Your dataset exceeds <span id="modalRowCount">50</span> active rows. Free tier limited to 50 rows.<br>Choose a plan to unlock full data processing.</p>
+        <div class="space-y-3 text-left">
+          <div class="bg-slate-800/50 p-3 rounded-lg premium-card-hover border border-slate-700 cursor-pointer" data-plan="starter">
+            <div class="flex justify-between"><span class="font-bold">Starter Tier</span><span class="text-blue-300">$29/mo</span></div>
+            <p class="text-xs text-slate-400">Up to 5,000 rows + Phone & Date Standardizer</p>
+          </div>
+          <div class="bg-slate-800/50 p-3 rounded-lg premium-card-hover border border-slate-700 cursor-pointer" data-plan="enterprise">
+            <div class="flex justify-between"><span class="font-bold">Enterprise Pro</span><span class="text-purple-300">$99/mo</span></div>
+            <p class="text-xs text-slate-400">Unlimited rows + AI Pipeline & full modules</p>
+          </div>
+        </div>
+        <button id="closePaywallMock" class="mt-6 text-slate-400 text-sm hover:text-white transition w-full py-2 border-t border-slate-700">✕ Dismiss (Demo Locked)</button>
+        <p class="text-[10px] text-slate-500 mt-3">Powered by Paddle Billing · SOC2 ready</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // ------------------------ GLOBAL STATE -------------------------
+      let currentData = [];        // Array of objects (rows)
+      let currentHeaders = [];
+      let currentFileName = "No file";
+      let activePlan = "free";     // 'free', 'starter', 'enterprise'
+      
+      // DOM elements
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const uploadTrigger = document.getElementById('uploadTriggerBtn');
+      const metaFileNameSpan = document.getElementById('metaFileName');
+      const metaRowCountSpan = document.getElementById('metaRowCount');
+      const metaColCountSpan = document.getElementById('metaColCount');
+      const rowCounterStatus = document.getElementById('rowCounterStatus');
+      const colCounterStatus = document.getElementById('colCounterStatus');
+      const previewHeaderRow = document.getElementById('previewHeaderRow');
+      const previewBody = document.getElementById('previewBody');
+      const sanitizeBtn = document.getElementById('sanitizeBtn');
+      const standardizeBtn = document.getElementById('standardizeBtn');
+      const aiExtractBtn = document.getElementById('aiExtractBtn');
+      const exportCSV = document.getElementById('exportToCSVBtn');
+      const exportXLSX = document.getElementById('exportToXLSXBtn');
+      const paywallModal = document.getElementById('paywallModal');
+      const modalRowCountSpan = document.getElementById('modalRowCount');
+      const mappingCanvasDiv = document.getElementById('mappingCanvas');
+      const mappingStatusSpan = document.getElementById('mappingStatus');
+      const stdBadge = document.getElementById('stdBadge');
+      const aiBadge = document.getElementById('aiBadge');
+
+      // Helper: update UI & enforce paywall based on row limit (50 rows free)
+      function enforcePaywallByRows() {
+        const rowCount = currentData.length;
+        if (activePlan === 'free' && rowCount > 50) {
+          // Lock UI and show modal
+          modalRowCountSpan.innerText = rowCount;
+          paywallModal.classList.remove('hidden');
+          document.body.classList.add('modal-lock');
+          return true; // paywall active
+        } else {
+          // if modal visible and rows <=50 or plan upgraded, close
+          if (!paywallModal.classList.contains('hidden') && (activePlan !== 'free' || rowCount <= 50)) {
+            paywallModal.classList.add('hidden');
+            document.body.classList.remove('modal-lock');
+          }
+          return false;
+        }
+      }
+
+      // Update metadata and preview grid (first 5 rows)
+      function updateUIAfterDataChange() {
+        const rowCount = currentData.length;
+        const colCount = currentHeaders.length;
+        metaFileNameSpan.innerText = currentFileName.length > 35 ? currentFileName.slice(0,30)+'...' : currentFileName;
+        metaRowCountSpan.innerText = rowCount;
+        metaColCountSpan.innerText = colCount;
+        rowCounterStatus.innerText = rowCount;
+        colCounterStatus.innerText = colCount;
         
-        <!-- Header Introduction Title Deck -->
-        <div class="mb-12 border-b border-slate-800/60 pb-8">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-                Master Platform Terms of Service
-            </h1>
-            <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-400 tracking-wider uppercase">
-                <span>Document Version: 4.2.0</span>
-                <span class="text-slate-600">•</span>
-                <span class="text-sky-400">Last System Audit &amp; Chronological Sync: June 5, 2026</span>
-            </div>
-        </div>
+        // rebuild preview table
+        if (!currentData.length || !currentHeaders.length) {
+          previewHeaderRow.innerHTML = '<th>Preview</th>';
+          previewBody.innerHTML = '<tr><td class="text-center text-slate-500 py-6">No data loaded</td></tr>';
+          return;
+        }
+        // header row
+        let headerHtml = '';
+        currentHeaders.forEach(h => { headerHtml += `<th class="font-medium">${escapeHtml(h)}</th>`; });
+        previewHeaderRow.innerHTML = headerHtml;
+        // show first 5 rows
+        let bodyHtml = '';
+        const maxPreview = Math.min(5, currentData.length);
+        for(let i=0; i<maxPreview; i++) {
+          let row = currentData[i];
+          bodyHtml += '<tr>';
+          currentHeaders.forEach(h => {
+            let val = (row[h] !== undefined && row[h] !== null) ? String(row[h]) : '';
+            bodyHtml += `<td class="truncate max-w-[200px]">${escapeHtml(val.slice(0,80))}</td>`;
+          });
+          bodyHtml += '</tr>';
+        }
+        previewBody.innerHTML = bodyHtml;
+        // adjust module buttons based on plan + row limit for standardization/AI
+        const isPaywallBlock = (activePlan === 'free' && currentData.length > 50);
+        standardizeBtn.disabled = (activePlan !== 'starter' && activePlan !== 'enterprise') || isPaywallBlock;
+        aiExtractBtn.disabled = (activePlan !== 'enterprise') || isPaywallBlock;
+        if(activePlan === 'starter' || activePlan === 'enterprise') {
+          stdBadge.innerText = '✓ Active';
+          if(activePlan === 'enterprise') aiBadge.innerText = '✓ Active';
+          else aiBadge.innerText = '🔒 Enterprise';
+        } else {
+          stdBadge.innerText = 'Starter+ Required';
+          aiBadge.innerText = 'Enterprise+';
+        }
+        if(activePlan === 'enterprise') mappingCanvasDiv.classList.remove('hidden');
+        else mappingCanvasDiv.classList.add('hidden');
+        enforcePaywallByRows();
+      }
 
-        <div class="space-y-10">
+      function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-            <!-- SECTION 1: LEGAL IDENTITY & GOVERNING LAW -->
-            <section class="scroll-mt-24">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 font-bold text-sky-400 text-sm shadow-sm">
-                        01
-                    </div>
-                    <h2 class="text-xl font-bold tracking-tight text-white">
-                        Legal Identity &amp; Governing Law (Paddle Verification Framework)
-                    </h2>
-                </div>
-                
-                <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                    This document constitutes a binding regulatory agreement between the platform user and the registered platform executor. This infrastructure operates strictly under a zero-server computing paradigm. To satisfy legal transparency mandates, compliance infrastructure data targets are isolated below:
-                </p>
+      // load data into memory (sets currentData, headers)
+      function setDataFromMatrix(dataRows, headers, filename) {
+        currentHeaders = [...headers];
+        currentData = dataRows.map(row => {
+          let newRow = {};
+          headers.forEach((h, idx) => { newRow[h] = (idx < row.length) ? row[idx] : ""; });
+          return newRow;
+        });
+        currentFileName = filename;
+        updateUIAfterDataChange();
+      }
 
-                
-                <div class="glass-panel glow-accent rounded-xl p-6 font-mono text-xs sm:text-sm text-slate-300 space-y-3 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-sky-500/5 rounded-full filter blur-2xl pointer-events-none"></div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 border-b border-slate-800/80 pb-3">
-                        <span class="text-slate-500 uppercase font-semibold tracking-wider">Legal Provider Name:</span>
-                        <span class="md:col-span-2 text-sky-400 font-bold">Preetam Dubey</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 border-b border-slate-800/80 pb-3">
-                        <span class="text-slate-500 uppercase font-semibold tracking-wider">Verified Address:</span>
-                        <span class="md:col-span-2 text-white">WARIDASHARATHPUR, GONDA, UTTAR PRADESH - 221304, India</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 border-b border-slate-800/80 pb-3">
-                        <span class="text-slate-500 uppercase font-semibold tracking-wider">Compliance Routing:</span>
-                        <span class="md:col-span-2 text-sky-400 underline decoration-sky-500/30">support@datasuitepro.com</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-1">
-                        <span class="text-slate-500 uppercase font-semibold tracking-wider">Merchant of Record:</span>
-                        <span class="md:col-span-2 text-slate-400">Paddle.com Market Ltd (Global Clearing Gateway)</span>
-                    </div>
-                </div>
+      // parse uploaded file
+      function handleFile(file) {
+        const fileName = file.name;
+        const ext = fileName.split('.').pop().toLowerCase();
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            let parsedRows = [];
+            let headers = [];
+            if(ext === 'xlsx') {
+              const data = new Uint8Array(e.target.result);
+              const workbook = XLSX.read(data, {type: 'array'});
+              const sheet = workbook.Sheets[workbook.SheetNames[0]];
+              const json = XLSX.utils.sheet_to_json(sheet, {header:1, defval:""});
+              if(json.length>0) { headers = json[0].map(cell=>String(cell||`col_${Math.random()}`)); parsedRows = json.slice(1); }
+            } 
+            else if(ext === 'csv') {
+              const text = e.target.result;
+              const rows = text.split(/\r?\n/).filter(r=>r.trim().length>0);
+              if(rows.length) { headers = rows[0].split(',').map(c=>c.trim()); parsedRows = rows.slice(1).map(r=>r.split(',').map(c=>c.trim())); }
+            }
+            else if(ext === 'json') {
+              const jsonArr = JSON.parse(e.target.result);
+              if(Array.isArray(jsonArr) && jsonArr.length){
+                headers = Object.keys(jsonArr[0]);
+                parsedRows = jsonArr.map(obj=> headers.map(h=> obj[h] !== undefined ? obj[h] : ""));
+              } else throw new Error("Invalid JSON array");
+            }
+            else if(ext === 'txt') {
+              const textLines = e.target.result.split(/\r?\n/).filter(l=>l.trim());
+              if(textLines.length) { headers = ["text_content"]; parsedRows = textLines.map(line=>[line]); }
+            }
+            else { alert("Unsupported format"); return; }
+            if(!headers.length || !parsedRows.length) throw new Error("Empty dataset");
+            setDataFromMatrix(parsedRows, headers, fileName);
+          } catch(err) { alert("Parse error: "+err.message); }
+        };
+        if(ext === 'xlsx') reader.readAsArrayBuffer(file);
+        else reader.readAsText(file);
+      }
 
-                <p class="text-slate-400 text-sm leading-relaxed mt-4">
-                    Any terms, local software runtime allocations, and financial billing pipelines managed via our Merchant of Record are interpreted, executed, and enforced strictly under the national laws of <strong class="text-white">India</strong>. Users irrevocably agree that any structural legal actions, compliance claims, or formal arbitrations arising directly out of this interface environment must be initiated and handled exclusively within the personal and subject-matter jurisdiction of competent courts located in <strong class="text-white">Uttar Pradesh, India</strong>.
-                </p>
-            </section>
+      // Drag & drop logic
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-active'); });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-active'));
+      dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag-active'); const files = e.dataTransfer.files; if(files.length) handleFile(files[0]); });
+      uploadTrigger.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => { if(e.target.files.length) handleFile(e.target.files[0]); });
 
-            <!-- SECTION 2: SUBSCRIPTION TIERS & PROCESSING ALLOCATIONS -->
-            <section class="scroll-mt-24">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 font-bold text-sky-400 text-sm shadow-sm">
-                        02
-                    </div>
-                    <h2 class="text-xl font-bold tracking-tight text-white">
-                        Subscription Tiers &amp; Local Processing Allocations
-                    </h2>
-                </div>
-                
-                <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                    DataSuite Pro enforces row-length execution limits programmatically inside client-side engine variables. By initializing the dashboard engine, you acknowledge the functional tier thresholds defined here:
-                </p>
+      // MODULE 1: Export as CSV / XLSX (client-side)
+      function exportToCSV(){
+        if(!currentData.length) return alert("No data");
+        const rows = [currentHeaders, ...currentData.map(row=>currentHeaders.map(h=>row[h] !== undefined ? row[h] : ""))];
+        const csv = rows.map(row=>row.map(cell=>`"${String(cell).replace(/"/g,'""')}"`).join(",")).join("\n");
+        const blob = new Blob([csv], {type:"text/csv"});
+        const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = "export.csv"; link.click(); URL.revokeObjectURL(link.href);
+      }
+      function exportToXLSX(){
+        if(!currentData.length) return alert("No data");
+        const sheetData = [currentHeaders, ...currentData.map(row=>currentHeaders.map(h=>row[h]))];
+        const ws = XLSX.utils.aoa_to_sheet(sheetData);
+        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "DataSuiteExport");
+        XLSX.writeFile(wb, "export.xlsx");
+      }
+      exportCSV.addEventListener('click', () => { if(enforcePaywallByRows()) return; exportToCSV(); });
+      exportXLSX.addEventListener('click', () => { if(enforcePaywallByRows()) return; exportToXLSX(); });
 
-                <!-- Tier Stack Table Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    <!-- Free Plan Card -->
-                    <div class="border border-slate-800/80 bg-slate-900/40 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700/80 transition-all duration-200">
-                        <div>
-                            <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Tier Level 01</div>
-                            <h3 class="text-lg font-bold text-white mb-2">Free Local Mode</h3>
-                            <div class="text-2xl font-black text-white mb-4">$0 <span class="text-xs font-normal text-slate-500">/ forever</span></div>
-                            <p class="text-xs text-slate-400 leading-relaxed">
+      // MODULE 2: SANITIZER (purge blanks, duplicates, trim)
+      function sanitizeData(){
+        if(!currentData.length) return alert("No data");
+        let trimmedRows = currentData.map(row => {
+          let newRow = {};
+          currentHeaders.forEach(h => { newRow[h] = (typeof row[h] === 'string') ? row[h].trim() : row[h]; });
+          return newRow;
+        });
+        // remove rows where every field is empty/null/undefined
+        trimmedRows = trimmedRows.filter(row => currentHeaders.some(h => row[h] && String(row[h]).trim() !== ""));
+        // remove duplicate rows based on JSON string
+        const uniqueMap = new Map();
+        trimmedRows.forEach(row => { const key = JSON.stringify(row); if(!uniqueMap.has(key)) uniqueMap.set(key, row); });
+        currentData = Array.from(uniqueMap.values());
+        updateUIAfterDataChange();
+      }
+      sanitizeBtn.addEventListener('click', () => { if(enforcePaywallByRows()) return; sanitizeData(); });
+
+      // MODULE 3: FIELD STANDARDIZER (Phone E.164 + Date YYYY-MM-DD)
+      function standardizeFields() {
+        if(activePlan !== 'starter' && activePlan !== 'enterprise') { alert("Upgrade to Starter or Enterprise to use Standardizer"); return; }
+        if(!currentData.length) return;
+        const phoneRegex = /(\+?\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{4,6}/g;
+        const dateRegex = /(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/g;
+        currentData = currentData.map(row => {
+          let newRow = {...row};
+          currentHeaders.forEach(h => {
+            let val = newRow[h];
+            if(typeof val === 'string') {
+              // Phone E.164 simple: extract digits, format as +XXXXXXXXXX (basic)
+              let matchPhone = val.match(/\d{8,15}/g);
+              if(matchPhone) { let digits = matchPhone.join('').slice(0,12); if(digits.length>=8) newRow[h] = '+'+digits; }
+              // date to YYYY-MM-DD
+              let dateMatch = val.match(dateRegex);
+              if(dateMatch) {
+                let parts = val.split(/[\/\-\.]/);
+                if(parts.length===3){
+                  let year = parts[2].length===2 ? '20'+parts[2] : parts[2];
+                  let month = parts[0].padStart(2,'0'); let day = parts[1].padStart(2,'0');
+                  newRow[h] = `${year}-${month}-${day}`;
+                }
+              }
+            }
+          });
+          return newRow;
+        });
+        updateUIAfterDataChange();
+        alert("Standardization complete (E.164 & YYYY-MM-DD)");
+      }
+      standardizeBtn.addEventListener('click', () => { if(enforcePaywallByRows()) return; standardizeFields(); });
+
+      // MODULE 4: AI extraction (emails) + target mapping demo
+      function runAIPipeline(){
+        if(activePlan !== 'enterprise') { alert("Enterprise Tier required for AI Pipeline"); return; }
+        if(!currentData.length) return;
+        // extract emails from any string field
+        const emailSet = new Set();
+        currentData.forEach(row => {
+          currentHeaders.forEach(h => {
+            const val = row[h];
+            if(typeof val === 'string'){
+              const emails = val.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/g);
+              if(emails) emails.forEach(e => emailSet.add(e));
+            }
+          });
+        });
+        let extracted = Array.from(emailSet).slice(0,10);
+        mappingStatusSpan.innerText = `Extracted emails: ${extracted.length>0 ? extracted.join(', ') : 'none'} | Headers: ${currentHeaders.slice(0,5).join(', ')} → Shopify/HubSpot ready`;
+        mappingCanvasDiv.classList.remove('hidden');
+        alert(`AI Pipeline: Found ${extracted.length} emails. Column mapping preview ready for endpoint shapes.`);
+      }
+      aiExtractBtn.addEventListener('click', () => { if(enforcePaywallByRows()) return; runAIPipeline(); });
+
+      // MOCK UPGRADE from paywall modal (demo simulation)
+      document.querySelectorAll('[data-plan]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          const plan = el.getAttribute('data-plan');
+          if(plan === 'starter') activePlan = 'starter';
+          else if(plan === 'enterprise') activePlan = 'enterprise';
+          paywallModal.classList.add('hidden');
+          document.body.classList.remove('modal-lock');
+          updateUIAfterDataChange();
+          alert(`Upgraded to ${plan==='starter'?'Starter ($29/mo)':'Enterprise ($99/mo)'} - features unlocked.`);
+        });
+      });
+      document.getElementById('closePaywallMock').addEventListener('click', () => {
+        paywallModal.classList.add('hidden');
+        document.body.classList.remove('modal-lock');
+      });
+      
+      // initial sample (empty grid)
+      setDataFromMatrix([], ["Sample"], "No file");
+    })();
+  </script>
+</body>
+</html>
+```
