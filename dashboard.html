@@ -3,380 +3,435 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>DataSuitePro | Operator Framework</title>
+  <title>DataSuitePro | Enterprise Data Utility</title>
+  <!-- Tailwind CSS CDN + minimal custom layer -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome for sharp icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
       background: #0b0f15;
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      margin: 0;
-      padding: 0;
+      letter-spacing: -0.01em;
     }
     .glass-panel {
-      background: rgba(18, 25, 35, 0.8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(75, 130, 200, 0.18);
-      border-radius: 1.5rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      background: rgba(18, 22, 28, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(55, 65, 81, 0.5);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.7);
+    }
+    .badge-glow {
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+      text-shadow: 0 0 6px rgba(16, 185, 129, 0.9);
+    }
+    .upload-dash {
+      background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23374151' stroke-width='2.5' stroke-dasharray='10%2c 14' stroke-dashoffset='4' stroke-linecap='square'/%3e%3c/svg%3e");
+      background-color: rgba(15, 20, 25, 0.8);
     }
     .tab-active {
-      background: linear-gradient(135deg, #15222e 0%, #0d1a26 100%);
-      border-bottom: 3px solid #3b82f6;
-      color: #e2e8f0;
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      border-bottom: 2px solid #3b82f6;
+      box-shadow: 0 -1px 12px rgba(59, 130, 246, 0.4);
+      color: white;
       font-weight: 600;
-      letter-spacing: 0.3px;
-      box-shadow: 0 4px 14px rgba(59,130,246,0.3);
     }
-    .drop-zone {
-      border: 2px dashed #334155;
-      transition: all 0.25s ease;
-      background: rgba(12, 20, 30, 0.7);
+    .tab-inactive {
+      background: rgba(24, 28, 33, 0.7);
+      backdrop-filter: blur(8px);
+      color: #9ca3af;
+      border-bottom: 2px solid transparent;
     }
-    .drop-zone.drag-active {
-      border-color: #3b82f6;
-      background: rgba(30, 64, 120, 0.25);
-      box-shadow: 0 0 20px rgba(59,130,246,0.4);
-    }
-    .luxury-table th {
-      font-weight: 500;
+    .preview-table th {
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #94a3b8;
-      font-size: 0.75rem;
-      padding: 0.9rem 1.2rem;
-      background: rgba(15, 25, 38, 0.8);
-    }
-    .luxury-table td {
-      padding: 0.85rem 1.2rem;
-      border-bottom: 1px solid rgba(55, 75, 100, 0.3);
+      letter-spacing: 0.06em;
       color: #cbd5e1;
-      font-feature-settings: "tnum";
+      background: #1e293b;
+    }
+    .preview-table td {
+      border-bottom: 1px solid #2d3748;
+      color: #e2e8f0;
     }
     .paywall-backdrop {
       background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(12px);
     }
-    .concierge-bot {
-      background: #0c121c;
-      border: 1px solid #2d3a4e;
-      box-shadow: -8px 16px 40px rgba(0,0,0,0.8);
-      border-radius: 1.25rem;
+    .concierge-bubble {
+      background: radial-gradient(circle at 30% 30%, #1f2937, #0f172a);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.9), 0 0 0 1px #334155;
+      transition: all 0.2s ease;
     }
-    .chat-message {
-      background: #1a2532;
-      border-left: 4px solid #3b82f6;
+    .concierge-bubble:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 16px #3b82f6;
+    }
+    .chat-window {
+      background: rgba(10, 15, 22, 0.95);
+      backdrop-filter: blur(24px);
+      border: 1px solid #2d3a4f;
+      box-shadow: -10px 20px 40px rgba(0,0,0,0.9);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   </style>
 </head>
-<body class="text-slate-200 antialiased">
+<body class="text-gray-100 antialiased p-4 md:p-6 flex flex-col items-center min-h-screen">
 
-<div class="min-h-screen flex flex-col px-4 py-6 md:px-8 lg:px-12 max-w-7xl mx-auto">
-  
-  <!-- GLOBAL HEADER -->
-  <header class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
-    <div>
-      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-none">DataSuitePro</h1>
-      <div class="flex items-center gap-3 mt-2 flex-wrap">
-        <span class="bg-emerald-900/70 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-600/50 backdrop-blur-sm">100% Client-Side Secure</span>
-        <span class="text-slate-400 text-sm font-light tracking-wide">Operator Framework: Preetam Dubey Partnership</span>
-      </div>
-    </div>
-    <div class="text-right text-xs text-slate-500 hidden md:block">ENTERPRISE DATA INFRASTRUCTURE</div>
-  </header>
-
-  <!-- WORKSPACE TAB CONTROL PANELS -->
-  <div class="flex flex-wrap gap-1 mb-1 border-b border-slate-700/60">
-    <button class="tab-active px-5 py-3 text-sm rounded-t-xl transition-colors" data-tab="0">Module 01: Multi-Format Transformer</button>
-    <button class="px-5 py-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-t-xl transition-colors" data-tab="1">Module 02: Data Sanitizer & Cleaner</button>
-    <button class="px-5 py-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-t-xl transition-colors" data-tab="2">Module 03: Bulk Merger & Splitter</button>
-    <button class="px-5 py-3 text-sm text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-t-xl transition-colors" data-tab="3">Module 04: Target Mapping Tool</button>
-  </div>
-
-  <!-- MAIN WORKSPACE CARD -->
-  <div class="glass-panel p-6 md:p-8 flex-grow relative">
+  <!-- Main dashboard container -->
+  <div class="w-full max-w-7xl glass-panel rounded-3xl p-5 md:p-7 relative flex flex-col gap-6 shadow-2xl">
     
-    <!-- FILE INGESTION LAYER -->
-    <div id="dropContainer" class="drop-zone rounded-2xl p-8 md:p-10 flex flex-col items-center justify-center text-center cursor-pointer transition-all mb-8">
-      <div class="text-4xl mb-3 text-slate-500">&#x21E7;</div>
-      <p class="text-lg font-semibold text-slate-300">Drag & drop file here</p>
-      <p class="text-sm text-slate-500 mt-1">CSV, TSV, TXT supported (simulated parsing)</p>
-      <input type="file" id="hiddenFileInput" class="hidden" accept=".csv,.tsv,.txt" />
-    </div>
-
-    <!-- DATA GRID PREVIEW + STATS -->
-    <div class="flex justify-between items-end mb-4">
-      <div>
-        <span class="text-xs uppercase tracking-widest text-slate-500">Live Preview</span>
-        <h3 class="text-xl font-bold text-white">Data Grid</h3>
+    <!-- ========== GLOBAL HEADER APPARATUS ========== -->
+    <div class="flex flex-wrap items-center justify-between border-b border-gray-700/60 pb-4 gap-3">
+      <div class="flex items-center gap-3">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-lg">DataSuitePro</h1>
+        <span class="bg-emerald-900/70 text-emerald-300 border border-emerald-500/50 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2 badge-glow">
+          <i class="fas fa-shield-alt text-emerald-400"></i> <span>100% Client-Side Secure</span>
+        </span>
       </div>
-      <div class="flex gap-4 text-right">
-        <div><span class="text-slate-500 text-xs">Rows ingested</span><br><span id="rowCountDisplay" class="text-2xl font-semibold text-white">0</span></div>
-        <div><span class="text-slate-500 text-xs">File size</span><br><span id="fileSizeDisplay" class="text-2xl font-semibold text-white">0 KB</span></div>
+      <div class="text-right text-sm font-medium text-gray-400 bg-gray-900/50 px-4 py-2 rounded-xl border border-gray-700">
+        <i class="fas fa-briefcase mr-2 text-blue-400"></i> 
+        Operator Framework: <span class="text-white font-semibold">Preetam Dubey Partnership</span>
       </div>
     </div>
 
-    <div class="overflow-x-auto rounded-xl border border-slate-700/40">
-      <table class="w-full luxury-table text-left" id="previewTable">
-        <thead>
-          <tr><th>ID</th><th>Column A</th><th>Column B</th><th>Category</th><th>Value</th></tr>
-        </thead>
-        <tbody id="tableBody">
-          <tr><td colspan="5" class="text-center text-slate-600 py-10">Awaiting file ingestion...</td></tr>
-        </tbody>
-      </table>
+    <!-- ========== 4 CORE UTILITY MODULE TABS ========== -->
+    <div id="moduleTabs" class="grid grid-cols-4 gap-1.5 md:gap-2 text-sm md:text-base font-medium">
+      <button id="tab1" onclick="switchModule('tab1')" class="tab-active py-3 px-2 rounded-t-xl transition-all duration-200 flex items-center justify-center gap-2"><i class="fas fa-exchange-alt"></i><span class="hidden sm:inline">Multi-Format Transformer</span><span class="sm:hidden">Transformer</span></button>
+      <button id="tab2" onclick="switchModule('tab2')" class="tab-inactive py-3 px-2 rounded-t-xl transition-all duration-200 flex items-center justify-center gap-2"><i class="fas fa-shield-virus"></i><span class="hidden sm:inline">Data Sanitizer & Cleaner</span><span class="sm:hidden">Sanitizer</span></button>
+      <button id="tab3" onclick="switchModule('tab3')" class="tab-inactive py-3 px-2 rounded-t-xl transition-all duration-200 flex items-center justify-center gap-2"><i class="fas fa-object-group"></i><span class="hidden sm:inline">Bulk Merger & Splitter</span><span class="sm:hidden">Merger</span></button>
+      <button id="tab4" onclick="switchModule('tab4')" class="tab-inactive py-3 px-2 rounded-t-xl transition-all duration-200 flex items-center justify-center gap-2"><i class="fas fa-bullseye"></i><span class="hidden sm:inline">Target Mapping Tool</span><span class="sm:hidden">Mapping</span></button>
     </div>
 
-    <!-- EXPORT BUTTON (triggers paywall logic) -->
-    <div class="mt-6 flex justify-end">
-      <button id="exportBtn" class="bg-blue-700 hover:bg-blue-600 text-white font-semibold py-3 px-7 rounded-xl shadow-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled>Process & Export Clean CSV</button>
-    </div>
-  </div>
-</div>
-
-<!-- PAYWALL MODAL (hidden by default) -->
-<div id="paywallModal" class="fixed inset-0 flex items-center justify-center z-50 hidden paywall-backdrop">
-  <div class="glass-panel max-w-lg w-full p-8 mx-4 border-red-500/30 shadow-2xl">
-    <div class="text-center mb-6">
-      <h2 class="text-3xl font-bold text-white mb-2">Enterprise Limit Reached</h2>
-      <p class="text-slate-400">Files over 50 rows require a commercial license.</p>
-    </div>
-    <div class="space-y-5">
-      <div class="bg-slate-800/70 p-5 rounded-xl border border-slate-700 flex justify-between items-center">
-        <div><span class="text-xl font-bold text-white">Starter Plan</span><p class="text-sm text-slate-400">Up to 5,000 rows</p></div>
-        <div class="text-2xl font-extrabold text-blue-400">$29<span class="text-sm font-normal text-slate-400">/mo</span></div>
+    <!-- Dynamic content area (file ingestion & preview) -->
+    <div class="bg-black/30 rounded-2xl p-5 border border-gray-700/40">
+      <!-- Drag & Drop Section -->
+      <div id="dropZone" class="upload-dash rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all hover:border-blue-400/60">
+        <i class="fas fa-cloud-upload-alt text-5xl text-blue-400 mb-3"></i>
+        <p class="text-xl font-semibold text-gray-200">Drop CSV/JSON file here</p>
+        <p class="text-sm text-gray-400 mt-1">or click to browse</p>
+        <input type="file" id="fileInput" accept=".csv,.json" class="hidden">
       </div>
-      <div class="bg-slate-800/70 p-5 rounded-xl border border-blue-700/50 flex justify-between items-center ring-1 ring-blue-600/30">
-        <div><span class="text-xl font-bold text-white">Enterprise Pro</span><p class="text-sm text-slate-400">Unlimited rows + AI concierge</p></div>
-        <div class="text-2xl font-extrabold text-blue-300">$99<span class="text-sm font-normal text-slate-400">/mo</span></div>
+
+      <!-- Meta banner & preview (hidden until file loaded) -->
+      <div id="dataMetaBanner" class="hidden mt-5 bg-gray-800/70 backdrop-blur-md rounded-xl p-4 border border-gray-600 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-4">
+          <i class="fas fa-file-alt text-blue-300 text-2xl"></i>
+          <div>
+            <span id="loadedFileName" class="text-white font-bold text-lg">—</span>
+            <div class="text-xs text-gray-400 flex gap-3 mt-1">
+              <span id="rowCountDisplay">Rows: 0</span>
+              <span class="text-emerald-400" id="previewIndicator">Preview ready</span>
+            </div>
+          </div>
+        </div>
+        <button id="executeExportBtn" onclick="processAndExport()" class="bg-white text-gray-900 font-bold px-6 py-2.5 rounded-xl hover:bg-gray-200 transition-all shadow-lg flex items-center gap-2 disabled:opacity-60">
+          <i class="fas fa-rocket"></i> Execute Engine & Export Data
+        </button>
       </div>
-      <a href="mailto:datasuitepro.help@gmail.com?subject=Upgrade%20DataSuitePro" class="block w-full text-center bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-semibold transition-colors text-white mt-4">
-        Contact: datasuitepro.help@gmail.com
-      </a>
-      <button id="closePaywallBtn" class="w-full text-slate-400 hover:text-white py-2 text-sm underline">Maybe later</button>
+
+      <!-- Live 5-row preview grid -->
+      <div id="previewGridContainer" class="hidden mt-4 overflow-x-auto rounded-xl border border-gray-700">
+        <table class="preview-table w-full text-sm text-left">
+          <thead>
+            <tr>
+              <th class="p-3">UID</th>
+              <th class="p-3">Timestamp</th>
+              <th class="p-3">Ingest_Payload</th>
+              <th class="p-3">Status_Check</th>
+            </tr>
+          </thead>
+          <tbody id="previewTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- AI CONCIERGE BOT (floating widget) -->
-<div class="fixed bottom-6 right-6 z-40 w-80 md:w-96 concierge-bot flex flex-col overflow-hidden shadow-2xl">
-  <div class="bg-slate-900/90 px-5 py-3 flex items-center justify-between border-b border-slate-700">
-    <span class="font-bold tracking-wide text-white text-sm">AI CONCIERGE</span>
-    <span class="text-xs text-emerald-400 bg-emerald-900/50 px-2 py-0.5 rounded-full">online</span>
+  <!-- ========== PAYWALL MODAL (HIDDEN) ========== -->
+  <div id="paywallModal" class="fixed inset-0 z-50 flex items-center justify-center hidden paywall-backdrop transition-all">
+    <div class="glass-panel max-w-xl w-full mx-4 rounded-3xl p-7 border-gray-500 relative text-gray-100">
+      <button onclick="closePaywall()" class="absolute top-4 right-5 text-gray-400 hover:text-white text-3xl font-light">&times;</button>
+      <h2 class="text-3xl font-bold mb-2 text-white">Premium Processing Required</h2>
+      <p class="text-gray-400 mb-6">Your file exceeds the 50-row free limit. Unlock high-volume pipelines.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        <div class="bg-gray-800/60 p-5 rounded-2xl border border-gray-600">
+          <h3 class="text-xl font-bold text-blue-300">Starter Plan</h3>
+          <p class="text-3xl font-extrabold text-white mt-2">$29<span class="text-lg text-gray-400">/mo</span></p>
+          <p class="text-sm text-gray-300 mt-2">Up to 10,000 rows per file</p>
+          <a href="mailto:datasuitepro.help@gmail.com" class="mt-4 inline-block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-xl transition">Choose Starter</a>
+        </div>
+        <div class="bg-gray-800/60 p-5 rounded-2xl border border-emerald-500/50 relative">
+          <span class="absolute -top-2 right-3 bg-emerald-600 text-xs px-3 py-0.5 rounded-full">PRO</span>
+          <h3 class="text-xl font-bold text-emerald-300">Enterprise Pro</h3>
+          <p class="text-3xl font-extrabold text-white mt-2">$99<span class="text-lg text-gray-400">/mo</span></p>
+          <p class="text-sm text-gray-300 mt-2">Unlimited rows & Bulk Merging</p>
+          <a href="mailto:datasuitepro.help@gmail.com" class="mt-4 inline-block w-full text-center bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl transition">Go Enterprise</a>
+        </div>
+      </div>
+      <p class="text-xs text-gray-500 text-center">Contact: datasuitepro.help@gmail.com</p>
+    </div>
   </div>
-  <div id="chatMessages" class="h-56 overflow-y-auto p-4 space-y-3 text-sm bg-[#0a0f16]">
-    <div class="text-slate-500 text-xs italic">Ask about errors, merge, premium...</div>
+
+  <!-- ========== CONCIERGE CHAT BUBBLE (BOTTOM-RIGHT) ========== -->
+  <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+    <div id="chatWindow" class="chat-window rounded-2xl hidden flex-col overflow-hidden transition-all" style="width: 320px; height: 380px;">
+      <div class="bg-gray-900 p-3 flex items-center justify-between border-b border-gray-700">
+        <span class="text-white font-semibold text-sm"><i class="fas fa-robot text-blue-400 mr-2"></i>Concierge Core</span>
+        <button onclick="toggleChat()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="chatLog" class="flex-1 p-3 overflow-y-auto text-xs space-y-2 bg-black/30 text-gray-200">
+        <div class="text-gray-500 italic">Enterprise assistant ready.</div>
+      </div>
+      <div class="p-2 border-t border-gray-700 flex gap-2">
+        <input type="text" id="chatInput" placeholder="Type keyword..." class="flex-1 bg-gray-800 text-white rounded-lg px-3 py-2 text-xs outline-none border border-gray-600" onkeypress="if(event.key==='Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded-lg text-xs font-bold"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+    <div onclick="toggleChat()" class="concierge-bubble w-14 h-14 rounded-full flex items-center justify-center cursor-pointer text-2xl text-blue-300">
+      <i class="fas fa-comment-dots"></i>
+    </div>
   </div>
-  <div class="p-3 border-t border-slate-700 flex gap-2 bg-slate-900/70">
-    <input type="text" id="chatInput" placeholder="Type query..." class="w-full bg-slate-800 text-white px-3 py-2 rounded-lg text-sm outline-none border border-slate-600 focus:border-blue-500" />
-    <button id="sendChatBtn" class="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded-lg text-white font-medium text-sm">Send</button>
-  </div>
-</div>
 
-<script>
-  (function() {
-    // DOM references
-    const dropContainer = document.getElementById('dropContainer');
-    const fileInput = document.getElementById('hiddenFileInput');
-    const rowCountSpan = document.getElementById('rowCountDisplay');
-    const fileSizeSpan = document.getElementById('fileSizeDisplay');
-    const tableBody = document.getElementById('tableBody');
-    const exportBtn = document.getElementById('exportBtn');
-    const paywallModal = document.getElementById('paywallModal');
-    const closePaywallBtn = document.getElementById('closePaywallBtn');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatInput = document.getElementById('chatInput');
-    const sendChatBtn = document.getElementById('sendChatBtn');
-    const tabs = document.querySelectorAll('[data-tab]');
+  <script>
+    (function() {
+      // ---------- STATE ----------
+      let currentFileData = [];        // array of objects
+      let currentFileName = '';
+      const MAX_FREE_ROWS = 50;
 
-    // State
-    let currentFileRows = 0;
-    let currentFileName = '';
-    let simulatedData = [];
+      // DOM refs
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const dataMetaBanner = document.getElementById('dataMetaBanner');
+      const loadedFileNameSpan = document.getElementById('loadedFileName');
+      const rowCountDisplay = document.getElementById('rowCountDisplay');
+      const previewGridContainer = document.getElementById('previewGridContainer');
+      const previewTableBody = document.getElementById('previewTableBody');
+      const executeExportBtn = document.getElementById('executeExportBtn');
+      const paywallModal = document.getElementById('paywallModal');
 
-    // ----- TAB SWITCHING (visual only) -----
-    tabs.forEach(btn => {
-      btn.addEventListener('click', function() {
-        tabs.forEach(b => b.classList.remove('tab-active'));
-        this.classList.add('tab-active');
+      // ---------- TAB SWITCH (4 modules) ----------
+      window.switchModule = function(id) {
+        const tabs = ['tab1','tab2','tab3','tab4'];
+        tabs.forEach(tabId => {
+          const el = document.getElementById(tabId);
+          if (tabId === id) {
+            el.className = 'tab-active py-3 px-2 rounded-t-xl transition-all duration-200 flex items-center justify-center gap-2';
+          } else {
+            el.className = 'tab-inactive py-3 px-2 rounded-t-xl transition-all duration-200 flex items-center justify-center gap-2';
+          }
+        });
+        // Placeholder for real module routing; currently tab switch visual only.
+        console.log('Active module:', id);
+      };
+
+      // ---------- FILE HANDLING & PARSING ----------
+      dropZone.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', handleFileSelect);
+      
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-blue-500');
       });
-    });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-blue-500');
+      });
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-500');
+        const files = e.dataTransfer.files;
+        if (files.length) {
+          processUploadedFile(files[0]);
+        }
+      });
 
-    // ----- FILE HANDLING & SIMULATION -----
-    function simulateIngestion(file) {
-      const sizeKB = (file.size / 1024).toFixed(1);
-      fileSizeSpan.textContent = `${sizeKB} KB`;
-      
-      // deterministic rows based on file size (max 120 rows for demo)
-      const simulatedRows = Math.min(120, Math.max(3, Math.floor(file.size / 380)));
-      currentFileRows = simulatedRows;
-      rowCountSpan.textContent = simulatedRows;
-      
-      // generate preview data (first 5 rows)
-      simulatedData = [];
-      const columns = ['ID', 'Column A', 'Column B', 'Category', 'Value'];
-      for (let i = 0; i < simulatedRows; i++) {
-        simulatedData.push({
-          id: `R${i+1}`,
-          colA: `Alpha${String.fromCharCode(65 + (i % 26))}`,
-          colB: `Beta${(i*7)%100}`,
-          category: i % 3 === 0 ? 'Finance' : (i % 3 === 1 ? 'Tech' : 'Health'),
-          value: (Math.random() * 500).toFixed(2)
+      function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) processUploadedFile(file);
+      }
+
+      function processUploadedFile(file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const content = ev.target.result;
+          const fileName = file.name;
+          try {
+            let parsed = [];
+            if (fileName.endsWith('.json')) {
+              const json = JSON.parse(content);
+              parsed = Array.isArray(json) ? json : [json];
+            } else if (fileName.endsWith('.csv')) {
+              parsed = parseCSV(content);
+            } else {
+              alert('Unsupported format. Use CSV or JSON.');
+              return;
+            }
+            if (!Array.isArray(parsed) || parsed.length === 0) {
+              alert('File contains no rows.');
+              return;
+            }
+            currentFileData = parsed;
+            currentFileName = fileName;
+            updateUIAfterLoad();
+          } catch (error) {
+            alert('File parsing error: ' + error.message);
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function parseCSV(csvText) {
+        const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== '');
+        if (lines.length < 2) return [];
+        const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+        const result = [];
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+          const row = {};
+          headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+          result.push(row);
+        }
+        return result;
+      }
+
+      function updateUIAfterLoad() {
+        dataMetaBanner.classList.remove('hidden');
+        previewGridContainer.classList.remove('hidden');
+        loadedFileNameSpan.textContent = currentFileName;
+        const rowCount = currentFileData.length;
+        rowCountDisplay.textContent = `Rows: ${rowCount}`;
+        
+        // Build preview: first 5 rows with UID, Timestamp, Ingest_Payload, Status_Check
+        renderPreviewTable(currentFileData.slice(0, 5));
+        
+        // Enable/disable export based on free limit status (button always enabled, paywall logic inside export)
+        executeExportBtn.disabled = false;
+      }
+
+      function renderPreviewTable(rows) {
+        previewTableBody.innerHTML = '';
+        if (!rows.length) {
+          previewTableBody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-gray-500">No rows to preview</td></tr>';
+          return;
+        }
+        rows.forEach((row, idx) => {
+          const uid = row.UID || row.uid || row.id || `ROW-${idx+1}`;
+          const timestamp = row.Timestamp || row.timestamp || row.created || new Date().toISOString();
+          const payload = JSON.stringify(row).substring(0, 45) + (JSON.stringify(row).length > 45 ? '...' : '');
+          const status = row.Status_Check || row.status || 'Active';
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td class="p-3 font-mono text-xs">${escapeHtml(uid)}</td>
+                          <td class="p-3 text-xs">${escapeHtml(timestamp)}</td>
+                          <td class="p-3 text-xs font-mono">${escapeHtml(payload)}</td>
+                          <td class="p-3"><span class="bg-emerald-900/40 text-emerald-300 px-2 py-0.5 rounded-full text-xs">${escapeHtml(status)}</span></td>`;
+          previewTableBody.appendChild(tr);
         });
       }
 
-      renderPreviewTable(simulatedData.slice(0, 5));
-      
-      if (simulatedRows > 0) {
-        exportBtn.disabled = false;
-      } else {
-        exportBtn.disabled = true;
-      }
-    }
-
-    function renderPreviewTable(rows) {
-      if (!rows.length) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-slate-600 py-10">No data available</td></tr>`;
-        return;
-      }
-      let html = '';
-      rows.forEach(r => {
-        html += `<tr>
-          <td class="font-mono text-blue-300">${escapeHtml(r.id)}</td>
-          <td>${escapeHtml(r.colA)}</td>
-          <td>${escapeHtml(r.colB)}</td>
-          <td><span class="bg-slate-700/50 px-2 py-0.5 rounded text-xs">${escapeHtml(r.category)}</span></td>
-          <td class="font-mono">${escapeHtml(r.value)}</td>
-        </tr>`;
-      });
-      tableBody.innerHTML = html;
-    }
-
-    function escapeHtml(text) {
-      return String(text).replace(/[&<>"]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        if (m === '"') return '&quot;';
-        return m;
-      });
-    }
-
-    function exportCleanCSV(rowsArray) {
-      if (!rowsArray.length) return;
-      const headers = ['ID','Column A','Column B','Category','Value'];
-      let csvContent = headers.join(',') + '\n';
-      rowsArray.forEach(r => {
-        csvContent += `"${r.id}","${r.colA}","${r.colB}","${r.category}","${r.value}"\n`;
-      });
-      const blob = new Blob([csvContent], {type: 'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `cleaned_${currentFileName || 'export'}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // ----- PROCESS & EXPORT WITH 50-ROW PAYWALL -----
-    function processAndExport() {
-      if (currentFileRows === 0) {
-        alert('No file loaded.');
-        return;
-      }
-      if (currentFileRows <= 50) {
-        // allowed: download clean CSV
-        exportCleanCSV(simulatedData);
-      } else {
-        // paywall trigger
-        paywallModal.classList.remove('hidden');
-      }
-    }
-
-    // ----- DRAG & DROP + CLICK EVENTS -----
-    dropContainer.addEventListener('click', () => fileInput.click());
-
-    dropContainer.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropContainer.classList.add('drag-active');
-    });
-    dropContainer.addEventListener('dragleave', () => {
-      dropContainer.classList.remove('drag-active');
-    });
-    dropContainer.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropContainer.classList.remove('drag-active');
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        handleFile(files[0]);
-      }
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) {
-        handleFile(e.target.files[0]);
-      }
-    });
-
-    function handleFile(file) {
-      if (!file) return;
-      currentFileName = file.name;
-      simulateIngestion(file);
-    }
-
-    exportBtn.addEventListener('click', processAndExport);
-
-    // Paywall close
-    closePaywallBtn.addEventListener('click', () => {
-      paywallModal.classList.add('hidden');
-    });
-    paywallModal.addEventListener('click', (e) => {
-      if (e.target === paywallModal) paywallModal.classList.add('hidden');
-    });
-
-    // ----- AI CONCIERGE BOT LOGIC -----
-    function appendChatMessage(sender, text) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = sender === 'user' ? 'text-right text-blue-200 text-xs' : 'chat-message p-2 rounded-lg text-slate-200 text-xs';
-      msgDiv.innerHTML = `<span class="font-semibold">${sender === 'user' ? 'You' : 'Concierge'}:</span> ${escapeHtml(text)}`;
-      chatMessages.appendChild(msgDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function sendChatMessage() {
-      const rawText = chatInput.value.trim();
-      if (!rawText) return;
-      appendChatMessage('user', rawText);
-      chatInput.value = '';
-      
-      const lowerMsg = rawText.toLowerCase();
-      let response = "I'm analyzing your infrastructure request. Please specify error codes, merge operations, or premium features.";
-
-      if (lowerMsg.includes('error') || lowerMsg.includes('mismatch')) {
-        response = "DataSuitePro resolves schema mismatches via deterministic type coercion engine. Activate Module 02 sanitizer for structural integrity. Enterprise Pro includes real-time anomaly detection.";
-      } else if (lowerMsg.includes('price') || lowerMsg.includes('premium')) {
-        response = "Starter Plan ($29/month) covers up to 5K rows. Enterprise Pro ($99/month) unlocks unlimited processing, AI concierge priority, and target mapping automation. Contact datasuitepro.help@gmail.com.";
-      } else if (lowerMsg.includes('merge')) {
-        response = "Bulk Merger (Module 03) aligns disparate datasets with fuzzy key matching. For high-volume operations, the Enterprise tier enables parallel merge pipelines with zero data loss.";
-      } else if (lowerMsg.includes('transform') || lowerMsg.includes('format')) {
-        response = "Multi-Format Transformer normalizes CSV, TSV, JSON lines into unified schemas. Enterprise Pro adds custom scripting layer.";
-      } else if (lowerMsg.includes('sanitize') || lowerMsg.includes('clean')) {
-        response = "Data Sanitizer scrubs PII, duplicates, and malformed records using rule-based filters. Available in all plans, with advanced regex patterns in Pro.";
+      function escapeHtml(text) {
+        return String(text).replace(/[&<>"]/g, function(m) {
+          if (m === '&') return '&amp;';
+          if (m === '<') return '&lt;';
+          if (m === '>') return '&gt;';
+          if (m === '"') return '&quot;';
+          return m;
+        });
       }
 
-      setTimeout(() => {
-        appendChatMessage('bot', response);
-      }, 250);
-    }
+      // ---------- EXPORT ENGINE WITH ROW LIMIT & PAYWALL ----------
+      window.processAndExport = function() {
+        if (!currentFileData.length) {
+          alert('No data loaded. Please upload a file first.');
+          return;
+        }
+        const rowCount = currentFileData.length;
 
-    sendChatBtn.addEventListener('click', sendChatMessage);
-    chatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendChatMessage();
-    });
+        if (rowCount <= MAX_FREE_ROWS) {
+          // Free tier: automatic CSV download
+          downloadCSV(currentFileData, currentFileName.replace(/(\.\w+)$/, '_processed.csv') || 'export.csv');
+        } else {
+          // Trigger paywall modal
+          document.getElementById('paywallModal').classList.remove('hidden');
+        }
+      };
 
-    // Initial placeholder in chat
-    appendChatMessage('bot', 'Concierge active. Query error, merge, price or premium.');
-  })();
-</script>
+      function downloadCSV(dataArray, filename = 'export.csv') {
+        if (!dataArray.length) return;
+        const headers = Object.keys(dataArray[0]);
+        const csvRows = [];
+        csvRows.push(headers.join(','));
+        dataArray.forEach(row => {
+          const values = headers.map(h => {
+            const val = row[h] === undefined ? '' : row[h];
+            return `"${String(val).replace(/"/g, '""')}"`;
+          });
+          csvRows.push(values.join(','));
+        });
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      window.closePaywall = function() {
+        document.getElementById('paywallModal').classList.add('hidden');
+      };
+
+      // ---------- CONCIERGE CHAT LOGIC ----------
+      window.toggleChat = function() {
+        const chatWin = document.getElementById('chatWindow');
+        chatWin.classList.toggle('hidden');
+      };
+
+      window.sendChatMessage = function() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        if (!message) return;
+        appendChatMessage('user', message);
+        input.value = '';
+        
+        // Keyword processing engine
+        const lowerMsg = message.toLowerCase();
+        let response = '';
+        if (lowerMsg.includes('error') || lowerMsg.includes('mismatch')) {
+          response = 'Enterprise diagnostic: run schema validation. Use Sanitizer module for column alignment.';
+        } else if (lowerMsg.includes('price') || lowerMsg.includes('cost') || lowerMsg.includes('free')) {
+          response = 'DataSuitePro free tier: up to 50 rows. Starter $29/mo (10k rows). Enterprise Pro $99/mo unlimited.';
+        } else if (lowerMsg.includes('merge') || lowerMsg.includes('split')) {
+          response = 'Bulk Merger & Splitter is available in Tab 3. Enterprise Pro unlocks unlimited merge pipelines.';
+        } else if (lowerMsg.includes('premium') || lowerMsg.includes('buy') || lowerMsg.includes('package')) {
+          response = 'Upgrade to Enterprise Pro for $99/month. Contact datasuitepro.help@gmail.com.';
+        } else {
+          response = 'Acknowledged. For advanced mapping use Target Mapping Tool. Compliance: 100% client-side.';
+        }
+        setTimeout(() => appendChatMessage('bot', response), 200);
+      };
+
+      function appendChatMessage(sender, text) {
+        const chatLog = document.getElementById('chatLog');
+        const div = document.createElement('div');
+        div.className = sender === 'user' ? 'text-right text-blue-300' : 'text-left text-gray-200';
+        div.innerHTML = `<span class="font-semibold">${sender === 'user' ? 'You' : 'Concierge'}:</span> ${escapeHtml(text)}`;
+        chatLog.appendChild(div);
+        chatLog.scrollTop = chatLog.scrollHeight;
+        // remove placeholder if present
+        if (chatLog.querySelector('.italic')) {
+          chatLog.querySelector('.italic')?.remove();
+        }
+      }
+
+      // Expose close paywall globally
+      window.closePaywall = closePaywall;
+    })();
+  </script>
 </body>
 </html>
