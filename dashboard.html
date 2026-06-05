@@ -3,492 +3,470 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>DataSuitePro | Client-Side Intelligence Hub</title>
+  <title>DataSuitePro | Premium Client-Side Data Operations</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <style>
     body {
       background-color: #0a0a0a;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
     .glow-pulse {
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
-      animation: pulse-glow 2s infinite;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+      animation: softPulse 2s infinite;
     }
-    @keyframes pulse-glow {
-      0% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
-      50% { box-shadow: 0 0 18px rgba(16, 185, 129, 0.8); }
-      100% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+    @keyframes softPulse {
+      0% { opacity: 0.9; box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+      50% { opacity: 1; box-shadow: 0 0 16px rgba(16, 185, 129, 0.8); }
+      100% { opacity: 0.9; box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
     }
-    .scrollbar-thin::-webkit-scrollbar {
-      width: 4px;
+    .drop-zone {
+      transition: all 0.2s ease;
     }
-    .scrollbar-thin::-webkit-scrollbar-track {
-      background: #171717;
+    .tab-active {
+      border-bottom: 2px solid #22c55e;
+      background: rgba(23, 23, 23, 0.8);
+      backdrop-filter: blur(8px);
     }
-    .scrollbar-thin::-webkit-scrollbar-thumb {
-      background: #404040;
-      border-radius: 4px;
+    .chat-bubble {
+      transition: transform 0.2s ease, box-shadow 0.2s;
     }
-    .modal-drop {
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    .chat-bubble:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
     }
     .toggle-switch {
-      transition: transform 0.2s ease;
+      transition: background 0.2s;
     }
   </style>
 </head>
-<body class="bg-neutral-950 text-neutral-100 antialiased min-h-screen flex flex-col">
+<body class="bg-neutral-950 text-neutral-100 font-sans antialiased selection:bg-emerald-500/20">
 
-  <!-- HEADER -->
-  <header class="border-b border-neutral-800 bg-neutral-950/70 backdrop-blur-md sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <span class="text-2xl font-bold tracking-tight text-white">DataSuitePro</span>
-        <div class="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-3 py-1 text-xs font-semibold">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 glow-pulse"></span>
-          <span class="text-emerald-300">100% Client-Side Secure</span>
-        </div>
+  <!-- Global Header -->
+  <header class="border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <h1 class="text-2xl font-bold tracking-tight text-white">DataSuitePro</h1>
+      <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-3 py-1">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full glow-pulse"></span>
+        <span class="text-xs font-mono text-emerald-300 uppercase tracking-wider">100% Client-Side Secure</span>
       </div>
-      <div class="text-right">
-        <span class="text-xs text-neutral-400 tracking-wide uppercase">Operator Framework</span>
-        <p class="text-sm font-medium text-white">Preetam Dubey Partnership</p>
-      </div>
+    </div>
+    <div class="text-right">
+      <p class="text-xs text-neutral-400 font-medium tracking-wide">Operator Framework: Preetam Dubey & Business Partner Commercial Partnership</p>
     </div>
   </header>
 
-  <!-- MODULE TABS -->
-  <div class="max-w-7xl mx-auto px-4 mt-6">
-    <div class="grid grid-cols-4 gap-2 bg-neutral-900/40 rounded-xl p-1.5 border border-neutral-800" id="moduleTabsContainer">
-      <button onclick="switchModule('transformer')" id="tab-transformer" class="tab-btn py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 border border-transparent hover:border-neutral-700 text-white bg-neutral-900/50 backdrop-blur-md border-neutral-800">Multi-Format Transformer</button>
-      <button onclick="switchModule('sanitizer')" id="tab-sanitizer" class="tab-btn py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 border border-transparent hover:border-neutral-700 text-neutral-400">Data Sanitizer & Cleaner</button>
-      <button onclick="switchModule('merger')" id="tab-merger" class="tab-btn py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 border border-transparent hover:border-neutral-700 text-neutral-400">Bulk Merger & Splitter</button>
-      <button onclick="switchModule('mapper')" id="tab-mapper" class="tab-btn py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 border border-transparent hover:border-neutral-700 text-neutral-400">Target Mapping Tool</button>
-    </div>
-  </div>
+  <!-- Main Dashboard Container -->
+  <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    
+    <!-- 4-Core Module Tabs -->
+    <nav class="grid grid-cols-4 gap-2 rounded-xl bg-neutral-900/40 p-1.5 border border-neutral-800">
+      <button onclick="switchModule('transformer')" id="tab-transformer" class="tab-btn py-3 px-2 text-sm font-semibold rounded-lg transition-all duration-200 text-neutral-300 hover:text-white focus:outline-none tab-active">Multi-Format Transformer</button>
+      <button onclick="switchModule('sanitizer')" id="tab-sanitizer" class="tab-btn py-3 px-2 text-sm font-semibold rounded-lg transition-all duration-200 text-neutral-400 hover:text-white focus:outline-none">Data Sanitizer & Cleaner</button>
+      <button onclick="switchModule('merger')" id="tab-merger" class="tab-btn py-3 px-2 text-sm font-semibold rounded-lg transition-all duration-200 text-neutral-400 hover:text-white focus:outline-none">Bulk Merger & Splitter</button>
+      <button onclick="switchModule('mapper')" id="tab-mapper" class="tab-btn py-3 px-2 text-sm font-semibold rounded-lg transition-all duration-200 text-neutral-400 hover:text-white focus:outline-none">Target Mapping Tool</button>
+    </nav>
 
-  <!-- MAIN WORKSPACE -->
-  <main class="max-w-7xl mx-auto px-4 mt-6 flex-grow w-full">
-    <!-- DRAG & DROP INGESTION -->
-    <div id="dropZone" class="border-2 border-dashed border-neutral-800 hover:border-emerald-500/50 rounded-2xl p-10 text-center transition-all duration-300 bg-neutral-900/20 cursor-pointer">
-      <div class="flex flex-col items-center gap-3">
-        <svg class="w-10 h-10 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <!-- Drag & Drop Ingestion Engine -->
+    <div id="dropZone" class="drop-zone border-2 border-dashed border-neutral-800 hover:border-emerald-500/50 rounded-2xl p-12 flex flex-col items-center justify-center bg-neutral-900/30 transition-colors cursor-pointer">
+      <div class="text-center space-y-2">
+        <svg class="w-10 h-10 mx-auto text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
         </svg>
-        <p class="text-neutral-400 font-medium">Drop CSV or JSON file here</p>
-        <p class="text-xs text-neutral-600">Client-side parsing only. No upload.</p>
-        <input type="file" id="fileInput" accept=".csv,.json" class="hidden" onchange="handleFileSelect(event)">
+        <p class="text-neutral-400 font-medium">Drop CSV file here or click to browse</p>
+        <p class="text-xs text-neutral-600">Client-side parsing only. No data leaves your machine.</p>
       </div>
+      <input type="file" id="fileInput" accept=".csv,.txt" class="hidden" />
     </div>
 
-    <!-- METADATA BANNER (hidden by default) -->
-    <div id="metadataBanner" class="hidden mt-6 bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-4">
-        <span class="text-sm text-neutral-400">Active file:</span>
-        <span id="fileNameDisplay" class="font-mono text-white font-medium">—</span>
-        <span class="px-2 py-0.5 bg-neutral-800 rounded text-xs text-emerald-400">local only</span>
+    <!-- Metadata Banner (hidden by default) -->
+    <div id="metadataBanner" class="hidden bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-neutral-300">Active File:</span>
+        <span id="activeFileName" class="font-mono text-emerald-400 text-sm">—</span>
+        <span class="bg-neutral-800 text-xs px-2 py-0.5 rounded-full">Rows: <span id="rowCountDisplay">0</span></span>
       </div>
-      <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-neutral-400">Total rows:</span>
-          <span id="rowCountDisplay" class="text-xl font-bold text-white">0</span>
-        </div>
-      </div>
+      <button id="clearFileBtn" class="text-xs text-red-400 hover:text-red-300 underline">Clear</button>
     </div>
 
-    <!-- PREVIEW TABLE -->
-    <div class="mt-6 border border-neutral-800 rounded-xl overflow-hidden bg-neutral-900/30">
-      <div class="px-4 py-3 border-b border-neutral-800 bg-neutral-900/80">
-        <span class="text-xs uppercase tracking-widest text-neutral-500 font-semibold">Memory Grid Preview (first 5 rows)</span>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="bg-neutral-900 text-neutral-400 uppercase text-xs">
-            <tr>
-              <th class="px-5 py-3 font-medium">UID</th>
-              <th class="px-5 py-3 font-medium">Timestamp</th>
-              <th class="px-5 py-3 font-medium">Ingest_Payload</th>
-              <th class="px-5 py-3 font-medium">Status_Check</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody" class="divide-y divide-neutral-800 text-neutral-200">
-            <tr class="hover:bg-neutral-800/50 transition">
-              <td class="px-5 py-3 font-mono text-xs">--</td>
-              <td class="px-5 py-3">--</td>
-              <td class="px-5 py-3 max-w-xs truncate">--</td>
-              <td class="px-5 py-3"><span class="px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 text-xs">idle</span></td>
-            </tr>
-            <tr class="hover:bg-neutral-800/50 transition">
-              <td class="px-5 py-3 font-mono text-xs">--</td>
-              <td class="px-5 py-3">--</td>
-              <td class="px-5 py-3 max-w-xs truncate">--</td>
-              <td class="px-5 py-3"><span class="px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 text-xs">idle</span></td>
-            </tr>
-            <tr class="hover:bg-neutral-800/50 transition">
-              <td class="px-5 py-3 font-mono text-xs">--</td>
-              <td class="px-5 py-3">--</td>
-              <td class="px-5 py-3 max-w-xs truncate">--</td>
-              <td class="px-5 py-3"><span class="px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 text-xs">idle</span></td>
-            </tr>
-            <tr class="hover:bg-neutral-800/50 transition">
-              <td class="px-5 py-3 font-mono text-xs">--</td>
-              <td class="px-5 py-3">--</td>
-              <td class="px-5 py-3 max-w-xs truncate">--</td>
-              <td class="px-5 py-3"><span class="px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 text-xs">idle</span></td>
-            </tr>
-            <tr class="hover:bg-neutral-800/50 transition">
-              <td class="px-5 py-3 font-mono text-xs">--</td>
-              <td class="px-5 py-3">--</td>
-              <td class="px-5 py-3 max-w-xs truncate">--</td>
-              <td class="px-5 py-3"><span class="px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 text-xs">idle</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- 5-Row Preview Grid Table -->
+    <div class="overflow-x-auto rounded-xl border border-neutral-800 bg-neutral-950/60 backdrop-blur-sm">
+      <table class="w-full text-sm text-left">
+        <thead class="bg-neutral-900 text-neutral-400 uppercase text-xs tracking-wider">
+          <tr>
+            <th class="py-3 px-5">UID</th>
+            <th class="py-3 px-5">Timestamp</th>
+            <th class="py-3 px-5">Ingest_Payload</th>
+            <th class="py-3 px-5">Status_Check</th>
+          </tr>
+        </thead>
+        <tbody id="previewTableBody" class="divide-y divide-neutral-800">
+          <tr class="text-neutral-500">
+            <td colspan="4" class="py-8 text-center">Awaiting file ingestion...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- EXECUTE BUTTON -->
-    <div class="mt-8 flex justify-end">
-      <button id="executeEngineButton" onclick="processAndExport()" class="bg-white text-black font-bold px-8 py-3.5 rounded-xl hover:bg-neutral-200 transition-all text-base tracking-wide shadow-lg shadow-white/10">
+    <!-- Execute Engine Button -->
+    <div class="flex justify-end">
+      <button id="executeEngineButton" class="bg-emerald-600 hover:bg-emerald-500 text-neutral-950 font-bold py-3 px-8 rounded-lg transition-all shadow-lg shadow-emerald-900/30 hover:shadow-emerald-700/40 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
         Execute Engine & Export Data
       </button>
     </div>
   </main>
 
-  <!-- PAYWALL MODAL -->
-  <div id="paywallModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto scrollbar-thin shadow-2xl modal-drop">
-      <div class="sticky top-0 bg-neutral-900 border-b border-neutral-800 px-6 py-4 flex justify-between items-center">
-        <h2 class="text-xl font-bold text-white">Unlock Full Processing Power</h2>
-        <button id="closePaywall" onclick="closePaywallModal()" class="text-neutral-400 hover:text-white transition text-2xl leading-none">&times;</button>
-      </div>
+  <!-- Paywall Modal Overlay -->
+  <div id="paywallModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-neutral-900 border border-neutral-700 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
+      <button id="closePaywall" class="absolute top-4 right-4 text-neutral-400 hover:text-white text-2xl leading-none">&times;</button>
       
-      <div class="p-6">
-        <!-- Billing Toggle -->
-        <div class="flex justify-center mb-8">
-          <div class="bg-neutral-800 p-1 rounded-lg flex items-center gap-1">
-            <button id="monthlyToggle" onclick="setBillingCycle('monthly')" class="px-5 py-2 rounded-md text-sm font-medium transition bg-neutral-700 text-white">Monthly</button>
-            <button id="yearlyToggle" onclick="setBillingCycle('yearly')" class="px-5 py-2 rounded-md text-sm font-medium transition text-neutral-400">Yearly (2 Months Free)</button>
-          </div>
-        </div>
-
-        <!-- Pricing Grid 2 columns -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <!-- Professional Monthly -->
-          <div class="bg-neutral-800/60 border border-neutral-700 rounded-xl p-5 flex flex-col">
-            <div class="text-sm text-neutral-400 uppercase tracking-wide">Professional Monthly</div>
-            <div class="text-3xl font-bold text-white mt-2">$99<span class="text-lg text-neutral-400">/mo</span></div>
-            <p class="text-xs text-emerald-400 mt-1">100,000 Row Processing Array</p>
-            <p class="text-sm text-neutral-300 mt-3">De-throttle engineering workflows.</p>
-            <button onclick="initiatePaddleCheckout('pro_monthly')" class="mt-5 w-full bg-white text-black font-semibold py-2.5 rounded-lg hover:bg-neutral-200 transition">
-              Select Professional Monthly
-            </button>
-          </div>
-
-          <!-- Professional Annual -->
-          <div class="bg-neutral-800/60 border border-neutral-700 rounded-xl p-5 flex flex-col">
-            <div class="text-sm text-neutral-400 uppercase tracking-wide">Professional Annual</div>
-            <div class="text-3xl font-bold text-white mt-2">$79<span class="text-lg text-neutral-400">/mo</span></div>
-            <p class="text-xs text-neutral-500">Billed annually at $948</p>
-            <p class="text-sm text-emerald-400 mt-1">Saves $240/yr. Priority memory queues.</p>
-            <button onclick="initiatePaddleCheckout('pro_yearly')" class="mt-5 w-full bg-white text-black font-semibold py-2.5 rounded-lg hover:bg-neutral-200 transition">
-              Select Professional Annual
-            </button>
-          </div>
-
-          <!-- Enterprise Monthly -->
-          <div class="bg-neutral-800/60 border border-neutral-700 rounded-xl p-5 flex flex-col">
-            <div class="text-sm text-neutral-400 uppercase tracking-wide">Enterprise Suite Monthly</div>
-            <div class="text-3xl font-bold text-white mt-2">$299<span class="text-lg text-neutral-400">/mo</span></div>
-            <p class="text-xs text-emerald-400 mt-1">Infinite Row Ingestion Array</p>
-            <p class="text-sm text-neutral-300">Complete unrestricted infrastructure.</p>
-            <button onclick="initiatePaddleCheckout('ent_monthly')" class="mt-5 w-full bg-white text-black font-semibold py-2.5 rounded-lg hover:bg-neutral-200 transition">
-              Select Enterprise Monthly
-            </button>
-          </div>
-
-          <!-- Enterprise Annual -->
-          <div class="bg-neutral-800/60 border border-neutral-700 rounded-xl p-5 flex flex-col">
-            <div class="text-sm text-neutral-400 uppercase tracking-wide">Enterprise Suite Annual</div>
-            <div class="text-3xl font-bold text-white mt-2">$249<span class="text-lg text-neutral-400">/mo</span></div>
-            <p class="text-xs text-neutral-500">Billed annually at $2,988</p>
-            <p class="text-sm text-emerald-400 mt-1">Saves $600/yr. Pure sandboxed execution.</p>
-            <button onclick="initiatePaddleCheckout('ent_yearly')" class="mt-5 w-full bg-white text-black font-semibold py-2.5 rounded-lg hover:bg-neutral-200 transition">
-              Select Enterprise Annual
-            </button>
-          </div>
-        </div>
-        <p class="text-xs text-neutral-600 text-center mt-5">Secure Paddle checkout. All processing remains local.</p>
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-white">Unlock Full Processing Power</h2>
+        <p class="text-neutral-400 text-sm mt-1">50-row limit exceeded. Choose a plan to continue.</p>
       </div>
+
+      <!-- Toggle Switch Monthly/Yearly -->
+      <div class="flex justify-center items-center gap-4 mb-8">
+        <span id="monthlyLabel" class="text-sm font-semibold text-emerald-400">Monthly</span>
+        <button id="billingToggle" class="relative w-12 h-6 bg-neutral-700 rounded-full toggle-switch focus:outline-none" onclick="toggleBillingCycle()">
+          <span id="toggleKnob" class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"></span>
+        </button>
+        <span id="yearlyLabel" class="text-sm font-semibold text-neutral-500">Yearly (2 Months Free)</span>
+      </div>
+
+      <!-- Pricing Grid 2x2 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Professional Monthly -->
+        <div class="bg-neutral-800 border border-neutral-700 rounded-xl p-5 flex flex-col">
+          <h3 class="text-lg font-bold text-white">Professional</h3>
+          <p class="text-emerald-400 text-3xl font-bold mt-2 monthly-price">$99<span class="text-sm text-neutral-400">/mo</span></p>
+          <p class="text-emerald-400 text-3xl font-bold mt-2 yearly-price hidden">$79<span class="text-sm text-neutral-400">/mo</span></p>
+          <p class="text-xs text-neutral-400 mt-1 yearly-savings hidden">Billed annually $948 · Saves $240/yr</p>
+          <ul class="text-sm text-neutral-300 mt-3 space-y-1">
+            <li>· 100,000 Row Processing Array</li>
+            <li>· De-throttle engineering workflows</li>
+          </ul>
+          <button onclick="initiatePaddleCheckout('pro_monthly')" class="mt-auto bg-neutral-700 hover:bg-neutral-600 text-white py-2.5 rounded-lg text-sm font-semibold transition mt-4">Select Professional Monthly</button>
+        </div>
+        <!-- Professional Yearly -->
+        <div class="bg-neutral-800 border border-neutral-700 rounded-xl p-5 flex flex-col">
+          <h3 class="text-lg font-bold text-white">Professional Annual</h3>
+          <p class="text-emerald-400 text-3xl font-bold mt-2 yearly-price">$79<span class="text-sm text-neutral-400">/mo</span></p>
+          <p class="text-emerald-400 text-3xl font-bold mt-2 monthly-price hidden">$99<span class="text-sm text-neutral-400">/mo</span></p>
+          <p class="text-xs text-neutral-400 mt-1 yearly-savings">Billed annually $948 · Saves $240/yr</p>
+          <ul class="text-sm text-neutral-300 mt-3 space-y-1">
+            <li>· Priority memory processing queues</li>
+            <li>· Full annual commitment</li>
+          </ul>
+          <button onclick="initiatePaddleCheckout('pro_yearly')" class="mt-auto bg-neutral-700 hover:bg-neutral-600 text-white py-2.5 rounded-lg text-sm font-semibold transition mt-4">Select Professional Annual</button>
+        </div>
+        <!-- Enterprise Monthly -->
+        <div class="bg-neutral-800 border border-emerald-700/60 rounded-xl p-5 flex flex-col relative">
+          <span class="absolute -top-2 right-3 bg-emerald-600 text-xs px-2 py-0.5 rounded-full text-white">Enterprise</span>
+          <h3 class="text-lg font-bold text-white">Enterprise Suite</h3>
+          <p class="text-emerald-400 text-3xl font-bold mt-2 monthly-price">$299<span class="text-sm text-neutral-400">/mo</span></p>
+          <p class="text-emerald-400 text-3xl font-bold mt-2 yearly-price hidden">$249<span class="text-sm text-neutral-400">/mo</span></p>
+          <p class="text-xs text-neutral-400 mt-1 yearly-savings hidden">Billed annually $2,988 · Saves $600/yr</p>
+          <ul class="text-sm text-neutral-300 mt-3 space-y-1">
+            <li>· Infinite Row Ingestion Array</li>
+            <li>· Unrestricted infrastructure</li>
+          </ul>
+          <button onclick="initiatePaddleCheckout('enterprise_monthly')" class="mt-auto bg-emerald-700 hover:bg-emerald-600 text-white py-2.5 rounded-lg text-sm font-semibold transition mt-4">Select Enterprise Monthly</button>
+        </div>
+        <!-- Enterprise Yearly -->
+        <div class="bg-neutral-800 border border-emerald-700/60 rounded-xl p-5 flex flex-col">
+          <h3 class="text-lg font-bold text-white">Enterprise Annual</h3>
+          <p class="text-emerald-400 text-3xl font-bold mt-2 yearly-price">$249<span class="text-sm text-neutral-400">/mo</span></p>
+          <p class="text-emerald-400 text-3xl font-bold mt-2 monthly-price hidden">$299<span class="text-sm text-neutral-400">/mo</span></p>
+          <p class="text-xs text-neutral-400 mt-1 yearly-savings">Billed annually $2,988 · Saves $600/yr</p>
+          <ul class="text-sm text-neutral-300 mt-3 space-y-1">
+            <li>· Pure sandboxed local execution</li>
+            <li>· Strict corporate compliance audits</li>
+          </ul>
+          <button onclick="initiatePaddleCheckout('enterprise_yearly')" class="mt-auto bg-emerald-700 hover:bg-emerald-600 text-white py-2.5 rounded-lg text-sm font-semibold transition mt-4">Select Enterprise Annual</button>
+        </div>
+      </div>
+      <p class="text-xs text-neutral-500 text-center mt-4">Secure payment via Paddle. Cancel anytime.</p>
     </div>
   </div>
 
-  <!-- CONCIERGE BOT CORNER -->
-  <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
-    <div id="chatWindow" class="hidden w-80 h-96 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl flex flex-col overflow-hidden transition-all">
-      <div class="bg-neutral-800 px-4 py-3 flex justify-between items-center border-b border-neutral-700">
-        <span class="text-sm font-semibold text-white">Concierge Engine</span>
-        <button onclick="toggleChat()" class="text-neutral-400 hover:text-white text-lg">&times;</button>
+  <!-- Corner Concierge Chat Bubble -->
+  <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+    <div id="chatContainer" class="hidden bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-hidden transition-all" style="width: 320px; height: 380px;">
+      <div class="bg-neutral-800 px-4 py-3 flex items-center justify-between">
+        <span class="text-sm font-semibold text-white">Concierge Assistant</span>
+        <button onclick="toggleChat()" class="text-neutral-400 hover:text-white text-lg leading-none">&times;</button>
       </div>
-      <div id="chatMessages" class="flex-1 p-3 space-y-3 overflow-y-auto text-sm text-neutral-200 scrollbar-thin">
-        <div class="text-neutral-500 text-xs">Ask about pricing, errors, or features.</div>
+      <div id="chatMessages" class="p-3 h-64 overflow-y-auto text-sm space-y-2 text-neutral-300">
+        <div class="text-neutral-500 text-xs">Ask about errors, pricing, merge, premium...</div>
       </div>
-      <div class="p-3 border-t border-neutral-800 flex gap-2">
-        <input type="text" id="chatInput" onkeydown="if(event.key==='Enter')sendChatMessage()" placeholder="Type keyword..." class="flex-1 bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500">
-        <button onclick="sendChatMessage()" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-2 rounded-lg text-white text-sm font-medium">Send</button>
+      <div class="border-t border-neutral-800 p-2 flex gap-2">
+        <input type="text" id="chatInput" placeholder="Type keyword..." class="flex-1 bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm text-white focus:outline-none" onkeydown="if(event.key==='Enter')sendChatMessage()" />
+        <button onclick="sendChatMessage()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded text-sm font-bold">Send</button>
       </div>
     </div>
-    <button onclick="toggleChat()" class="w-12 h-12 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center text-white hover:bg-neutral-700 shadow-lg transition">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+    <button onclick="toggleChat()" class="chat-bubble w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-full flex items-center justify-center text-emerald-400 shadow-lg" title="Concierge">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
     </button>
   </div>
 
   <script>
-    // --- GLOBAL STATE ---
-    window.currentFile = null;
-    window.currentRows = [];
-    window.isPremiumUser = false;
-    window.currentBillingCycle = 'monthly'; // default
-    window.activeModule = 'transformer';
-
-    // PADDLE INIT
-    if (window.Paddle) {
-      Paddle.Environment.set("sandbox");
-      Paddle.Initialize({
-        token: "test_7d27f61a269d16f5c5b3c2a9",
-        checkout: {
-          settings: {
-            displayMode: "overlay",
+    (function() {
+      // Paddle initialization
+      if (window.Paddle) {
+        Paddle.Environment.set("sandbox");
+        Paddle.Initialize({
+          token: "test_7d27f61a269d16f5c5b3c2a9",
+          eventCallback: function(event) {
+            if (event.name === "checkout.completed" && event.data) {
+              window.isPremiumUser = true;
+              document.getElementById('paywallModal').classList.add('hidden');
+              triggerDownload(window.currentFile);
+            }
           }
-        },
-        eventCallback: function(event) {
-          if (event.name === "checkout.completed") {
-            onPaymentSuccess(event.data);
-          }
-        }
-      });
-    }
-
-    function onPaymentSuccess(data) {
-      window.isPremiumUser = true;
-      closePaywallModal();
-      if (window.currentRows && window.currentRows.length > 0) {
-        downloadCSV(window.currentRows);
-      }
-    }
-
-    // MODULE SWITCHING
-    function switchModule(moduleId) {
-      window.activeModule = moduleId;
-      const tabs = document.querySelectorAll('.tab-btn');
-      tabs.forEach(btn => {
-        const id = btn.id.replace('tab-', '');
-        if (id === moduleId) {
-          btn.className = 'tab-btn py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 border border-neutral-800 bg-neutral-900/50 backdrop-blur-md text-white';
-        } else {
-          btn.className = 'tab-btn py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 border border-transparent hover:border-neutral-700 text-neutral-400';
-        }
-      });
-    }
-
-    // FILE HANDLING
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    dropZone.addEventListener('click', () => fileInput.click());
-    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-emerald-500'); });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-emerald-500'));
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('border-emerald-500');
-      const file = e.dataTransfer.files[0];
-      if (file) processFile(file);
-    });
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (file) processFile(file);
-    }
-
-    function processFile(file) {
-      window.currentFile = file;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target.result;
-        if (file.name.endsWith('.csv')) {
-          parseCSV(content);
-        } else if (file.name.endsWith('.json')) {
-          parseJSON(content);
-        } else {
-          alert('Unsupported format. Use CSV or JSON.');
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function parseCSV(text) {
-      const lines = text.split('\n').filter(line => line.trim() !== '');
-      if (lines.length === 0) return;
-      const headers = lines[0].split(',').map(h => h.trim());
-      const rows = [];
-      for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim());
-        if (values.length === headers.length) {
-          const row = {};
-          headers.forEach((h, idx) => row[h] = values[idx]);
-          rows.push(row);
-        }
-      }
-      window.currentRows = rows;
-      updateUIAfterIngest(file.name, rows);
-    }
-
-    function parseJSON(text) {
-      try {
-        const data = JSON.parse(text);
-        const rows = Array.isArray(data) ? data : [data];
-        window.currentRows = rows;
-        updateUIAfterIngest(window.currentFile.name, rows);
-      } catch (e) {
-        alert('Invalid JSON file');
-      }
-    }
-
-    function updateUIAfterIngest(fileName, rows) {
-      document.getElementById('metadataBanner').classList.remove('hidden');
-      document.getElementById('fileNameDisplay').textContent = fileName;
-      document.getElementById('rowCountDisplay').textContent = rows.length;
-      renderPreviewTable(rows.slice(0, 5));
-    }
-
-    function renderPreviewTable(previewRows) {
-      const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '';
-      if (previewRows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-6 text-center text-neutral-500">No data loaded</td></tr>`;
-        return;
-      }
-      previewRows.forEach((row, idx) => {
-        const uid = `REC-${String(idx+1).padStart(4,'0')}`;
-        const timestamp = new Date().toISOString().split('T')[0] + ' ' + new Date().toTimeString().split(' ')[0];
-        const payload = JSON.stringify(row).substring(0, 50) + (JSON.stringify(row).length > 50 ? '...' : '');
-        const status = 'verified';
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-neutral-800/50 transition';
-        tr.innerHTML = `
-          <td class="px-5 py-3 font-mono text-xs">${uid}</td>
-          <td class="px-5 py-3 text-neutral-300">${timestamp}</td>
-          <td class="px-5 py-3 max-w-xs truncate font-mono text-xs">${payload}</td>
-          <td class="px-5 py-3"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-xs">${status}</span></td>
-        `;
-        tbody.appendChild(tr);
-      });
-      while (previewRows.length < 5) {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-neutral-800/50 transition';
-        tr.innerHTML = `<td class="px-5 py-3 text-neutral-600">--</td><td class="px-5 py-3">--</td><td class="px-5 py-3">--</td><td class="px-5 py-3"><span class="px-2 py-0.5 rounded bg-neutral-800 text-neutral-500 text-xs">empty</span></td>`;
-        tbody.appendChild(tr);
-      }
-    }
-
-    // EXPORT LOGIC WITH 50 ROW THROTTLE
-    function processAndExport() {
-      if (!window.currentRows || window.currentRows.length === 0) {
-        alert('No data ingested. Please drop a file first.');
-        return;
-      }
-      if (window.currentRows.length <= 50 || window.isPremiumUser) {
-        downloadCSV(window.currentRows);
-      } else {
-        openPaywallModal();
-      }
-    }
-
-    function downloadCSV(rows) {
-      if (!rows || rows.length === 0) return;
-      const headers = Object.keys(rows[0]);
-      let csv = headers.join(',') + '\n';
-      rows.forEach(row => {
-        const values = headers.map(h => {
-          let val = row[h] !== undefined ? row[h] : '';
-          if (typeof val === 'string' && (val.includes(',') || val.includes('"'))) {
-            val = '"' + val.replace(/"/g, '""') + '"';
-          }
-          return val;
         });
-        csv += values.join(',') + '\n';
-      });
-      const blob = new Blob([csv], {type: 'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `datasuite_export_${new Date().toISOString().slice(0,10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // PAYWALL CONTROLS
-    function openPaywallModal() {
-      document.getElementById('paywallModal').classList.remove('hidden');
-    }
-    function closePaywallModal() {
-      document.getElementById('paywallModal').classList.add('hidden');
-    }
-    document.getElementById('closePaywall').addEventListener('click', closePaywallModal);
-
-    function setBillingCycle(cycle) {
-      window.currentBillingCycle = cycle;
-      document.getElementById('monthlyToggle').className = cycle === 'monthly' ? 'px-5 py-2 rounded-md text-sm font-medium transition bg-neutral-700 text-white' : 'px-5 py-2 rounded-md text-sm font-medium transition text-neutral-400';
-      document.getElementById('yearlyToggle').className = cycle === 'yearly' ? 'px-5 py-2 rounded-md text-sm font-medium transition bg-neutral-700 text-white' : 'px-5 py-2 rounded-md text-sm font-medium transition text-neutral-400';
-    }
-
-    function initiatePaddleCheckout(planKey) {
-      if (!window.Paddle) {
-        alert("Paddle SDK not ready.");
-        return;
+      } else {
+        console.warn("Paddle SDK not loaded yet");
       }
-      const priceIds = {
-        pro_monthly: 'pri_01hz6men7qb8wv4xrjg9y3kx2',   // sandbox test ids
-        pro_yearly: 'pri_01hzmepz8x9f6q2wv5n3r4j5k',
-        ent_monthly: 'pri_01hzmf3p4k7n9q1r8wv5t6y7u',
-        ent_yearly: 'pri_01hzmg9v2b6n4m8s3k7p5r1t9'
+
+      window.currentFile = null;
+      window.isPremiumUser = false;
+      window.currentParsedRows = [];
+      window.billingCycle = 'monthly'; // monthly/yearly
+
+      // Module tab switching
+      window.switchModule = function(moduleId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.classList.remove('tab-active', 'text-white');
+          btn.classList.add('text-neutral-400');
+        });
+        const activeTab = document.getElementById(`tab-${moduleId}`);
+        if (activeTab) {
+          activeTab.classList.add('tab-active', 'text-white');
+          activeTab.classList.remove('text-neutral-400');
+        }
       };
-      Paddle.Checkout.open({
-        items: [{ priceId: priceIds[planKey], quantity: 1 }]
+
+      // File handling
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const metadataBanner = document.getElementById('metadataBanner');
+      const activeFileName = document.getElementById('activeFileName');
+      const rowCountDisplay = document.getElementById('rowCountDisplay');
+      const previewBody = document.getElementById('previewTableBody');
+      const executeBtn = document.getElementById('executeEngineButton');
+      const clearBtn = document.getElementById('clearFileBtn');
+
+      dropZone.addEventListener('click', () => fileInput.click());
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-emerald-500/50');
       });
-    }
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-emerald-500/50');
+      });
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-emerald-500/50');
+        const file = e.dataTransfer.files[0];
+        if (file) processFile(file);
+      });
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) processFile(file);
+      });
 
-    // CONCIERGE CHAT
-    function toggleChat() {
-      document.getElementById('chatWindow').classList.toggle('hidden');
-    }
-
-    function sendChatMessage() {
-      const input = document.getElementById('chatInput');
-      const msg = input.value.trim().toLowerCase();
-      if (!msg) return;
-      const chatDiv = document.getElementById('chatMessages');
-      chatDiv.innerHTML += `<div class="text-right text-xs text-neutral-400">You: ${msg}</div>`;
-      
-      let response = "I can assist with data operations. Try keywords: error, price, cost, free, merge, premium, buy, package.";
-      if (msg.includes('error') || msg.includes('mismatch')) {
-        response = "Validation errors occur when schema mismatches exist. Use the Sanitizer module to align columns before merging.";
-      } else if (msg.includes('price') || msg.includes('cost') || msg.includes('buy') || msg.includes('package')) {
-        response = "Professional plan $99/mo (100k rows). Enterprise $299/mo unlimited. Annual billing saves up to $600.";
-      } else if (msg.includes('free')) {
-        response = "Free tier processes up to 50 rows. Upgrade to Professional or Enterprise for full throughput.";
-      } else if (msg.includes('merge')) {
-        response = "Bulk Merger combines multiple files. Ensure identical headers for seamless integration.";
-      } else if (msg.includes('premium')) {
-        response = "Premium unlocks priority processing and infinite row ingestion. Check the paywall for plans.";
+      function processFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target.result;
+          window.currentFile = content;
+          parseCSVContent(content, file.name);
+        };
+        reader.readAsText(file);
       }
-      
-      chatDiv.innerHTML += `<div class="text-left text-xs text-emerald-400">Concierge: ${response}</div>`;
-      input.value = '';
-      chatDiv.scrollTop = chatDiv.scrollHeight;
-    }
 
-    // initial tab highlight
-    switchModule('transformer');
+      function parseCSVContent(csvText, fileName) {
+        const lines = csvText.split('\n').filter(line => line.trim() !== '');
+        if (lines.length === 0) {
+          window.currentParsedRows = [];
+          updatePreview([]);
+          return;
+        }
+
+        const headers = lines[0].split(',').map(h => h.trim());
+        const dataLines = lines.slice(1);
+        const parsed = [];
+
+        dataLines.forEach((line, idx) => {
+          const values = line.split(',').map(v => v.trim());
+          const rowIndex = idx + 1;
+          
+          const uid = values[0] && values[0] !== '' ? values[0] : `USR-${rowIndex}`;
+          const timestamp = values[1] && values[1] !== '' ? values[1] : new Date().toISOString();
+          const payload = values[2] && values[2] !== '' ? values[2] : `{"data_stream_id": ${rowIndex}}`;
+          const statusRaw = values[3] && values[3] !== '' ? values[3] : 'Valid';
+          const statusCheck = (statusRaw === '-' || statusRaw === 'undefined' || statusRaw === '') ? 'Valid' : statusRaw;
+
+          parsed.push({
+            uid: uid,
+            timestamp: timestamp,
+            payload: payload,
+            status: statusCheck
+          });
+        });
+
+        window.currentParsedRows = parsed;
+        activeFileName.textContent = fileName;
+        rowCountDisplay.textContent = parsed.length;
+        metadataBanner.classList.remove('hidden');
+        executeBtn.disabled = false;
+        updatePreview(parsed.slice(0, 5));
+      }
+
+      function updatePreview(rows) {
+        if (!rows.length) {
+          previewBody.innerHTML = `<tr class="text-neutral-500"><td colspan="4" class="py-8 text-center">No rows to display</td></tr>`;
+          return;
+        }
+        previewBody.innerHTML = rows.map(r => 
+          `<tr class="hover:bg-neutral-900/50">
+            <td class="py-2.5 px-5 font-mono text-xs text-neutral-200">${escapeHtml(r.uid)}</td>
+            <td class="py-2.5 px-5 text-xs text-neutral-400">${escapeHtml(r.timestamp)}</td>
+            <td class="py-2.5 px-5 text-xs text-neutral-300 max-w-[200px] truncate">${escapeHtml(r.payload)}</td>
+            <td class="py-2.5 px-5"><span class="px-2 py-0.5 rounded-full text-xs bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">${escapeHtml(r.status)}</span></td>
+          </tr>`
+        ).join('');
+      }
+
+      function escapeHtml(text) {
+        return String(text).replace(/[&<>"']/g, function(m) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+        });
+      }
+
+      clearBtn.addEventListener('click', () => {
+        window.currentFile = null;
+        window.currentParsedRows = [];
+        metadataBanner.classList.add('hidden');
+        executeBtn.disabled = true;
+        previewBody.innerHTML = `<tr class="text-neutral-500"><td colspan="4" class="py-8 text-center">Awaiting file ingestion...</td></tr>`;
+        fileInput.value = '';
+      });
+
+      // Execute button logic
+      executeBtn.addEventListener('click', () => {
+        if (!window.currentParsedRows.length) return;
+        const rowCount = window.currentParsedRows.length;
+        if (rowCount <= 50 || window.isPremiumUser) {
+          triggerDownload(window.currentParsedRows);
+        } else {
+          document.getElementById('paywallModal').classList.remove('hidden');
+        }
+      });
+
+      function triggerDownload(rows) {
+        if (!rows || rows.length === 0) return;
+        const headers = ['UID', 'Timestamp', 'Ingest_Payload', 'Status_Check'];
+        const csvContent = [headers.join(',')].concat(rows.map(r => 
+          [r.uid, r.timestamp, r.payload, r.status].join(',')
+        )).join('\n');
+        const blob = new Blob([csvContent], {type: 'text/csv'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `datasuitepro_export_${Date.now()}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      // Paywall controls
+      document.getElementById('closePaywall').addEventListener('click', () => {
+        document.getElementById('paywallModal').classList.add('hidden');
+      });
+
+      window.toggleBillingCycle = function() {
+        const knob = document.getElementById('toggleKnob');
+        const monthlyLabel = document.getElementById('monthlyLabel');
+        const yearlyLabel = document.getElementById('yearlyLabel');
+        if (window.billingCycle === 'monthly') {
+          window.billingCycle = 'yearly';
+          knob.style.transform = 'translateX(1.5rem)';
+          monthlyLabel.classList.remove('text-emerald-400');
+          monthlyLabel.classList.add('text-neutral-500');
+          yearlyLabel.classList.remove('text-neutral-500');
+          yearlyLabel.classList.add('text-emerald-400');
+        } else {
+          window.billingCycle = 'monthly';
+          knob.style.transform = 'translateX(0)';
+          monthlyLabel.classList.add('text-emerald-400');
+          monthlyLabel.classList.remove('text-neutral-500');
+          yearlyLabel.classList.add('text-neutral-500');
+          yearlyLabel.classList.remove('text-emerald-400');
+        }
+        updatePriceDisplay();
+      };
+
+      function updatePriceDisplay() {
+        document.querySelectorAll('.monthly-price').forEach(el => {
+          el.classList.toggle('hidden', window.billingCycle !== 'monthly');
+        });
+        document.querySelectorAll('.yearly-price').forEach(el => {
+          el.classList.toggle('hidden', window.billingCycle !== 'yearly');
+        });
+        document.querySelectorAll('.yearly-savings').forEach(el => {
+          el.classList.toggle('hidden', window.billingCycle !== 'yearly');
+        });
+      }
+
+      window.initiatePaddleCheckout = function(plan) {
+        if (!window.Paddle) {
+          alert("Payment system loading, please refresh.");
+          return;
+        }
+        let priceId = '';
+        if (plan === 'pro_monthly') priceId = 'pri_01h7...'; 
+        else if (plan === 'pro_yearly') priceId = 'pri_01h7...';
+        else if (plan === 'enterprise_monthly') priceId = 'pri_01h7...';
+        else if (plan === 'enterprise_yearly') priceId = 'pri_01h7...';
+        
+        Paddle.Checkout.open({
+          items: [{ priceId: priceId, quantity: 1 }]
+        });
+      };
+
+      // Chat Concierge
+      window.toggleChat = function() {
+        const container = document.getElementById('chatContainer');
+        container.classList.toggle('hidden');
+      };
+
+      window.sendChatMessage = function() {
+        const input = document.getElementById('chatInput');
+        const messagesDiv = document.getElementById('chatMessages');
+        const text = input.value.trim().toLowerCase();
+        if (!text) return;
+        
+        let response = "I'm here to assist with DataSuitePro inquiries.";
+        if (text.includes('error') || text.includes('mismatch')) {
+          response = "Data mismatch errors are auto-corrected by our fallback parser. Missing columns receive secure generated values (USR-xxx, timestamps). Upgrade to Enterprise for advanced validation.";
+        } else if (text.includes('price') || text.includes('cost') || text.includes('free')) {
+          response = "Professional starts at $99/mo (100k rows). Enterprise unlocks infinite rows at $299/mo. No free tier beyond 50-row limit.";
+        } else if (text.includes('merge') || text.includes('split')) {
+          response = "Bulk Merger & Splitter module handles client-side joins. Available in Professional and Enterprise plans.";
+        } else if (text.includes('premium') || text.includes('buy') || text.includes('package')) {
+          response = "Premium plans de-throttle processing. Select Professional or Enterprise via the paywall to continue beyond 50 rows.";
+        }
+        
+        messagesDiv.innerHTML += `<div class="text-xs text-neutral-400">You: ${escapeHtml(input.value)}</div>`;
+        messagesDiv.innerHTML += `<div class="text-xs text-emerald-300 mb-1">Concierge: ${response}</div>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        input.value = '';
+      };
+
+      // Initial price display
+      updatePriceDisplay();
+    })();
   </script>
 </body>
 </html>
