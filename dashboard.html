@@ -1,532 +1,398 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-neutral-950">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>DataSuitePro | Client-Side Secure Engine</title>
-  <!-- Tailwind CSS CDN + custom minimal reset -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>DataSuitePro | Enterprise Data Fabric</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Paddle SDK -->
-  <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <style>
     body {
       background-color: #0a0a0a;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      margin: 0;
-      padding: 0;
+      letter-spacing: -0.01em;
     }
-    /* custom dashed pattern for drop area */
-    .drag-drop-dash {
-      background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23262626' stroke-width='2' stroke-dasharray='8,8' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e");
-      border-radius: 16px;
+    .chat-bubble-shadow {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
     }
-    .drag-drop-dash:hover {
-      background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%2334d399' stroke-width='2' stroke-dasharray='8,8' stroke-dashoffset='0' stroke-linecap='round' stroke-opacity='0.5'/%3e%3c/svg%3e");
+    .glow-pulse {
+      animation: pulse-glow 2s infinite;
     }
-    /* smooth transitions for tabs and modals */
-    .module-tab {
-      transition: all 0.2s ease;
+    @keyframes pulse-glow {
+      0%, 100% { text-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+      50% { text-shadow: 0 0 16px rgba(16, 185, 129, 0.9); }
     }
-    .price-display-yearly {
-      transition: opacity 0.15s linear;
-    }
-    .price-display-monthly {
-      transition: opacity 0.15s linear;
-    }
-    /* custom scroll for preview grid */
-    .preview-grid-scroll::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .preview-grid-scroll::-webkit-scrollbar-track {
-      background: #1a1a1a;
-    }
-    .preview-grid-scroll::-webkit-scrollbar-thumb {
-      background: #404040;
-      border-radius: 8px;
-    }
-    /* chat bubble pulse */
-    .chat-bubble-glow {
-      box-shadow: 0 0 12px rgba(52, 211, 153, 0.2);
+    .paywall-backdrop {
+      backdrop-filter: blur(16px);
+      background-color: rgba(0, 0, 0, 0.8);
     }
   </style>
 </head>
-<body class="bg-neutral-950 text-neutral-200 antialiased min-h-screen flex flex-col">
+<body class="bg-neutral-950 text-neutral-100 antialiased min-h-screen flex flex-col relative">
 
   <!-- Global Header -->
-  <header class="border-b border-neutral-800 bg-neutral-950/70 backdrop-blur-md sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
-      <!-- Left side: DataSuitePro + security badge -->
-      <div class="flex items-center gap-3 flex-wrap">
-        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-white">DataSuitePro</h1>
-        <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-4 py-1.5 backdrop-blur-sm">
-          <span class="relative flex h-2.5 w-2.5">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-          </span>
-          <span class="text-xs font-semibold text-emerald-400 tracking-wide uppercase">● 100% Client-Side Secure</span>
-        </div>
-      </div>
-      <!-- Right side: Operator transparency -->
-      <div class="text-right text-xs text-neutral-400 bg-neutral-900/80 border border-neutral-800 rounded-lg px-4 py-2 backdrop-blur-sm">
-        <span class="font-medium text-neutral-300">Operator Framework:</span> Preetam Dubey & Business Partner Commercial Partnership
-      </div>
+  <header class="border-b border-neutral-800 bg-neutral-950/70 backdrop-blur-xl sticky top-0 z-30 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl font-bold tracking-tight text-white">DataSuitePro</span>
+      <span class="text-xs font-mono text-emerald-400 flex items-center gap-1.5 glow-pulse">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span> 100% Client-Side Secure
+      </span>
+    </div>
+    <div class="text-xs font-mono text-neutral-500 hidden md:block border-l border-neutral-800 pl-4">
+      Operator Framework: Preetam Dubey & Business Partner Commercial Partnership
     </div>
   </header>
 
-  <!-- 4 Core Utility Module Tabs -->
-  <nav class="border-b border-neutral-800 bg-neutral-950/60 backdrop-blur-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-4 gap-1 sm:gap-2 py-2" role="tablist">
-        <button onclick="switchModule('transformer')" id="tab-transformer" class="module-tab px-2 sm:px-4 py-3 text-sm font-medium rounded-lg border border-transparent text-neutral-300 hover:text-white focus:outline-none transition-all duration-200 border-neutral-800 bg-neutral-900/50 backdrop-blur-md text-white">Multi-Format Transformer</button>
-        <button onclick="switchModule('sanitizer')" id="tab-sanitizer" class="module-tab px-2 sm:px-4 py-3 text-sm font-medium rounded-lg border border-transparent text-neutral-400 hover:text-white focus:outline-none transition-all duration-200">Data Sanitizer & Cleaner</button>
-        <button onclick="switchModule('merger')" id="tab-merger" class="module-tab px-2 sm:px-4 py-3 text-sm font-medium rounded-lg border border-transparent text-neutral-400 hover:text-white focus:outline-none transition-all duration-200">Bulk Merger & Splitter</button>
-        <button onclick="switchModule('mapper')" id="tab-mapper" class="module-tab px-2 sm:px-4 py-3 text-sm font-medium rounded-lg border border-transparent text-neutral-400 hover:text-white focus:outline-none transition-all duration-200">Target Mapping Tool</button>
-      </div>
+  <!-- 4-Tab Navigation Module -->
+  <nav class="border-b border-neutral-800 bg-neutral-950/60 px-4 py-3">
+    <div class="max-w-6xl mx-auto grid grid-cols-4 gap-2 text-sm font-medium">
+      <button id="tab1" onclick="switchModule('tab1')" class="transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/50 backdrop-blur-md text-white shadow-sm">Multi-Format Transformer</button>
+      <button id="tab2" onclick="switchModule('tab2')" class="transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:text-white">Data Sanitizer & Cleaner</button>
+      <button id="tab3" onclick="switchModule('tab3')" class="transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:text-white">Bulk Merger & Splitter</button>
+      <button id="tab4" onclick="switchModule('tab4')" class="transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:text-white">Target Mapping Tool</button>
     </div>
   </nav>
 
-  <!-- Main workspace -->
-  <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+  <!-- Main Workspace -->
+  <main class="flex-1 flex flex-col items-center justify-start p-6 md:p-10 max-w-6xl mx-auto w-full">
     
-    <!-- Drag-and-drop ingestion area -->
-    <div id="dropZone" class="drag-drop-dash relative border border-neutral-800 hover:border-emerald-500/50 bg-neutral-900/30 backdrop-blur-sm p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
-      <div class="text-center space-y-3">
-        <div class="w-14 h-14 mx-auto rounded-full bg-neutral-800 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-          </svg>
-        </div>
-        <p class="text-lg font-semibold text-neutral-200">Drop CSV file here or click to browse</p>
-        <p class="text-xs text-neutral-500">Client-side parsing · Secure memory chunking</p>
-      </div>
-      <input type="file" id="fileInput" accept=".csv,text/csv" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+    <!-- Drag & Drop Ingest Area -->
+    <div id="dropZone" class="w-full border-2 border-dashed border-neutral-800 hover:border-emerald-500/50 transition-all duration-300 rounded-2xl p-10 flex flex-col items-center justify-center bg-neutral-900/30 backdrop-blur-sm cursor-pointer group mb-8">
+      <div class="text-4xl mb-3 opacity-70">📂</div>
+      <p class="text-neutral-400 text-sm font-mono">Drop CSV file here or click to browse</p>
+      <input type="file" id="fileInput" accept=".csv,text/csv" class="hidden">
+      <p class="text-xs text-neutral-600 mt-2">Client-side memory parsing · No upload</p>
     </div>
 
-    <!-- Metadata structural banner (hidden by default) -->
-    <div id="metadataBanner" class="hidden bg-neutral-900/70 border border-neutral-800 rounded-xl px-5 py-3 flex flex-wrap items-center justify-between gap-3 backdrop-blur-sm">
-      <div class="flex items-center gap-4">
-        <span class="text-sm text-neutral-400">Active file:</span>
-        <span id="fileNameDisplay" class="font-mono text-sm text-white font-medium">—</span>
-        <span class="w-px h-5 bg-neutral-700"></span>
-        <span class="text-sm text-neutral-400">Rows:</span>
-        <span id="rowCountDisplay" class="font-mono text-sm text-emerald-400 font-semibold">0</span>
-      </div>
-      <div class="text-xs text-neutral-500 flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Memory-safe preview
-      </div>
+    <!-- Metadata Banner (hidden by default) -->
+    <div id="metadataBanner" class="hidden w-full flex items-center justify-between bg-neutral-900 border border-neutral-800 rounded-xl px-6 py-4 mb-6 text-sm">
+      <span class="text-neutral-300">File: <span id="fileNameDisplay" class="text-white font-mono">—</span></span>
+      <span class="text-emerald-400 font-mono">Rows ingested: <span id="rowCountDisplay">0</span></span>
     </div>
 
-    <!-- 5-row database matrix preview grid -->
-    <div class="bg-neutral-900/40 border border-neutral-800 rounded-xl overflow-hidden backdrop-blur-sm">
-      <div class="px-5 py-3 border-b border-neutral-800 flex items-center justify-between">
-        <h3 class="text-sm font-semibold text-neutral-300 uppercase tracking-wider">Structural Preview (first 5 rows)</h3>
-        <span class="text-xs text-neutral-500">UID · Timestamp · Ingest_Payload · Status_Check</span>
-      </div>
-      <div class="preview-grid-scroll overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="bg-neutral-900/80 text-neutral-400 uppercase text-xs">
-            <tr>
-              <th class="px-5 py-3 font-medium">UID</th>
-              <th class="px-5 py-3 font-medium">Timestamp</th>
-              <th class="px-5 py-3 font-medium">Ingest_Payload</th>
-              <th class="px-5 py-3 font-medium">Status_Check</th>
-            </tr>
-          </thead>
-          <tbody id="previewTableBody" class="divide-y divide-neutral-800 text-neutral-200">
-            <tr class="hover:bg-neutral-800/40 transition-colors">
-              <td class="px-5 py-3 font-mono text-neutral-500" colspan="4">Upload a CSV to populate preview</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- Preview Table Grid -->
+    <div class="w-full overflow-x-auto border border-neutral-800 rounded-xl bg-neutral-950/60 backdrop-blur-md mb-8">
+      <table class="w-full text-left text-xs md:text-sm font-mono">
+        <thead class="bg-neutral-900 text-neutral-400 uppercase tracking-wider border-b border-neutral-800">
+          <tr>
+            <th class="px-5 py-3">UID</th>
+            <th class="px-5 py-3">Timestamp</th>
+            <th class="px-5 py-3">Ingest_Payload</th>
+            <th class="px-5 py-3">Status_Check</th>
+          </tr>
+        </thead>
+        <tbody id="previewTableBody" class="divide-y divide-neutral-800 text-neutral-200">
+          <tr><td colspan="4" class="px-5 py-8 text-center text-neutral-600">Awaiting file ingestion...</td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- Execute Engine & Export Button -->
-    <div class="flex justify-end">
-      <button id="executeEngineButton" class="bg-emerald-600 hover:bg-emerald-500 text-neutral-950 font-bold px-6 py-3 rounded-lg transition-all duration-200 shadow-lg shadow-emerald-900/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-        </svg>
-        Execute Engine & Export Data
-      </button>
-    </div>
+    <!-- Execute Engine Button -->
+    <button id="executeEngineButton" class="w-full md:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl tracking-wide transition-all duration-300 shadow-[0_0_25px_rgba(16,185,129,0.3)] disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+      Execute Engine & Export Data
+    </button>
+    <p class="text-xs text-neutral-600 mt-3 text-center">Free tier: up to 50 rows. Premium unlocks unlimited processing.</p>
   </main>
 
-  <!-- Premium Paywall Modal -->
-  <div id="paywallModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-emerald-900/20">
-      <div class="sticky top-0 bg-neutral-900 border-b border-neutral-800 px-6 py-4 flex items-center justify-between">
-        <h2 class="text-xl font-bold text-white">Unlock Full Processing Power</h2>
-        <button id="closePaywall" class="text-neutral-400 hover:text-white transition p-1 rounded-lg hover:bg-neutral-800">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
+  <!-- Paywall Modal -->
+  <div id="paywallModal" class="hidden fixed inset-0 z-50 flex items-center justify-center paywall-backdrop p-4">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative">
+      <button id="closePaywall" class="absolute top-5 right-5 text-neutral-500 hover:text-white text-2xl leading-none">&times;</button>
       
-      <div class="p-6 space-y-6">
-        <!-- Billing toggle switch -->
-        <div class="flex justify-center">
-          <div class="bg-neutral-800 p-1 rounded-lg inline-flex gap-1">
-            <button id="toggleMonthly" onclick="switchBillingCycle('monthly')" class="px-5 py-2 text-sm font-semibold rounded-md transition bg-neutral-700 text-white shadow">Monthly</button>
-            <button id="toggleYearly" onclick="switchBillingCycle('yearly')" class="px-5 py-2 text-sm font-semibold rounded-md transition bg-transparent text-neutral-400 hover:text-white">Yearly (2 Months Free)</button>
+      <h2 class="text-2xl font-bold text-white mb-2">Unlock Full Processing Power</h2>
+      <p class="text-neutral-400 text-sm mb-6">Select a plan to remove the 50-row throttle and enable enterprise exports.</p>
+
+      <!-- Billing Toggle -->
+      <div class="flex items-center justify-center gap-4 mb-8 bg-neutral-800 p-1.5 rounded-xl w-fit mx-auto">
+        <button id="monthlyToggle" onclick="switchBillingCycle('monthly')" class="px-6 py-2 rounded-lg text-sm font-semibold transition bg-neutral-950 text-white shadow">Monthly</button>
+        <button id="yearlyToggle" onclick="switchBillingCycle('yearly')" class="px-6 py-2 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white">Yearly (2 Months Free)</button>
+      </div>
+
+      <!-- Pricing Cards Grid -->
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <!-- Professional Card -->
+        <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6 flex flex-col">
+          <h3 class="text-lg font-semibold text-white mb-1">Professional</h3>
+          <p class="text-neutral-500 text-xs mb-5">100,000 Row Processing Array</p>
+          
+          <div class="price-display-monthly">
+            <span class="text-4xl font-bold text-white">$99</span><span class="text-neutral-400 text-sm">/mo</span>
+            <p class="text-neutral-500 text-xs mt-1">De-throttle engineering workflows.</p>
           </div>
+          <div class="price-display-yearly hidden">
+            <span class="text-4xl font-bold text-white">$79</span><span class="text-neutral-400 text-sm">/mo</span>
+            <p class="text-emerald-400 text-xs mt-1">Billed annually: $948 upfront. Saves $240/yr.</p>
+            <p class="text-neutral-500 text-xs">Priority memory processing queues.</p>
+          </div>
+          
+          <button id="paddle-professional-monthly" class="mt-6 w-full py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl font-medium transition price-display-monthly" onclick="openPaddleCheckout('pro_monthly')">Get Professional Monthly</button>
+          <button id="paddle-professional-yearly" class="mt-6 w-full py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl font-medium transition price-display-yearly hidden" onclick="openPaddleCheckout('pro_yearly')">Get Professional Yearly</button>
         </div>
 
-        <!-- Pricing grid 2 columns -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <!-- Professional Card -->
-          <div class="bg-neutral-800/60 border border-neutral-700 rounded-xl p-6 flex flex-col">
-            <h3 class="text-lg font-bold text-white mb-1">Professional</h3>
-            <p class="text-xs text-neutral-400 mb-4">100,000 Row Processing Array</p>
-            <div class="price-display-monthly text-4xl font-extrabold text-white mb-1">$99<span class="text-lg text-neutral-400">/mo</span></div>
-            <div class="price-display-yearly hidden text-4xl font-extrabold text-white mb-1">$79<span class="text-lg text-neutral-400">/mo</span></div>
-            <p class="text-xs text-neutral-500 price-display-yearly hidden mb-3">Billed annually $948 upfront</p>
-            <p class="text-xs text-neutral-500 price-display-monthly mb-3">De-throttle engineering workflows</p>
-            <p class="text-xs text-emerald-400 price-display-yearly hidden mb-4">Saves $240/yr · Priority memory queues</p>
-            <button id="buyProfessional" class="mt-auto w-full bg-neutral-700 hover:bg-neutral-600 text-white font-semibold py-2.5 rounded-lg transition text-sm">Select Professional</button>
+        <!-- Enterprise Card -->
+        <div class="bg-neutral-950 border border-emerald-800/60 rounded-2xl p-6 flex flex-col relative">
+          <span class="absolute -top-3 right-4 bg-emerald-600 text-black text-xs font-bold px-3 py-1 rounded-full">ENTERPRISE</span>
+          <h3 class="text-lg font-semibold text-white mb-1">Enterprise Suite</h3>
+          <p class="text-neutral-500 text-xs mb-5">Infinite Row Ingestion Array</p>
+          
+          <div class="price-display-monthly">
+            <span class="text-4xl font-bold text-white">$299</span><span class="text-neutral-400 text-sm">/mo</span>
+            <p class="text-neutral-500 text-xs mt-1">Complete unrestricted infrastructure.</p>
           </div>
-          <!-- Enterprise Suite Card -->
-          <div class="bg-neutral-800/60 border border-neutral-700 rounded-xl p-6 flex flex-col relative">
-            <div class="absolute -top-2 right-4 bg-emerald-600 text-black text-xs font-bold px-3 py-1 rounded-full">ENTERPRISE</div>
-            <h3 class="text-lg font-bold text-white mb-1">Enterprise Suite</h3>
-            <p class="text-xs text-neutral-400 mb-4">Infinite Row Ingestion Array</p>
-            <div class="price-display-monthly text-4xl font-extrabold text-white mb-1">$299<span class="text-lg text-neutral-400">/mo</span></div>
-            <div class="price-display-yearly hidden text-4xl font-extrabold text-white mb-1">$249<span class="text-lg text-neutral-400">/mo</span></div>
-            <p class="text-xs text-neutral-500 price-display-yearly hidden mb-3">Billed annually $2,988 upfront</p>
-            <p class="text-xs text-neutral-500 price-display-monthly mb-3">Complete unrestricted infrastructure</p>
-            <p class="text-xs text-emerald-400 price-display-yearly hidden mb-4">Saves $600/yr · Sandboxed compliance</p>
-            <button id="buyEnterprise" class="mt-auto w-full bg-emerald-600 hover:bg-emerald-500 text-black font-semibold py-2.5 rounded-lg transition text-sm">Select Enterprise</button>
+          <div class="price-display-yearly hidden">
+            <span class="text-4xl font-bold text-white">$249</span><span class="text-neutral-400 text-sm">/mo</span>
+            <p class="text-emerald-400 text-xs mt-1">Billed annually: $2,988 upfront. Saves $600/yr.</p>
+            <p class="text-neutral-500 text-xs">Pure sandboxed local execution for compliance audits.</p>
           </div>
+          
+          <button id="paddle-enterprise-monthly" class="mt-6 w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl transition price-display-monthly" onclick="openPaddleCheckout('ent_monthly')">Get Enterprise Monthly</button>
+          <button id="paddle-enterprise-yearly" class="mt-6 w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl transition price-display-yearly hidden" onclick="openPaddleCheckout('ent_yearly')">Get Enterprise Yearly</button>
         </div>
       </div>
+      <p class="text-neutral-600 text-xs text-center mt-6">Secured by Paddle. 100% client-side processing after upgrade.</p>
     </div>
   </div>
 
-  <!-- Minimalist Concierge Chat Bubble (hidden chat card by default) -->
-  <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
-    <div id="chatCard" class="hidden bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl flex flex-col overflow-hidden" style="width: 320px; height: 380px;">
-      <div class="bg-neutral-800 px-4 py-3 flex items-center justify-between">
-        <span class="text-sm font-semibold text-white">Concierge Assistant</span>
-        <button onclick="toggleChat()" class="text-neutral-400 hover:text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+  <!-- Concierge Chat Bot -->
+  <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+    <div id="chatWindow" class="hidden w-80 h-96 bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-3 transition-all duration-200">
+      <div class="bg-neutral-800 px-4 py-3 text-sm font-semibold text-white border-b border-neutral-700">Concierge Terminal</div>
+      <div id="chatMessages" class="flex-1 p-4 space-y-3 overflow-y-auto text-xs font-mono text-neutral-300">
+        <p class="text-neutral-500">> System ready. Ask about plans or errors.</p>
       </div>
-      <div id="chatMessages" class="flex-1 overflow-y-auto p-3 space-y-2 text-xs bg-neutral-950/50">
-        <div class="text-neutral-500 text-center italic">Ask about errors, pricing, or merging.</div>
-      </div>
-      <div class="border-t border-neutral-800 p-2 flex gap-2">
-        <input type="text" id="chatInput" placeholder="Type message..." class="flex-1 bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500" onkeydown="if(event.key==='Enter')sendChatMessage()" />
-        <button onclick="sendChatMessage()" class="bg-emerald-600 hover:bg-emerald-500 text-black px-3 py-2 rounded text-sm font-semibold">Send</button>
+      <div class="p-3 border-t border-neutral-800 flex gap-2">
+        <input type="text" id="chatInput" placeholder="Type keyword..." class="flex-1 bg-neutral-950 border border-neutral-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" onkeydown="if(event.key==='Enter')sendChatMessage()">
+        <button onclick="sendChatMessage()" class="bg-neutral-700 hover:bg-neutral-600 px-3 py-2 rounded-lg text-xs text-white">Send</button>
       </div>
     </div>
-    <!-- Chat bubble circle -->
-    <button onclick="toggleChat()" id="chatBubble" class="w-12 h-12 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center text-emerald-400 chat-bubble-glow hover:scale-105 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-      </svg>
+    <button onclick="toggleChat()" class="w-12 h-12 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center text-xl chat-bubble-shadow hover:bg-neutral-700 transition text-emerald-400">
+      <span id="chatIcon">💬</span>
     </button>
   </div>
 
   <script>
     (function() {
-      // --- GLOBAL STATE ---
-      window.currentFile = null;          // stores parsed rows array
+      // GLOBAL STATE
+      window.currentFile = null;
+      window.parsedRows = [];
       window.isPremiumUser = false;
-      window.currentFileName = '';
-      window.totalRowCount = 0;
+      window.currentBillingCycle = 'monthly'; // default monthly
 
-      // Paddle initialization
+      // PADDLE INIT
       if (typeof Paddle !== 'undefined') {
         Paddle.Environment.set("sandbox");
-        Paddle.Setup({ vendor: 3, token: "test_7d27f61a269d16f5c5b3c2a9" });
-        window.Paddle = Paddle;
-      } else {
-        console.warn("Paddle SDK not loaded");
-      }
-
-      // DOM elements
-      const dropZone = document.getElementById('dropZone');
-      const fileInput = document.getElementById('fileInput');
-      const metadataBanner = document.getElementById('metadataBanner');
-      const fileNameDisplay = document.getElementById('fileNameDisplay');
-      const rowCountDisplay = document.getElementById('rowCountDisplay');
-      const previewTableBody = document.getElementById('previewTableBody');
-      const executeBtn = document.getElementById('executeEngineButton');
-      const paywallModal = document.getElementById('paywallModal');
-      const closePaywallBtn = document.getElementById('closePaywall');
-      const toggleMonthly = document.getElementById('toggleMonthly');
-      const toggleYearly = document.getElementById('toggleYearly');
-      const buyProfessional = document.getElementById('buyProfessional');
-      const buyEnterprise = document.getElementById('buyEnterprise');
-      const chatCard = document.getElementById('chatCard');
-      const chatBubble = document.getElementById('chatBubble');
-      const chatMessages = document.getElementById('chatMessages');
-      const chatInput = document.getElementById('chatInput');
-
-      // --- UTILITY: robust CSV parser with fallback ---
-      function parseCSVContent(text, fileName) {
-        const lines = text.split('\n').filter(line => line.trim() !== '');
-        if (lines.length === 0) return [];
-        const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-        const dataRows = lines.slice(1);
-        const result = [];
-        
-        for (let i = 0; i < dataRows.length; i++) {
-          const row = dataRows[i];
-          const cols = row.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-          const rowIndex = i + 1; // human readable index
-          
-          // Column mapping with fallback wrapper
-          const uid = cols[0] && cols[0].trim() !== '' ? cols[0] : `USR-${rowIndex}`;
-          const timestampRaw = cols[1] && cols[1].trim() !== '' ? cols[1] : new Date().toISOString();
-          const ingestPayload = cols[2] && cols[2].trim() !== '' ? cols[2] : JSON.stringify({ data_stream_id: rowIndex });
-          const statusCheck = cols[3] && cols[3].trim() !== '' ? cols[3] : 'Valid';
-          
-          result.push({
-            uid: uid,
-            timestamp: timestampRaw,
-            ingest_payload: ingestPayload,
-            status_check: statusCheck
-          });
-        }
-        return result;
-      }
-
-      function updatePreviewTable(rows) {
-        previewTableBody.innerHTML = '';
-        if (!rows || rows.length === 0) {
-          previewTableBody.innerHTML = `<tr><td colspan="4" class="px-5 py-6 text-center text-neutral-500">No rows to display</td></tr>`;
-          return;
-        }
-        const previewRows = rows.slice(0, 5);
-        previewRows.forEach(row => {
-          const tr = document.createElement('tr');
-          tr.className = 'hover:bg-neutral-800/40 transition-colors';
-          tr.innerHTML = `
-            <td class="px-5 py-3 font-mono text-xs text-neutral-300">${escapeHtml(row.uid)}</td>
-            <td class="px-5 py-3 font-mono text-xs text-neutral-400">${escapeHtml(row.timestamp)}</td>
-            <td class="px-5 py-3 font-mono text-xs text-neutral-300 max-w-xs truncate">${escapeHtml(row.ingest_payload)}</td>
-            <td class="px-5 py-3"><span class="px-2 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">${escapeHtml(row.status_check)}</span></td>
-          `;
-          previewTableBody.appendChild(tr);
+        Paddle.Initialize({
+          token: "test_7d27f61a269d16f5c5b3c2a9",
+          eventCallback: function(data) {
+            if (data.name === "checkout.completed") {
+              window.isPremiumUser = true;
+              document.getElementById('paywallModal').classList.add('hidden');
+              document.body.style.overflow = '';
+              // Auto-trigger download if file ready
+              if (window.currentFile && window.parsedRows.length > 0) {
+                executeDownload();
+              }
+            }
+          }
         });
       }
 
+      // Module Tabs Switching
+      window.switchModule = function(id) {
+        const tabs = ['tab1','tab2','tab3','tab4'];
+        tabs.forEach(t => {
+          const el = document.getElementById(t);
+          if (t === id) {
+            el.className = 'transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/50 backdrop-blur-md text-white shadow-sm';
+          } else {
+            el.className = 'transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:text-white';
+          }
+        });
+      };
+
+      // File Handling
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const executeBtn = document.getElementById('executeEngineButton');
+      const metadataBanner = document.getElementById('metadataBanner');
+      const fileNameDisplay = document.getElementById('fileNameDisplay');
+      const rowCountDisplay = document.getElementById('rowCountDisplay');
+      const previewBody = document.getElementById('previewTableBody');
+
+      dropZone.addEventListener('click', () => fileInput.click());
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-emerald-400'); });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-emerald-400'));
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-emerald-400');
+        if (e.dataTransfer.files.length) {
+          processFile(e.dataTransfer.files[0]);
+        }
+      });
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) processFile(e.target.files[0]);
+      });
+
+      function processFile(file) {
+        window.currentFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target.result;
+          parseCSVContent(text, file.name);
+        };
+        reader.readAsText(file, "UTF-8");
+      }
+
+      function parseCSVContent(csvText, fileName) {
+        const lines = csvText.split('\n').filter(line => line.trim() !== '');
+        if (lines.length === 0) {
+          window.parsedRows = [];
+          updatePreview([]);
+          return;
+        }
+        
+        // Assume first line might be header; we still parse as data for preview robustness
+        const rows = [];
+        for (let i = 0; i < lines.length; i++) {
+          const cols = lines[i].split(',').map(c => c.trim());
+          // Fallback wrapper logic: ensure 4 clean columns
+          const uid = (cols[0] && cols[0] !== '-' && cols[0] !== '') ? cols[0] : `USR-${i}`;
+          const timestamp = (cols[1] && cols[1] !== '-' && cols[1] !== '') ? cols[1] : new Date().toISOString();
+          const payload = (cols[2] && cols[2] !== '-' && cols[2] !== '') ? cols[2] : `{"data_stream_id": ${i}}`;
+          const status = (cols[3] && cols[3] !== '-' && cols[3] !== '') ? cols[3] : 'Valid';
+          
+          rows.push([uid, timestamp, payload, status]);
+        }
+        window.parsedRows = rows;
+        updatePreview(rows);
+        fileNameDisplay.textContent = fileName;
+        rowCountDisplay.textContent = rows.length;
+        metadataBanner.classList.remove('hidden');
+        executeBtn.disabled = false;
+      }
+
+      function updatePreview(rows) {
+        if (!rows.length) {
+          previewBody.innerHTML = '<tr><td colspan="4" class="px-5 py-8 text-center text-neutral-600">No data parsed</td></tr>';
+          return;
+        }
+        const previewSlice = rows.slice(0, 5);
+        previewBody.innerHTML = previewSlice.map(r => 
+          `<tr class="hover:bg-neutral-900/50">
+            <td class="px-5 py-2.5 text-emerald-300">${escapeHtml(r[0])}</td>
+            <td class="px-5 py-2.5 text-neutral-400">${escapeHtml(r[1])}</td>
+            <td class="px-5 py-2.5 text-neutral-300 max-w-[200px] truncate">${escapeHtml(r[2])}</td>
+            <td class="px-5 py-2.5"><span class="text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full text-xs">${escapeHtml(r[3])}</span></td>
+          </tr>`
+        ).join('');
+      }
+
       function escapeHtml(text) {
-        return String(text).replace(/[&<>"']/g, function(m) {
+        return String(text).replace(/[&<>"]/g, function(m) {
           if (m === '&') return '&amp;';
           if (m === '<') return '&lt;';
           if (m === '>') return '&gt;';
           if (m === '"') return '&quot;';
-          if (m === "'") return '&#039;';
           return m;
         });
       }
 
-      function handleFileUpload(file) {
-        if (!file) return;
-        window.currentFileName = file.name;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const content = e.target.result;
-          const parsedRows = parseCSVContent(content, file.name);
-          window.currentFile = parsedRows;
-          window.totalRowCount = parsedRows.length;
-          
-          fileNameDisplay.textContent = file.name;
-          rowCountDisplay.textContent = parsedRows.length;
-          metadataBanner.classList.remove('hidden');
-          updatePreviewTable(parsedRows);
-        };
-        reader.readAsText(file, 'UTF-8');
-      }
-
-      // Event listeners for file input and drag-drop
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          handleFileUpload(e.target.files[0]);
+      // Execute Button Logic
+      executeBtn.addEventListener('click', () => {
+        if (!window.parsedRows.length) return;
+        if (window.parsedRows.length <= 50 || window.isPremiumUser) {
+          executeDownload();
+        } else {
+          // Show paywall
+          document.getElementById('paywallModal').classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+          // Ensure monthly active on open
+          switchBillingCycle('monthly');
         }
       });
 
-      dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('border-emerald-500/70');
-      });
-      dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('border-emerald-500/70');
-      });
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('border-emerald-500/70');
-        if (e.dataTransfer.files.length > 0) {
-          handleFileUpload(e.dataTransfer.files[0]);
-        }
-      });
-
-      // --- MODULE TAB SWITCHING ---
-      window.switchModule = function(moduleId) {
-        const tabs = ['transformer', 'sanitizer', 'merger', 'mapper'];
-        tabs.forEach(id => {
-          const btn = document.getElementById(`tab-${id}`);
-          if (id === moduleId) {
-            btn.className = 'module-tab px-2 sm:px-4 py-3 text-sm font-medium rounded-lg border border-neutral-800 bg-neutral-900/50 backdrop-blur-md text-white';
-          } else {
-            btn.className = 'module-tab px-2 sm:px-4 py-3 text-sm font-medium rounded-lg border border-transparent text-neutral-400 hover:text-white';
-          }
-        });
-        // In a full app we'd load different module UIs; here we keep unified.
-      };
-
-      // --- EXECUTE ENGINE & PAYWALL LOGIC ---
-      function downloadCSV(rows, filename = 'export.csv') {
-        if (!rows || rows.length === 0) return;
-        const headers = ['UID', 'Timestamp', 'Ingest_Payload', 'Status_Check'];
-        const csvLines = [headers.join(',')];
-        rows.forEach(r => {
-          csvLines.push([r.uid, r.timestamp, r.ingest_payload, r.status_check].join(','));
-        });
-        const blob = new Blob([csvLines.join('\n')], { type: 'text/csv' });
+      function executeDownload() {
+        if (!window.parsedRows.length) return;
+        const csvContent = "UID,Timestamp,Ingest_Payload,Status_Check\n" + 
+          window.parsedRows.map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(',')).join('\n');
+        const blob = new Blob([csvContent], {type: 'text/csv'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
+        a.download = `datasuite_export_${new Date().toISOString().slice(0,10)}.csv`;
         a.click();
-        document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }
 
-      executeBtn.addEventListener('click', () => {
-        if (!window.currentFile || window.totalRowCount === 0) {
-          alert('Please upload a valid CSV file first.');
-          return;
-        }
-        if (window.isPremiumUser) {
-          downloadCSV(window.currentFile, `datasuite_${window.currentFileName || 'export'}.csv`);
-          return;
-        }
-        // Throttle check: 50 rows limit
-        if (window.totalRowCount <= 50) {
-          downloadCSV(window.currentFile, `datasuite_${window.currentFileName || 'export'}.csv`);
-        } else {
-          // Show paywall
-          paywallModal.classList.remove('hidden');
-        }
-      });
-
-      closePaywallBtn.addEventListener('click', () => {
-        paywallModal.classList.add('hidden');
-      });
-
-      // --- BILLING CYCLE TOGGLE (anti-duplicate) ---
+      // Paywall Toggle & Close
       window.switchBillingCycle = function(cycle) {
+        window.currentBillingCycle = cycle;
+        const monthlyToggle = document.getElementById('monthlyToggle');
+        const yearlyToggle = document.getElementById('yearlyToggle');
         const monthlyElements = document.querySelectorAll('.price-display-monthly');
         const yearlyElements = document.querySelectorAll('.price-display-yearly');
-        const monthlyBtn = document.getElementById('toggleMonthly');
-        const yearlyBtn = document.getElementById('toggleYearly');
         
         if (cycle === 'monthly') {
+          monthlyToggle.className = 'px-6 py-2 rounded-lg text-sm font-semibold transition bg-neutral-950 text-white shadow';
+          yearlyToggle.className = 'px-6 py-2 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white';
           monthlyElements.forEach(el => el.classList.remove('hidden'));
           yearlyElements.forEach(el => el.classList.add('hidden'));
-          monthlyBtn.className = 'px-5 py-2 text-sm font-semibold rounded-md transition bg-neutral-700 text-white shadow';
-          yearlyBtn.className = 'px-5 py-2 text-sm font-semibold rounded-md transition bg-transparent text-neutral-400 hover:text-white';
         } else {
+          yearlyToggle.className = 'px-6 py-2 rounded-lg text-sm font-semibold transition bg-neutral-950 text-white shadow';
+          monthlyToggle.className = 'px-6 py-2 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white';
           monthlyElements.forEach(el => el.classList.add('hidden'));
           yearlyElements.forEach(el => el.classList.remove('hidden'));
-          yearlyBtn.className = 'px-5 py-2 text-sm font-semibold rounded-md transition bg-neutral-700 text-white shadow';
-          monthlyBtn.className = 'px-5 py-2 text-sm font-semibold rounded-md transition bg-transparent text-neutral-400 hover:text-white';
         }
       };
 
-      // Paddle checkout handlers
-      function openPaddleCheckout(priceId) {
-        if (!window.Paddle) {
-          alert('Payment system initializing. Please refresh.');
+      document.getElementById('closePaywall').addEventListener('click', () => {
+        document.getElementById('paywallModal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+
+      window.openPaddleCheckout = function(planId) {
+        if (typeof Paddle === 'undefined') {
+          alert('Paddle SDK loading; please refresh.');
           return;
         }
-        window.Paddle.Checkout.open({
-          product: priceId,
-          success: function(data) {
-            // Payment success automation
-            window.isPremiumUser = true;
-            paywallModal.classList.add('hidden');
-            if (window.currentFile && window.totalRowCount > 0) {
-              downloadCSV(window.currentFile, `datasuite_premium_${window.currentFileName || 'export'}.csv`);
-            }
-          },
-          close: function() {
-            // user closed manually
-          }
+        let priceId = '';
+        if (planId === 'pro_monthly') priceId = 'pri_01hqexamplepro monthly';
+        else if (planId === 'pro_yearly') priceId = 'pri_01hqexamplepro yearly';
+        else if (planId === 'ent_monthly') priceId = 'pri_01hqexampleent monthly';
+        else if (planId === 'ent_yearly') priceId = 'pri_01hqexampleent yearly';
+        
+        Paddle.Checkout.open({
+          items: [{ priceId: priceId, quantity: 1 }]
         });
-      }
+      };
 
-      buyProfessional.addEventListener('click', () => {
-        // Professional plan price ID (sandbox)
-        openPaddleCheckout(3);  // using vendor 3 with token, product id 3 typical for sandbox
-      });
-      buyEnterprise.addEventListener('click', () => {
-        openPaddleCheckout(4);
-      });
-
-      // --- CONCIERGE CHAT BOT ---
+      // Concierge Chat
       window.toggleChat = function() {
-        if (chatCard.classList.contains('hidden')) {
-          chatCard.classList.remove('hidden');
-          chatBubble.classList.add('hidden');
-        } else {
-          chatCard.classList.add('hidden');
-          chatBubble.classList.remove('hidden');
-        }
+        const chat = document.getElementById('chatWindow');
+        chat.classList.toggle('hidden');
       };
 
       window.sendChatMessage = function() {
-        const input = chatInput.value.trim();
-        if (!input) return;
-        appendChatMessage('user', input);
-        chatInput.value = '';
+        const input = document.getElementById('chatInput');
+        const msg = input.value.trim().toLowerCase();
+        if (!msg) return;
+        const messagesDiv = document.getElementById('chatMessages');
+        messagesDiv.innerHTML += `<p class="text-white">> ${input.value}</p>`;
         
-        const lowerInput = input.toLowerCase();
-        let botResponse = '';
+        let reply = "I can assist with pricing, errors, or file processing queries.";
+        if (msg.includes('error') || msg.includes('mismatch')) reply = "DataSuitePro auto-corrects column mismatches using fallback UID/timestamp injection. No empty cells pass to export.";
+        else if (msg.includes('price') || msg.includes('cost') || msg.includes('buy') || msg.includes('package')) reply = "Professional ($99/mo) up to 100k rows. Enterprise ($299/mo) infinite rows. Yearly saves 2 months.";
+        else if (msg.includes('free')) reply = "Free tier processes 50 rows instantly. Upgrade for unlimited local execution.";
+        else if (msg.includes('merge') || msg.includes('premium')) reply = "Bulk Merger & Premium processing unlocked in paid plans. Contact operator framework for enterprise audit.";
         
-        if (lowerInput.includes('error') || lowerInput.includes('mismatch')) {
-          botResponse = 'DataSuitePro auto-corrects column mismatches and fills missing values securely. Upload your file to see the robust fallback engine.';
-        } else if (lowerInput.includes('price') || lowerInput.includes('cost') || lowerInput.includes('buy') || lowerInput.includes('package')) {
-          botResponse = 'Professional $99/mo (100k rows) or Enterprise $299/mo unlimited. Annual plans save up to $600. Unlock now for full processing.';
-        } else if (lowerInput.includes('free')) {
-          botResponse = 'Free tier processes up to 50 rows. Upgrade for infinite ingestion and priority memory queues.';
-        } else if (lowerInput.includes('merge') || lowerInput.includes('premium')) {
-          botResponse = 'Bulk Merger & Splitter is available across all plans. Premium users enjoy de-throttled workflows.';
-        } else {
-          botResponse = 'I can assist with pricing, errors, merging, or plan details. Type keywords like "price" or "error".';
-        }
-        
-        setTimeout(() => appendChatMessage('bot', botResponse), 200);
+        messagesDiv.innerHTML += `<p class="text-emerald-400">> ${reply}</p>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        input.value = '';
       };
 
-      function appendChatMessage(sender, text) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = sender === 'user' ? 'text-right' : 'text-left';
-        msgDiv.innerHTML = `<span class="inline-block px-3 py-1.5 rounded-lg text-xs ${sender === 'user' ? 'bg-emerald-600/20 text-emerald-300' : 'bg-neutral-800 text-neutral-300'}">${escapeHtml(text)}</span>`;
-        chatMessages.appendChild(msgDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-
-      // Set initial billing cycle to monthly (already default via HTML hidden classes)
-      // Ensure yearly elements are hidden at start
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.price-display-yearly').forEach(el => el.classList.add('hidden'));
-        document.querySelectorAll('.price-display-monthly').forEach(el => el.classList.remove('hidden'));
-      });
-
-      // Expose necessary functions to global scope for onclick attributes
-      window.switchModule = window.switchModule;
-      window.switchBillingCycle = window.switchBillingCycle;
-      window.toggleChat = window.toggleChat;
-      window.sendChatMessage = window.sendChatMessage;
+      // Initial tab highlight
+      switchModule('tab1');
     })();
   </script>
 </body>
