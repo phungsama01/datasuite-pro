@@ -1,443 +1,928 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-neutral-950">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>DataSuitePro — Unified Data Infrastructure for Enterprise Operations</title>
-  <meta name="description" content="Consolidate workflows, eliminate data silos, and deploy enterprise-grade infrastructure with DataSuitePro.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ═══ SEO META ═══ -->
+  <title>DataSuite Pro — Enterprise Data Infrastructure Platform</title>
+  <meta name="description" content="DataSuite Pro is the all-in-one enterprise data operations platform. Transform, clean, merge, and map bulk data files in seconds. Trusted by operations teams worldwide. Start free." />
+  <meta name="keywords" content="enterprise data tool, bulk CSV converter, data cleaner, file transformer, data operations platform, business data utility, CSV JSON Excel converter, data sanitizer, bulk data merger" />
+  <meta name="author" content="DataSuite Pro" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://datasuite-pro.vercel.app/" />
+
+  <!-- ═══ OPEN GRAPH (Google + Social) ═══ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://datasuite-pro.vercel.app/" />
+  <meta property="og:title" content="DataSuite Pro — Enterprise Data Infrastructure Platform" />
+  <meta property="og:description" content="Stop wasting days on manual data work. DataSuite Pro transforms, cleans, merges, and maps enterprise data files instantly — all in your browser, zero uploads to any server." />
+  <meta property="og:image" content="https://datasuite-pro.vercel.app/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DataSuite Pro — Enterprise Data Infrastructure" />
+  <meta name="twitter:description" content="The all-in-one data utility platform for enterprise operations teams. Free to start." />
+
+  <!-- ═══ STRUCTURED DATA (Google Rich Results) ═══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "DataSuite Pro",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web Browser",
+    "url": "https://datasuite-pro.vercel.app/",
+    "description": "Enterprise data infrastructure platform for transforming, cleaning, merging and mapping bulk data files.",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Starter Suite Monthly",
+        "price": "79",
+        "priceCurrency": "USD",
+        "billingIncrement": "P1M"
+      },
+      {
+        "@type": "Offer",
+        "name": "Enterprise Pro Monthly",
+        "price": "299",
+        "priceCurrency": "USD",
+        "billingIncrement": "P1M"
+      }
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "datasuitepro.help@gmail.com",
+      "contactType": "customer support"
+    }
+  }
+  </script>
+
+  <!-- ═══ FONTS ═══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
   <style>
-    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-    body { background-color: #0a0a0a; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #080a0c;
+      --bg-card:     #0e1114;
+      --bg-card2:    #12161a;
+      --border:      rgba(255,255,255,0.07);
+      --border-glow: rgba(0,210,150,0.25);
+      --accent:      #00d296;
+      --accent2:     #00a8f8;
+      --accent3:     #7b61ff;
+      --text-1:      #f0f2f4;
+      --text-2:      #8b9199;
+      --text-3:      #555c64;
+      --danger:      #ff4d4d;
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'Instrument Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── GLOW ORBS ── */
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(120px); pointer-events: none; z-index: 0;
+      animation: orbDrift 18s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 500px; height: 500px; top: -150px; left: -100px; background: rgba(0,210,150,0.06); }
+    .orb-2 { width: 600px; height: 600px; bottom: -200px; right: -150px; background: rgba(0,168,248,0.05); animation-delay: -9s; }
+    .orb-3 { width: 400px; height: 400px; top: 40%; left: 50%; background: rgba(123,97,255,0.04); animation-delay: -5s; }
+    @keyframes orbDrift { to { transform: translate(40px, 30px) scale(1.08); } }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      background: rgba(8,10,12,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-size: 18px; font-weight: 800;
+      letter-spacing: -0.5px; color: var(--text-1); text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo span { color: var(--accent); }
+    .logo-mark {
+      width: 30px; height: 30px; border-radius: 7px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: #080a0c;
+    }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--text-2); text-decoration: none; font-size: 13.5px; font-weight: 500; transition: color .2s; letter-spacing: 0.01em; }
+    .nav-links a:hover { color: var(--text-1); }
+    .nav-cta {
+      background: var(--accent); color: #080a0c; border: none;
+      padding: 9px 20px; border-radius: 7px; font-weight: 700;
+      font-size: 13px; cursor: pointer; font-family: var(--font-body);
+      transition: opacity .2s, transform .15s; letter-spacing: 0.02em; text-decoration: none;
+    }
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 88vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 80px 24px 60px; text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 100px;
+      border: 1px solid var(--border-glow);
+      background: rgba(0,210,150,0.06);
+      font-family: var(--font-mono); font-size: 11.5px; color: var(--accent);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 36px;
+      animation: fadeUp .6s ease both;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+
+    .hero-title {
+      font-family: var(--font-display); font-size: clamp(40px, 6vw, 78px);
+      font-weight: 800; line-height: 1.06; letter-spacing: -2px;
+      max-width: 900px; animation: fadeUp .7s .1s ease both;
+    }
+    .hero-title .hl { color: var(--accent); }
+    .hero-title .hl2 { color: var(--accent2); }
+
+    .hero-sub {
+      margin-top: 24px; font-size: 17px; color: var(--text-2);
+      max-width: 580px; line-height: 1.7;
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    .hero-actions {
+      margin-top: 44px; display: flex; gap: 14px; flex-wrap: wrap;
+      justify-content: center; animation: fadeUp .7s .3s ease both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 9px; font-weight: 700;
+      font-size: 14.5px; cursor: pointer; text-decoration: none;
+      background: var(--accent); color: #080a0c; border: none;
+      font-family: var(--font-body); transition: all .2s; letter-spacing: 0.01em;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,210,150,0.3); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 9px; font-weight: 600;
+      font-size: 14.5px; cursor: pointer; text-decoration: none;
+      background: transparent; color: var(--text-1);
+      border: 1px solid var(--border); font-family: var(--font-body);
+      transition: all .2s; letter-spacing: 0.01em;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); transform: translateY(-2px); }
+
+    .hero-proof {
+      margin-top: 56px; display: flex; align-items: center; gap: 32px;
+      flex-wrap: wrap; justify-content: center;
+      animation: fadeUp .7s .4s ease both;
+    }
+    .proof-item { display: flex; align-items: center; gap: 8px; color: var(--text-3); font-size: 12.5px; }
+    .proof-item svg { color: var(--accent); }
+    .proof-divider { width: 1px; height: 20px; background: var(--border); }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ── METRICS STRIP ── */
+    .metrics-strip {
+      padding: 20px 40px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex; align-items: center; justify-content: center; gap: 60px; flex-wrap: wrap;
+    }
+    .metric { text-align: center; }
+    .metric-val { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--text-1); }
+    .metric-val span { color: var(--accent); }
+    .metric-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; font-family: var(--font-mono); }
+
+    /* ── PROBLEM SECTION ── */
+    .problem-section { padding: 100px 40px; max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-display); font-size: clamp(30px,4vw,48px);
+      font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 16px;
+    }
+    .section-sub { color: var(--text-2); font-size: 16px; max-width: 520px; line-height: 1.7; }
+
+    .problem-grid {
+      margin-top: 60px; display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;
+    }
+    .problem-card {
+      padding: 28px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg-card);
+      transition: border-color .25s, transform .25s;
+    }
+    .problem-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
+    .problem-icon {
+      width: 40px; height: 40px; border-radius: 9px; margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .problem-card h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .problem-card p { font-size: 13.5px; color: var(--text-2); line-height: 1.65; }
+
+    /* ── MODULES ── */
+    .modules-section { padding: 100px 40px; background: var(--bg-card); }
+    .modules-inner { max-width: 1100px; margin: 0 auto; }
+    .modules-grid {
+      margin-top: 60px; display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2px;
+      border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    }
+    .module-card {
+      padding: 36px 28px; background: var(--bg-card2);
+      border-right: 1px solid var(--border);
+      transition: background .25s;
+      position: relative; overflow: hidden;
+    }
+    .module-card:last-child { border-right: none; }
+    .module-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0; transition: opacity .3s;
+    }
+    .module-card:hover::before { opacity: 1; }
+    .module-card:hover { background: rgba(0,210,150,0.03); }
+    .module-num { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px; }
+    .module-icon { font-size: 28px; margin-bottom: 16px; }
+    .module-card h3 { font-family: var(--font-display); font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .module-card p { font-size: 13px; color: var(--text-2); line-height: 1.65; }
+    .module-formats {
+      margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .fmt-tag {
+      font-family: var(--font-mono); font-size: 10px; padding: 3px 8px;
+      border-radius: 4px; background: rgba(0,210,150,0.08); color: var(--accent);
+      border: 1px solid rgba(0,210,150,0.15); letter-spacing: 0.05em;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { padding: 100px 40px; max-width: 1100px; margin: 0 auto; }
+    .steps-row { margin-top: 60px; display: flex; gap: 0; flex-wrap: wrap; }
+    .step {
+      flex: 1; min-width: 200px; padding: 0 32px 0 0;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '→';
+      position: absolute; right: 8px; top: 20px;
+      color: var(--text-3); font-size: 18px;
+    }
+    .step-num {
+      width: 42px; height: 42px; border-radius: 10px;
+      border: 1px solid var(--border-glow);
+      background: rgba(0,210,150,0.07);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 13px; color: var(--accent);
+      font-weight: 600; margin-bottom: 18px;
+    }
+    .step h3 { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 13px; color: var(--text-2); line-height: 1.65; }
+
+    /* ── PRICING ── */
+    .pricing-section { padding: 100px 40px; background: var(--bg-card); }
+    .pricing-inner { max-width: 960px; margin: 0 auto; }
+    .pricing-toggle {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin-top: 40px;
+      font-size: 13.5px; color: var(--text-2);
+    }
+    .toggle-track {
+      width: 44px; height: 24px; border-radius: 12px;
+      background: var(--accent); cursor: pointer;
+      position: relative; transition: background .2s;
+    }
+    .toggle-thumb {
+      position: absolute; top: 3px; right: 3px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #080a0c; transition: transform .2s;
+    }
+    .toggle-track.monthly .toggle-thumb { transform: translateX(-20px); }
+    .save-badge {
+      background: rgba(0,210,150,0.12); color: var(--accent);
+      border: 1px solid rgba(0,210,150,0.2);
+      font-size: 11px; padding: 2px 8px; border-radius: 100px;
+      font-family: var(--font-mono);
+    }
+    .pricing-grid {
+      margin-top: 40px; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media(max-width:700px){ .pricing-grid{grid-template-columns:1fr;} }
+    .pricing-card {
+      border-radius: 16px; border: 1px solid var(--border);
+      background: var(--bg-card2); padding: 36px; position: relative; overflow: hidden;
+      transition: border-color .25s, transform .25s;
+    }
+    .pricing-card:hover { border-color: var(--border-glow); transform: translateY(-4px); }
+    .pricing-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(0,210,150,0.04) 0%, var(--bg-card2) 60%);
+    }
+    .featured-badge {
+      position: absolute; top: 20px; right: 20px;
+      background: var(--accent); color: #080a0c;
+      font-size: 10px; font-weight: 700; padding: 4px 10px;
+      border-radius: 100px; font-family: var(--font-mono); letter-spacing: 0.08em;
+    }
+    .plan-name { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; }
+    .plan-price { font-family: var(--font-display); font-size: 52px; font-weight: 800; line-height: 1; letter-spacing: -2px; }
+    .plan-price sup { font-size: 22px; vertical-align: top; margin-top: 10px; font-weight: 600; }
+    .plan-price sub { font-size: 14px; color: var(--text-3); font-weight: 400; font-family: var(--font-body); }
+    .plan-price-yearly { display: none; }
+    .plan-desc { margin-top: 12px; font-size: 13px; color: var(--text-2); line-height: 1.6; }
+    .plan-divider { margin: 24px 0; border: none; border-top: 1px solid var(--border); }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .plan-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; }
+    .check { color: var(--accent); font-size: 13px; margin-top: 2px; flex-shrink: 0; }
+    .plan-cta {
+      display: block; text-align: center; margin-top: 28px;
+      padding: 13px; border-radius: 9px; font-weight: 700;
+      font-size: 14px; cursor: pointer; text-decoration: none;
+      transition: all .2s; letter-spacing: 0.01em; font-family: var(--font-body);
+    }
+    .cta-accent { background: var(--accent); color: #080a0c; border: none; }
+    .cta-accent:hover { opacity: .88; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,210,150,0.3); }
+    .cta-outline { background: transparent; color: var(--text-1); border: 1px solid var(--border); }
+    .cta-outline:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+    .pricing-note { text-align: center; margin-top: 24px; font-size: 12.5px; color: var(--text-3); }
+
+    /* Free tier callout */
+    .free-callout {
+      margin-top: 50px; padding: 24px 32px; border-radius: 12px;
+      border: 1px dashed rgba(0,210,150,0.3);
+      background: rgba(0,210,150,0.03);
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    }
+    .free-callout-icon { font-size: 28px; }
+    .free-callout h4 { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .free-callout p { font-size: 13px; color: var(--text-2); }
+
+    /* ── TRUST SECTION ── */
+    .trust-section { padding: 100px 40px; max-width: 1100px; margin: 0 auto; }
+    .trust-grid { margin-top: 60px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .trust-card {
+      padding: 28px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--bg-card); text-align: center;
+    }
+    .trust-icon { font-size: 30px; margin-bottom: 14px; }
+    .trust-card h4 { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .trust-card p { font-size: 12.5px; color: var(--text-2); line-height: 1.65; }
+
+    /* ── FAQ ── */
+    .faq-section { padding: 80px 40px; background: var(--bg-card); }
+    .faq-inner { max-width: 700px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border); padding: 20px 0; cursor: pointer;
+    }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      font-weight: 600; font-size: 14.5px; gap: 16px;
+    }
+    .faq-chevron { color: var(--text-3); transition: transform .25s; font-size: 18px; }
+    .faq-item.open .faq-chevron { transform: rotate(45deg); color: var(--accent); }
+    .faq-a { font-size: 13.5px; color: var(--text-2); line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .25s ease; }
+    .faq-item.open .faq-a { max-height: 300px; padding-top: 12px; }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      padding: 80px 40px; text-align: center;
+      background: linear-gradient(180deg, var(--bg) 0%, #080c0a 100%);
+    }
+    .cta-banner h2 { font-family: var(--font-display); font-size: clamp(28px,4vw,48px); font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+    .cta-banner p { color: var(--text-2); font-size: 16px; margin-bottom: 36px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 48px 40px 32px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .footer-top {
+      display: flex; gap: 48px; flex-wrap: wrap; margin-bottom: 40px;
+    }
+    .footer-brand { flex: 1 1 240px; }
+    .footer-brand .nav-logo { margin-bottom: 12px; display: inline-flex; }
+    .footer-brand p { font-size: 12.5px; color: var(--text-3); line-height: 1.7; max-width: 280px; }
+    .footer-col h5 { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 14px; }
+    .footer-col a { display: block; font-size: 13px; color: var(--text-2); text-decoration: none; margin-bottom: 8px; transition: color .2s; }
+    .footer-col a:hover { color: var(--text-1); }
+    .footer-bottom {
+      border-top: 1px solid var(--border); padding-top: 24px;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-copy { font-size: 11.5px; color: var(--text-3); line-height: 1.7; }
+    .footer-copy strong { color: var(--text-2); }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 11.5px; color: var(--text-3); text-decoration: none; transition: color .2s; }
+    .footer-legal a:hover { color: var(--text-2); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--text-3); border-radius: 2px; }
+
+    @media(max-width:768px){
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 60px 20px 40px; }
+      .metrics-strip { gap: 28px; padding: 20px; }
+      .problem-section,.how-section,.trust-section { padding: 60px 20px; }
+      .modules-section,.pricing-section,.faq-section { padding: 60px 20px; }
+      .steps-row { flex-direction: column; gap: 28px; }
+      .step:not(:last-child)::after { content: '↓'; right: auto; left: 12px; top: auto; }
+      footer { padding: 40px 20px 24px; }
+    }
   </style>
 </head>
-<body class="bg-neutral-950 text-zinc-100 antialiased selection:bg-white/20 selection:text-white min-h-screen flex flex-col">
-  <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-neutral-950/70 border-b border-neutral-800/80">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <nav class="flex items-center justify-between h-16 lg:h-18" aria-label="Global">
-        <div class="flex lg:flex-1">
-          <a href="index.html" class="text-xl font-bold tracking-wider text-white">
-            DataSuitePro
-          </a>
-        </div>
-        <div class="hidden lg:flex lg:gap-x-8">
-          <a href="#" class="text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Platform</a>
-          <a href="#" class="text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Solutions</a>
-          <a href="#" class="text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Enterprise</a>
-          <a href="#" class="text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Pricing</a>
-        </div>
-        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" class="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-zinc-200 transition-all duration-300 ease-in-out">
-            Request Enterprise Access
-          </a>
-        </div>
-        <div class="flex lg:hidden">
-          <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-zinc-400 hover:text-white transition-all duration-300">
-            <span class="sr-only">Open menu</span>
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-          </button>
-        </div>
-      </nav>
-    </div>
-  </header>
+<body>
 
-  <main class="flex-grow pt-32 lg:pt-40 pb-20">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div class="max-w-2xl">
-          <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            The Unified Data Infrastructure for Enterprise Operations.
-          </h1>
-          <p class="mt-6 text-lg leading-relaxed text-zinc-400 max-w-xl">
-            Consolidate fragmented workflows, eliminate data silos, and deploy infrastructure that scales with your enterprise.
-            DataSuitePro delivers observability, governance, and real-time processing in a single control plane.
-          </p>
-          <div class="mt-10 flex items-center gap-x-6">
-            <a href="dashboard.html" class="rounded-full bg-white px-8 py-3 text-sm font-semibold text-black shadow-sm hover:bg-zinc-200 transition-all duration-300 ease-in-out">
-              Deploy Infrastructure
-            </a>
-            <a href="dashboard.html" class="text-sm font-semibold leading-6 text-zinc-400 hover:text-white transition-all duration-300 ease-in-out flex items-center gap-x-1">
-              Explore platform <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </a>
-          </div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="logo-mark">D</div>
+    DataSuite<span>Pro</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#modules">Modules</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="mailto:datasuitepro.help@gmail.com">Contact</a></li>
+  </ul>
+  <a href="dashboard.html" class="nav-cta">Launch Platform →</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Live Platform · Zero Server Upload · All Processing Local
+  </div>
+
+  <h1 class="hero-title">
+    The Data Operations<br>
+    Platform Built for<br>
+    <span class="hl">Enterprise Teams</span>
+  </h1>
+
+  <p class="hero-sub">
+    Stop spending days on manual data cleanup, format conversions, and bulk transformations.
+    DataSuite Pro processes your files entirely in your browser — instantly, privately, and at scale.
+  </p>
+
+  <div class="hero-actions">
+    <a href="dashboard.html" class="btn-primary">
+      ⚡ Start Free — No Account Needed
+    </a>
+    <a href="#modules" class="btn-secondary">
+      See All Modules
+    </a>
+  </div>
+
+  <div class="hero-proof">
+    <div class="proof-item">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      No signup required
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      Files never leave your machine
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      First 3 exports free
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      Works on any OS
+    </div>
+  </div>
+</section>
+
+<!-- ═══ METRICS STRIP ═══ -->
+<div class="metrics-strip">
+  <div class="metric">
+    <div class="metric-val">99.9<span>%</span></div>
+    <div class="metric-label">Uptime SLA</div>
+  </div>
+  <div class="metric">
+    <div class="metric-val">4<span>+</span></div>
+    <div class="metric-label">Core Modules</div>
+  </div>
+  <div class="metric">
+    <div class="metric-val">0<span>ms</span></div>
+    <div class="metric-label">Upload Latency</div>
+  </div>
+  <div class="metric">
+    <div class="metric-val">8<span>+</span></div>
+    <div class="metric-label">File Formats</div>
+  </div>
+  <div class="metric">
+    <div class="metric-val">∞</div>
+    <div class="metric-label">Row Capacity (Pro)</div>
+  </div>
+</div>
+
+<!-- ═══ PROBLEM ═══ -->
+<section class="problem-section" id="problem">
+  <div class="section-tag">// The Problem</div>
+  <h2 class="section-title">Your team loses weeks<br>to tasks that should take minutes.</h2>
+  <p class="section-sub">Every operations and data team faces the same friction. DataSuite Pro eliminates it — permanently.</p>
+
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="problem-icon" style="background:rgba(255,77,77,0.1);">⏱️</div>
+      <h3>Hours of Manual Reformatting</h3>
+      <p>Exporting a CSV from one system and re-importing to another requires manual column remapping, format conversion, and endless cleanup. Every. Single. Time.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon" style="background:rgba(0,168,248,0.1);">💣</div>
+      <h3>Corrupted & Dirty Data</h3>
+      <p>Duplicate rows, broken encodings, inconsistent date formats, and missing fields destroy reporting pipelines and cost hours to diagnose and fix.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon" style="background:rgba(123,97,255,0.1);">📦</div>
+      <h3>Merging Files Is a Nightmare</h3>
+      <p>Combining 30 vendor exports into a single master dataset — matching column headers, removing overlaps, normalizing structure — is a job nobody wants but everyone needs.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon" style="background:rgba(0,210,150,0.1);">🔒</div>
+      <h3>Cloud Tools Are a Security Risk</h3>
+      <p>Uploading confidential business data to a third-party server to "convert a CSV" is a compliance and privacy nightmare. Your data should never leave your machine.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MODULES ═══ -->
+<section class="modules-section" id="modules">
+  <div class="modules-inner">
+    <div class="section-tag">// Platform Modules</div>
+    <h2 class="section-title">Four precision-built tools.<br>One unified workspace.</h2>
+    <p class="section-sub">Each module is engineered to solve a specific, high-frequency enterprise data problem — faster than any manual process or fragmented tool stack.</p>
+
+    <div class="modules-grid">
+      <div class="module-card">
+        <div class="module-num">Module 01</div>
+        <div class="module-icon">⚡</div>
+        <h3>Multi-Format Transformer</h3>
+        <p>Convert bulk data files between formats in a single click. Handles structural mapping automatically — no scripting required.</p>
+        <div class="module-formats">
+          <span class="fmt-tag">CSV</span>
+          <span class="fmt-tag">JSON</span>
+          <span class="fmt-tag">TSV</span>
+          <span class="fmt-tag">XLSX</span>
+          <span class="fmt-tag">XML</span>
         </div>
-        <div class="relative lg:ml-auto w-full max-w-lg">
-          <div class="aspect-[4/3] rounded-2xl bg-neutral-900/50 border border-neutral-800/80 backdrop-blur-sm shadow-2xl flex items-center justify-center">
-            <div class="text-center p-8">
-              <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-white/60 mb-4">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-                </svg>
-              </div>
-              <a href="dashboard.html" class="block group">
-              <p class="text-zinc-400 text-sm group-hover:text-zinc-200 transition-colors">Live infrastructure metrics</p>
-              <p class="text-2xl font-semibold text-white mt-2 tracking-tight group-hover:text-blue-400 transition-colors">99.99% uptime SLA →</p>
-            </div>
-          </div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">Module 02</div>
+        <div class="module-icon">🧹</div>
+        <h3>Data Sanitizer & Cleaner</h3>
+        <p>Automatically detects and removes duplicates, fixes broken encodings, standardizes date formats, and flags missing critical fields.</p>
+        <div class="module-formats">
+          <span class="fmt-tag">Deduplicate</span>
+          <span class="fmt-tag">Normalize</span>
+          <span class="fmt-tag">Validate</span>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">Module 03</div>
+        <div class="module-icon">🗂️</div>
+        <h3>Bulk Merger & Splitter</h3>
+        <p>Merge dozens of source files into one clean master dataset, or split a large file into batches by row count, column value, or custom rules.</p>
+        <div class="module-formats">
+          <span class="fmt-tag">Merge</span>
+          <span class="fmt-tag">Split</span>
+          <span class="fmt-tag">Batch</span>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">Module 04</div>
+        <div class="module-icon">🗺️</div>
+        <h3>Target Mapping Tool</h3>
+        <p>Map and remap column headers from your source schema to any target system schema. Save mapping templates and reuse them instantly for recurring workflows.</p>
+        <div class="module-formats">
+          <span class="fmt-tag">Schema Map</span>
+          <span class="fmt-tag">Templates</span>
+          <span class="fmt-tag">Export</span>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="mt-32 max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-neutral-900/50 border border-neutral-800/80 rounded-xl p-6 backdrop-blur-sm hover:border-neutral-700/80 transition-all duration-300">
-          <h3 class="text-lg font-semibold text-white">Stream ingestion</h3>
-          <p class="mt-2 text-sm text-zinc-400">Ingest millions of events per second with sub-second latency.</p>
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="how-section" id="how">
+  <div class="section-tag">// How It Works</div>
+  <h2 class="section-title">From raw file to clean export<br>in under 60 seconds.</h2>
+  <p class="section-sub">No installation. No account setup. No data sent to any server.</p>
+
+  <div class="steps-row">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Drop Your File</h3>
+      <p>Drag and drop any CSV, JSON, TSV, or Excel file directly into the workspace. It is read entirely in your browser.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Select Your Module</h3>
+      <p>Choose the operation — transform format, clean data, merge files, or remap columns. Configure options in seconds.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Review Live Preview</h3>
+      <p>See a real-time preview of your output data before exporting. Inspect structure, column counts, and row totals.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>Export Instantly</h3>
+      <p>Download your processed file directly to your machine in your chosen output format. Zero cloud storage, zero exposure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div style="text-align:center;">
+      <div class="section-tag" style="text-align:center;">// Pricing</div>
+      <h2 class="section-title" style="text-align:center;">Transparent pricing.<br>No hidden fees.</h2>
+      <p class="section-sub" style="text-align:center;margin:0 auto;">Try the full platform free — no credit card, no account. Pay only when you have seen real results.</p>
+    </div>
+
+    <div class="pricing-toggle">
+      <span>Monthly</span>
+      <div class="toggle-track" id="billingToggle" onclick="toggleBilling()">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span>Yearly <span class="save-badge">Save 20%+</span></span>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="plan-name">Starter Suite</div>
+        <div class="plan-price" id="starterPrice">
+          <sup>$</sup>79<sub>/mo</sub>
         </div>
-        <div class="bg-neutral-900/50 border border-neutral-800/80 rounded-xl p-6 backdrop-blur-sm hover:border-neutral-700/80 transition-all duration-300">
-          <h3 class="text-lg font-semibold text-white">Governance layer</h3>
-          <p class="mt-2 text-sm text-zinc-400">Automated compliance checks and data lineage tracking built in.</p>
+        <div class="plan-price-yearly" id="starterYearlyNote" style="display:none;font-size:12px;color:var(--text-3);margin-top:4px;">$749 / year · billed annually</div>
+        <p class="plan-desc">For growing teams that handle regular data operations and need reliable, fast processing without enterprise overhead.</p>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Up to 10,000 rows per file operation</li>
+          <li><span class="check">✓</span> All 4 core platform modules</li>
+          <li><span class="check">✓</span> CSV, JSON, TSV, XLSX conversion</li>
+          <li><span class="check">✓</span> Data deduplication & cleaning engine</li>
+          <li><span class="check">✓</span> Bulk file merging (up to 20 files)</li>
+          <li><span class="check">✓</span> Email support within 48 hours</li>
+          <li><span class="check">✓</span> Unlimited exports per month</li>
+        </ul>
+        <a href="mailto:datasuitepro.help@gmail.com?subject=Starter Suite — Purchase Request" class="plan-cta cta-outline">Get Starter Suite</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card featured">
+        <div class="featured-badge">MOST POPULAR</div>
+        <div class="plan-name">Enterprise Pro Suite</div>
+        <div class="plan-price" id="proPrice">
+          <sup>$</sup>299<sub>/mo</sub>
         </div>
-        <div class="bg-neutral-900/50 border border-neutral-800/80 rounded-xl p-6 backdrop-blur-sm hover:border-neutral-700/80 transition-all duration-300">
-          <h3 class="text-lg font-semibold text-white">Unified query engine</h3>
-          <p class="mt-2 text-sm text-zinc-400">Query across warehouses, lakes, and streams with standard SQL.</p>
-        </div>
+        <div id="proYearlyNote" style="display:none;font-size:12px;color:var(--text-3);margin-top:4px;">$2,988 / year · billed annually</div>
+        <p class="plan-desc">For enterprise operations, large-scale data pipelines, and teams that run high-volume transformations daily.</p>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="check">✓</span> <strong>Unlimited rows</strong> per file operation</li>
+          <li><span class="check">✓</span> All 4 core platform modules</li>
+          <li><span class="check">✓</span> All format conversions including XML</li>
+          <li><span class="check">✓</span> Advanced sanitization rules engine</li>
+          <li><span class="check">✓</span> Bulk merge of <strong>unlimited files</strong></li>
+          <li><span class="check">✓</span> Column mapping template library</li>
+          <li><span class="check">✓</span> Priority support within 12 hours</li>
+          <li><span class="check">✓</span> Unlimited exports per month</li>
+          <li><span class="check">✓</span> Early access to new modules</li>
+        </ul>
+        <a href="mailto:datasuitepro.help@gmail.com?subject=Enterprise Pro Suite — Purchase Request" class="plan-cta cta-accent">Get Enterprise Pro</a>
       </div>
     </div>
-  </main>
 
-  <footer class="border-t border-neutral-800/80 bg-neutral-950 mt-auto">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 lg:gap-12">
-        <div class="md:col-span-1">
-          <h4 class="text-sm font-semibold text-white tracking-wide">DataSuitePro</h4>
-          <p class="mt-4 text-xs text-zinc-400 leading-relaxed">
-            Operated under the partner management of <span class="text-zinc-300 font-medium">Preetam Dubey</span>.<br/>
-            Operations Address:<br/>
-            Waridasharathpur, Gonda, UP - 221304.
-          </p>
-        </div>
-        <div>
-          <h4 class="text-sm font-semibold text-white">Product</h4>
-          <ul class="mt-4 space-y-3">
-            <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Platform overview</a></li>
-            <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Integrations</a></li>
-            <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Enterprise grid</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-sm font-semibold text-white">Institutional Support</h4>
-          <div class="mt-4 bg-neutral-900/60 border border-neutral-800/80 rounded-lg p-3 inline-block">
-            <p class="text-xs text-zinc-400">Contact:</p>
-            <a href="mailto:datasuitepro.help@gmail.com" class="text-sm font-medium text-zinc-200 hover:text-white transition-all duration-300 ease-in-out break-all">datasuitepro.help@gmail.com</a>
-          </div>
-        </div>
-        <div>
-          <h4 class="text-sm font-semibold text-white">Legal</h4>
-          <ul class="mt-4 space-y-3">
-            <li><a href="terms.html" class="text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Terms of Service</a></li>
-            <li><a href="privacy.html" class="text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Privacy Policy</a></li>
-            <li><a href="refund.html" class="text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out">Refund & Chargeback Policy</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="mt-12 border-t border-neutral-800/80 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-xs text-zinc-500">&copy; 2026 DataSuitePro. All rights reserved. Preetam Dubey partnership.</p>
-        <p class="text-xs text-zinc-500">Gonda, Uttar Pradesh — 221304</p>
+    <div class="free-callout">
+      <div class="free-callout-icon">🎁</div>
+      <div>
+        <h4>Start completely free — no card required</h4>
+        <p>Your first 3 full exports are free. No account. No credit card. Process real files and see actual results before spending a single dollar. We earn your trust first.</p>
       </div>
     </div>
-  </footer>
-</body>
-</html>
 
+    <p class="pricing-note">All payments handled securely via Paddle. Subscription activates instantly upon payment. Cancel anytime.</p>
+  </div>
+</section>
 
+<!-- ═══ TRUST ═══ -->
+<section class="trust-section" id="trust">
+  <div class="section-tag">// Why Trust Us</div>
+  <h2 class="section-title">Built on privacy, speed,<br>and transparency.</h2>
 
-
-<!DOCTYPE html>
-<html lang="en" class="bg-neutral-950">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Terms of Service — DataSuitePro</title>
-  <meta name="description" content="Enterprise terms of service for DataSuitePro, operated under the partnership of Preetam Dubey.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-    body { background-color: #0a0a0a; }
-  </style>
-</head>
-<body class="bg-neutral-950 text-zinc-100 antialiased min-h-screen flex flex-col">
-  <header class="border-b border-neutral-800/80 bg-neutral-950/70 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center">
-      <a href="index.html" class="text-lg font-bold tracking-wider text-white hover:text-zinc-200 transition-all duration-300">DataSuitePro</a>
+  <div class="trust-grid">
+    <div class="trust-card">
+      <div class="trust-icon">🔐</div>
+      <h4>Zero Server Processing</h4>
+      <p>All file operations run entirely inside your browser using local JavaScript engines. Your data never touches any server — not ours, not anyone's.</p>
     </div>
-  </header>
+    <div class="trust-card">
+      <div class="trust-icon">⚡</div>
+      <h4>Instant Activation</h4>
+      <p>When you subscribe, your plan activates automatically the moment payment is confirmed. No manual approval, no waiting for emails, no friction.</p>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">📋</div>
+      <h4>Clear Legal Policies</h4>
+      <p>Full terms of service, privacy policy, and refund policy are published and accessible. We operate with complete transparency — no fine-print surprises.</p>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">🤝</div>
+      <h4>Real Support, Real People</h4>
+      <p>Every support request reaches our team directly at datasuitepro.help@gmail.com. We respond, we solve, we follow up.</p>
+    </div>
+  </div>
+</section>
 
-  <main class="flex-grow py-16 px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-      <a href="index.html" class="inline-flex items-center gap-x-2 text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out mb-8">
-        <span aria-hidden="true">←</span> Return to Infrastructure Hub
+<!-- ═══ FAQ ═══ -->
+<section class="faq-section" id="faq">
+  <div class="faq-inner">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div class="section-tag" style="text-align:center;">// FAQ</div>
+      <h2 class="section-title">Common questions answered.</h2>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Is my data safe? Does DataSuite Pro upload my files anywhere? <span class="faq-chevron">+</span></div>
+      <div class="faq-a">No. Every file operation — transformation, cleaning, merging, mapping — runs entirely inside your browser using local JavaScript. Your files are never uploaded, transmitted, or stored anywhere outside your own machine. This is by design and is a core architectural commitment, not just a policy.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">How does the free tier work exactly? <span class="faq-chevron">+</span></div>
+      <div class="faq-a">You get 3 full free exports — no account, no credit card required. Process real files with real data. See actual output. Only after your 3rd free export will you be prompted to upgrade. We believe you should experience results before spending money.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">When does my subscription activate after payment? <span class="faq-chevron">+</span></div>
+      <div class="faq-a">Instantly. Payment is handled by Paddle, our billing partner. The moment your payment is confirmed by Paddle, your plan unlocks without any manual approval step. No waiting, no emails to send, no team to contact.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">What file formats are supported? <span class="faq-chevron">+</span></div>
+      <div class="faq-a">The platform supports CSV, JSON, TSV, XLSX (Excel), and XML as both input and output formats depending on the module. The Transformer module handles cross-format conversions. The Merger and Cleaner modules work with CSV and Excel by default.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Is there a row limit on the free plan? <span class="faq-chevron">+</span></div>
+      <div class="faq-a">The free tier gives you 3 complete exports with no row restriction — process files of any size during your free trial. After your 3 free exports are used, row processing is unlimited on the Enterprise Pro plan, and up to 10,000 rows per operation on the Starter Suite.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Can I cancel my subscription anytime? <span class="faq-chevron">+</span></div>
+      <div class="faq-a">Yes, with no penalty or notice period. You can cancel anytime via Paddle's customer portal or by emailing datasuitepro.help@gmail.com. Your plan remains active until the end of the current billing period.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA BANNER ═══ -->
+<section class="cta-banner">
+  <h2>Stop losing time to<br><span style="color:var(--accent)">preventable data friction.</span></h2>
+  <p>Join operations and data teams who process thousands of files monthly with DataSuite Pro. Start free in under 10 seconds.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+    <a href="dashboard.html" class="btn-primary">⚡ Launch Platform Free</a>
+    <a href="mailto:datasuitepro.help@gmail.com" class="btn-secondary">✉ Contact Sales</a>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="/" class="nav-logo">
+        <div class="logo-mark">D</div>
+        DataSuite<span>Pro</span>
       </a>
-
-      <div class="bg-neutral-900/40 border border-neutral-800 rounded-xl p-8 lg:p-10 backdrop-blur-sm">
-        <h1 class="text-3xl font-bold tracking-tight text-white mb-2">Terms of Service</h1>
-        <p class="text-sm text-zinc-400 mb-8">Last updated: June 4, 2026 · Effective immediately</p>
-
-        <div class="prose prose-invert max-w-none text-zinc-300 space-y-6 text-sm leading-relaxed">
-          <p>
-            These Terms of Service ("Terms") govern your access to and use of the DataSuitePro platform, website, and associated services
-            (collectively, the "Services"). By registering for or using the Services, you agree to be bound by these Terms.
-            The Services are operated under the exclusive partnership management of <strong class="text-white font-medium">Preetam Dubey</strong>,
-            with official operations address at <strong class="text-white font-medium">Waridasharathpur, Gonda, Uttar Pradesh - 221304, India</strong>.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">1. Enterprise Eligibility & Registration</h2>
-          <p>
-            You represent that you are of legal age to form a binding contract and are not barred from receiving services under applicable jurisdiction.
-            Enterprise accounts must provide accurate, current, and complete registration information. DataSuitePro reserves the right to suspend or terminate
-            accounts that violate compliance requirements or misrepresent business affiliation.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">2. Platform Compliance & Acceptable Use</h2>
-          <p>
-            You agree not to misuse the infrastructure, including unauthorized access, load testing without prior written consent, or reverse engineering
-            proprietary components. DataSuitePro aligns its payment processing and subscription management with <strong class="text-white font-medium">Paddle</strong>
-            standards, and you must comply with Paddle's acceptable use policies as updated from time to time.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">3. Intellectual Property & Data Rights</h2>
-          <p>
-            All rights, title, and interest in the platform remain with DataSuitePro and its partner Preetam Dubey. You retain ownership of your data.
-            By submitting data, you grant us a limited license to process it solely for providing the Services. No transfer of intellectual property is implied.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">4. Subscription, Billing & Paddle Alignment</h2>
-          <p>
-            Subscriptions are billed in advance on a recurring basis. All payment processing is handled by Paddle; you agree to Paddle's terms and
-            acknowledge that your billing relationship is subject to Paddle's merchant of record structure. Price changes will be communicated 30 days
-            in advance. Failure to maintain valid payment methods may result in service suspension.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">5. Limitation of Liability</h2>
-          <p>
-            To the fullest extent permitted by law, DataSuitePro and its partner Preetam Dubey shall not be liable for any indirect, incidental, special,
-            or consequential damages arising out of or in connection with the Services. Our aggregate liability is capped at the amount paid by you
-            in the twelve months preceding the claim.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">6. Governing Law & Dispute Resolution</h2>
-          <p>
-            These Terms are governed by the laws of India, with exclusive jurisdiction in the courts of Uttar Pradesh. Any dispute must first be attempted
-            to be resolved informally via <a href="mailto:datasuitepro.help@gmail.com" class="text-zinc-200 underline hover:text-white transition-all duration-300">datasuitepro.help@gmail.com</a> before formal proceedings.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">7. Contact & Legal Notices</h2>
-          <p>
-            All legal notices must be sent to the registered operations address at Waridasharathpur, Gonda, UP - 221304, or emailed to
-            <a href="mailto:datasuitepro.help@gmail.com" class="text-zinc-200 underline hover:text-white transition-all duration-300">datasuitepro.help@gmail.com</a>.
-            This agreement represents the entire understanding between you and DataSuitePro regarding the Services.
-          </p>
-        </div>
-      </div>
+      <p>Enterprise data infrastructure platform. Transform, clean, merge, and map bulk data files entirely in your browser — instantly and privately.</p>
     </div>
-  </main>
-
-  <footer class="border-t border-neutral-800/80 bg-neutral-950 py-8 mt-auto">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-xs text-zinc-500">
-      &copy; 2026 DataSuitePro — Preetam Dubey. Waridasharathpur, Gonda, UP - 221304.
+    <div class="footer-col">
+      <h5>Platform</h5>
+      <a href="dashboard.html">Launch Dashboard</a>
+      <a href="#modules">All Modules</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#how">How It Works</a>
     </div>
-  </footer>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a href="terms.html">Terms of Service</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="refund.html">Refund Policy</a>
+    </div>
+    <div class="footer-col">
+      <h5>Support</h5>
+      <a href="mailto:datasuitepro.help@gmail.com">datasuitepro.help@gmail.com</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">
+      © 2026 DataSuite Pro. All rights reserved.<br />
+      <strong>DataSuite Pro</strong> — A registered business partnership.<br />
+      Operational address: Waridasharathpur, Gonda, Uttar Pradesh – 221304, India.<br />
+      Business enquiries: datasuitepro.help@gmail.com
+    </div>
+    <div class="footer-legal">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="refund.html">Refund</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── Billing Toggle ── */
+  let isYearly = true;
+  function toggleBilling() {
+    isYearly = !isYearly;
+    const track = document.getElementById('billingToggle');
+    track.classList.toggle('monthly', !isYearly);
+
+    const starterP = document.getElementById('starterPrice');
+    const proP = document.getElementById('proPrice');
+    const starterNote = document.getElementById('starterYearlyNote');
+    const proNote = document.getElementById('proYearlyNote');
+
+    if (isYearly) {
+      starterP.innerHTML = '<sup>$</sup>62<sub>/mo</sub>';
+      proP.innerHTML = '<sup>$</sup>249<sub>/mo</sub>';
+      starterNote.style.display = 'block';
+      proNote.style.display = 'block';
+    } else {
+      starterP.innerHTML = '<sup>$</sup>79<sub>/mo</sub>';
+      proP.innerHTML = '<sup>$</sup>299<sub>/mo</sub>';
+      starterNote.style.display = 'none';
+      proNote.style.display = 'none';
+    }
+  }
+  // Default to yearly ON
+  toggleBilling();
+
+  /* ── FAQ Toggle ── */
+  function toggleFaq(el) {
+    const wasOpen = el.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) el.classList.add('open');
+  }
+
+  /* ── Scroll reveal ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.problem-card, .module-card, .trust-card, .step, .pricing-card').forEach(el => {
+    el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity .5s ease, transform .5s ease';
+    observer.observe(el);
+  });
+</script>
+
 </body>
 </html>
-
-
-
-
-<!DOCTYPE html>
-<html lang="en" class="bg-neutral-950">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Privacy Policy — DataSuitePro</title>
-  <meta name="description" content="DataSuitePro privacy and data governance policy. Data controllership held by Preetam Dubey.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-    body { background-color: #0a0a0a; }
-  </style>
-</head>
-<body class="bg-neutral-950 text-zinc-100 antialiased min-h-screen flex flex-col">
-  <header class="border-b border-neutral-800/80 bg-neutral-950/70 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center">
-      <a href="index.html" class="text-lg font-bold tracking-wider text-white hover:text-zinc-200 transition-all duration-300">DataSuitePro</a>
-    </div>
-  </header>
-
-  <main class="flex-grow py-16 px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-      <a href="index.html" class="inline-flex items-center gap-x-2 text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out mb-8">
-        <span aria-hidden="true">←</span> Return to Infrastructure Hub
-      </a>
-
-      <div class="bg-neutral-900/40 border border-neutral-800 rounded-xl p-8 lg:p-10 backdrop-blur-sm">
-        <h1 class="text-3xl font-bold tracking-tight text-white mb-2">Privacy & Data Governance Policy</h1>
-        <p class="text-sm text-zinc-400 mb-8">Last updated: June 4, 2026 · Data controllership: Preetam Dubey</p>
-
-        <div class="prose prose-invert max-w-none text-zinc-300 space-y-6 text-sm leading-relaxed">
-          <p>
-            DataSuitePro is committed to protecting enterprise data with the highest standards of security and transparency.
-            This privacy policy describes how we collect, use, and safeguard information when you use our platform.
-            <strong class="text-white font-medium">Data controllership</strong> is exclusively held by
-            <strong class="text-white font-medium">Preetam Dubey and partner</strong> at the registered operations address:
-            <strong class="text-white font-medium">Waridasharathpur, Gonda, Uttar Pradesh - 221304, India</strong>.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">1. Information We Collect</h2>
-          <p>
-            We collect information you provide directly: account registration details, billing information (processed securely via Paddle),
-            and any data you upload to the infrastructure. We also collect standard telemetry data to ensure platform reliability.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">2. Enterprise-Grade Encryption & Security</h2>
-          <p>
-            All data is encrypted using <strong class="text-white font-medium">AES-256 encryption</strong> at rest and in transit.
-            Our infrastructure employs TLS 1.3 for all communications. Payment data is tokenized and handled exclusively by Paddle,
-            which maintains PCI DSS Level 1 compliance. We undergo regular security audits to satisfy strict payment processor requirements.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">3. Data Usage & Processing</h2>
-          <p>
-            Your data is processed solely for delivering the Services. We do not sell, rent, or share enterprise data with third parties
-            except as required for core platform functionality (e.g., cloud infrastructure providers bound by data processing agreements).
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">4. Data Retention & Deletion</h2>
-          <p>
-            We retain account data for the duration of your subscription. Upon termination, data is securely purged within 30 days,
-            except where retention is required by law. Backup media is encrypted and logically air-gapped.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">5. Cross-Border Data Transfers</h2>
-          <p>
-            Data may be processed in secure data centers located globally, subject to Standard Contractual Clauses or equivalent
-            adequacy mechanisms. The data controller remains Preetam Dubey at the Gonda address.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">6. Your Rights & Contact</h2>
-          <p>
-            You may request access, correction, or deletion of your data by contacting
-            <a href="mailto:datasuitepro.help@gmail.com" class="text-zinc-200 underline hover:text-white transition-all duration-300">datasuitepro.help@gmail.com</a>.
-            For sensitive inquiries, physical correspondence may be directed to Waridasharathpur, Gonda, UP - 221304.
-          </p>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <footer class="border-t border-neutral-800/80 bg-neutral-950 py-8 mt-auto">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-xs text-zinc-500">
-      &copy; 2026 DataSuitePro — Preetam Dubey. AES-256 secured infrastructure.
-    </div>
-  </footer>
-</body>
-</html>
-
-
-
-
-<!DOCTYPE html>
-<html lang="en" class="bg-neutral-950">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Refund & Anti-Chargeback Policy — DataSuitePro</title>
-  <meta name="description" content="DataSuitePro refund and chargeback protection policy aligned with Paddle compliance.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-    body { background-color: #0a0a0a; }
-  </style>
-</head>
-<body class="bg-neutral-950 text-zinc-100 antialiased min-h-screen flex flex-col">
-  <header class="border-b border-neutral-800/80 bg-neutral-950/70 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center">
-      <a href="index.html" class="text-lg font-bold tracking-wider text-white hover:text-zinc-200 transition-all duration-300">DataSuitePro</a>
-    </div>
-  </header>
-
-  <main class="flex-grow py-16 px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-      <a href="index.html" class="inline-flex items-center gap-x-2 text-sm text-zinc-400 hover:text-white transition-all duration-300 ease-in-out mb-8">
-        <span aria-hidden="true">←</span> Return to Infrastructure Hub
-      </a>
-
-      <div class="bg-neutral-900/40 border border-neutral-800 rounded-xl p-8 lg:p-10 backdrop-blur-sm">
-        <h1 class="text-3xl font-bold tracking-tight text-white mb-2">Refund & Anti-Chargeback Policy</h1>
-        <p class="text-sm text-zinc-400 mb-8">Legal shield for Paddle compliance · Non-negotiable enterprise terms</p>
-
-        <div class="prose prose-invert max-w-none text-zinc-300 space-y-6 text-sm leading-relaxed">
-          <div class="bg-red-950/20 border border-red-800/40 rounded-lg p-4 mb-6">
-            <p class="text-red-200 text-xs font-semibold tracking-wide uppercase">Critical compliance notice</p>
-            <p class="text-zinc-300 text-sm mt-1">
-              This policy constitutes an absolute legal shield aligned with Paddle's merchant requirements. By subscribing, you acknowledge and accept these terms without reservation.
-            </p>
-          </div>
-
-          <h2 class="text-xl font-semibold text-white mt-10">1. Instant Subscription Management</h2>
-          <p>
-            <strong class="text-white font-medium">Subscriptions can be managed instantly</strong> via your account dashboard. You may upgrade, downgrade, or cancel
-            your subscription at any time without penalty. Cancellation takes effect at the end of the current billing cycle; no partial refunds are issued for unused time.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">2. Case-by-Case Refund Evaluation</h2>
-          <p>
-            <strong class="text-white font-medium">Refunds are reviewed on a case-by-case evaluation structure.</strong> We assess each request within
-            <strong class="text-white font-medium">14 business days</strong> based on usage patterns, account standing, and technical circumstances.
-            Legitimate service outages exceeding SLA thresholds may qualify for prorated credits. Refund decisions are final and issued at our sole discretion.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">3. Mandatory Pre-Dispute Contact</h2>
-          <p>
-            <strong class="text-white font-medium text-base">ABSOLUTELY NO CHARGEBACKS WITHOUT PRIOR CONTACT.</strong>
-            Before initiating any payment dispute, chargeback, or reversal with your bank or Paddle, you <span class="underline">must</span>
-            contact us directly at <a href="mailto:datasuitepro.help@gmail.com" class="text-white font-semibold underline hover:text-zinc-200 transition-all duration-300">datasuitepro.help@gmail.com</a>.
-            Any chargeback filed without first attempting resolution through our support channel constitutes a material breach of these terms
-            and will result in immediate account termination and possible legal recovery of dispute fees.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">4. Paddle Payment Processor Alignment</h2>
-          <p>
-            All payments are processed by Paddle.com. You agree to comply with Paddle's Buyer Terms. DataSuitePro reserves the right to
-            provide transaction records, access logs, and account activity to Paddle to defend against unwarranted disputes.
-            By subscribing, you expressly waive the right to initiate a chargeback for services rendered unless fraud is evident.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">5. Dispute Resolution & Governing Law</h2>
-          <p>
-            This policy is governed under the laws of India, with exclusive jurisdiction in Gonda, Uttar Pradesh. Any dispute arising from
-            refund requests or chargebacks shall first be mediated informally via <a href="mailto:datasuitepro.help@gmail.com" class="text-zinc-200 underline hover:text-white transition-all duration-300">datasuitepro.help@gmail.com</a>.
-            If unresolved, binding arbitration shall occur in Lucknow, UP.
-          </p>
-
-          <h2 class="text-xl font-semibold text-white mt-10">6. Contact for Financial Inquiries</h2>
-          <p>
-            For all billing, refund, or anti-chargeback matters, email <a href="mailto:datasuitepro.help@gmail.com" class="text-white font-semibold underline hover:text-zinc-200 transition-all duration-300">datasuitepro.help@gmail.com</a>.
-            Physical correspondence: Waridasharathpur, Gonda, Uttar Pradesh - 221304. Partner: Preetam Dubey.
-          </p>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <footer class="border-t border-neutral-800/80 bg-neutral-950 py-8 mt-auto">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center text-xs text-zinc-500">
-      &copy; 2026 DataSuitePro — Preetam Dubey. Paddle-aligned financial shield policy.
-    </div>
-  </footer>
-</body>
-</html>
-
