@@ -1,399 +1,1430 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-neutral-950">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>DataSuitePro | Enterprise Data Fabric</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataSuite Pro — Dashboard</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:         #080a0c;
+      --bg-panel:   #0d1014;
+      --bg-card:    #111519;
+      --bg-card2:   #161b20;
+      --border:     rgba(255,255,255,0.07);
+      --border-hi:  rgba(0,210,150,0.25);
+      --accent:     #00d296;
+      --accent2:    #00a8f8;
+      --accent3:    #7b61ff;
+      --warn:       #f0a500;
+      --danger:     #ff4d4d;
+      --text-1:     #eef0f2;
+      --text-2:     #8b9199;
+      --text-3:     #4a5158;
+      --font-d:     'Syne', sans-serif;
+      --font-b:     'Instrument Sans', sans-serif;
+      --font-m:     'DM Mono', monospace;
+    }
+    html, body { height: 100%; }
     body {
-      background-color: #0a0a0a;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      letter-spacing: -0.01em;
+      background: var(--bg); color: var(--text-1);
+      font-family: var(--font-b); font-size: 14px;
+      display: flex; flex-direction: column; overflow-x: hidden;
     }
-    .chat-bubble-shadow {
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--text-3); border-radius: 2px; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; background: var(--bg-panel);
+      border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 50;
+      position: sticky; top: 0;
     }
-    .glow-pulse {
-      animation: pulse-glow 2s infinite;
+    .logo {
+      font-family: var(--font-d); font-size: 16px; font-weight: 800;
+      letter-spacing: -0.5px; text-decoration: none; color: var(--text-1);
+      display: flex; align-items: center; gap: 9px;
     }
-    @keyframes pulse-glow {
-      0%, 100% { text-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
-      50% { text-shadow: 0 0 16px rgba(16, 185, 129, 0.9); }
+    .logo span { color: var(--accent); }
+    .logo-mark {
+      width: 27px; height: 27px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #080a0c;
     }
-    .paywall-backdrop {
-      backdrop-filter: blur(16px);
-      background-color: rgba(0, 0, 0, 0.8);
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .free-counter {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-m); font-size: 11px; color: var(--text-2);
+      padding: 6px 12px; border-radius: 7px;
+      background: rgba(0,210,150,0.07); border: 1px solid rgba(0,210,150,0.15);
+    }
+    .counter-dots { display: flex; gap: 4px; }
+    .counter-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); transition: background .3s;
+    }
+    .counter-dot.used { background: var(--text-3); }
+    .btn-upgrade {
+      padding: 7px 16px; border-radius: 7px;
+      background: var(--accent); color: #080a0c; border: none;
+      font-weight: 700; font-size: 12px; cursor: pointer;
+      font-family: var(--font-b); letter-spacing: 0.02em;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-upgrade:hover { opacity: .88; transform: translateY(-1px); }
+    .topbar-home {
+      font-size: 12px; color: var(--text-3); text-decoration: none;
+      transition: color .2s;
+    }
+    .topbar-home:hover { color: var(--text-1); }
+
+    /* ── LAYOUT ── */
+    .app-body { display: flex; flex: 1; min-height: 0; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px; flex-shrink: 0; background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; padding: 20px 12px;
+      overflow-y: auto;
+    }
+    .sidebar-label {
+      font-family: var(--font-m); font-size: 9.5px; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; padding: 0 8px;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px; cursor: pointer;
+      font-size: 13px; font-weight: 500; color: var(--text-2);
+      transition: all .2s; border: 1px solid transparent; margin-bottom: 2px;
+      text-decoration: none;
+    }
+    .sidebar-item:hover { background: var(--bg-card); color: var(--text-1); }
+    .sidebar-item.active {
+      background: rgba(0,210,150,0.08); color: var(--accent);
+      border-color: rgba(0,210,150,0.2);
+    }
+    .sidebar-icon { font-size: 15px; flex-shrink: 0; }
+    .sidebar-num {
+      margin-left: auto; font-family: var(--font-m); font-size: 9px;
+      color: var(--text-3); letter-spacing: 0.05em;
+    }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 14px 8px; }
+
+    /* ── MAIN ── */
+    .main { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+    /* ── MODULE HEADER ── */
+    .module-header { margin-bottom: 24px; }
+    .module-tag { font-family: var(--font-m); font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
+    .module-title { font-family: var(--font-d); font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .module-desc { font-size: 13px; color: var(--text-2); }
+
+    /* ── DROP ZONE ── */
+    .dropzone {
+      border: 1.5px dashed var(--border);
+      border-radius: 12px; padding: 48px 32px; text-align: center;
+      cursor: pointer; transition: all .25s; background: var(--bg-card);
+      margin-bottom: 24px; position: relative;
+    }
+    .dropzone:hover, .dropzone.drag-over {
+      border-color: var(--border-hi); background: rgba(0,210,150,0.04);
+    }
+    .dropzone input[type=file] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .dz-icon { font-size: 36px; margin-bottom: 14px; }
+    .dz-title { font-family: var(--font-d); font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .dz-sub { font-size: 12.5px; color: var(--text-2); }
+    .dz-formats {
+      display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 14px;
+    }
+    .fmt-chip {
+      font-family: var(--font-m); font-size: 10px; padding: 3px 9px;
+      border-radius: 4px; background: rgba(0,210,150,0.07);
+      color: var(--accent); border: 1px solid rgba(0,210,150,0.15);
+    }
+    .file-info {
+      display: none; align-items: center; gap: 12px;
+      padding: 14px 18px; border-radius: 9px;
+      background: var(--bg-card2); border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .file-info.visible { display: flex; }
+    .file-info-icon { font-size: 22px; }
+    .file-info-text { flex: 1; }
+    .file-info-name { font-weight: 600; font-size: 13.5px; }
+    .file-info-meta { font-family: var(--font-m); font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    .btn-clear {
+      background: none; border: none; color: var(--text-3); cursor: pointer;
+      font-size: 18px; padding: 4px; transition: color .2s;
+    }
+    .btn-clear:hover { color: var(--danger); }
+
+    /* ── OPTIONS ROW ── */
+    .options-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; align-items: flex-end; }
+    .opt-group { display: flex; flex-direction: column; gap: 6px; }
+    .opt-label { font-family: var(--font-m); font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
+    .opt-select {
+      padding: 9px 14px; border-radius: 7px; font-size: 13px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-1); font-family: var(--font-b); cursor: pointer;
+      transition: border-color .2s; min-width: 140px; outline: none;
+    }
+    .opt-select:focus { border-color: var(--border-hi); }
+    .opt-input {
+      padding: 9px 14px; border-radius: 7px; font-size: 13px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-1); font-family: var(--font-b); outline: none;
+      transition: border-color .2s; min-width: 120px;
+    }
+    .opt-input:focus { border-color: var(--border-hi); }
+    .btn-run {
+      padding: 10px 24px; border-radius: 8px;
+      background: var(--accent); color: #080a0c;
+      border: none; font-weight: 700; font-size: 13.5px;
+      cursor: pointer; font-family: var(--font-b);
+      transition: all .2s; letter-spacing: 0.01em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-run:hover { opacity: .88; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,210,150,0.3); }
+    .btn-run:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ── PREVIEW TABLE ── */
+    .preview-wrap {
+      border-radius: 10px; border: 1px solid var(--border);
+      overflow: hidden; margin-bottom: 24px; display: none;
+    }
+    .preview-wrap.visible { display: block; }
+    .preview-header {
+      padding: 12px 18px; background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .preview-header-left { display: flex; align-items: center; gap: 10px; }
+    .preview-title { font-family: var(--font-m); font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.1em; }
+    .preview-stats { font-family: var(--font-m); font-size: 10.5px; color: var(--text-3); }
+    .preview-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    thead tr { background: var(--bg-card2); }
+    th {
+      padding: 10px 14px; text-align: left;
+      font-family: var(--font-m); font-size: 10.5px; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      border-bottom: 1px solid var(--border); white-space: nowrap;
+    }
+    td {
+      padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: var(--text-2); white-space: nowrap; max-width: 200px;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.015); color: var(--text-1); }
+    .row-num { color: var(--text-3); font-family: var(--font-m); font-size: 10.5px; }
+
+    /* ── OUTPUT PANEL ── */
+    .output-panel {
+      display: none; padding: 18px; border-radius: 10px;
+      border: 1px solid rgba(0,210,150,0.2); background: rgba(0,210,150,0.04);
+      margin-bottom: 24px;
+    }
+    .output-panel.visible { display: block; }
+    .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .output-title { font-family: var(--font-m); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; }
+    .btn-download {
+      padding: 8px 18px; border-radius: 7px;
+      background: var(--accent); color: #080a0c;
+      border: none; font-weight: 700; font-size: 12.5px;
+      cursor: pointer; font-family: var(--font-b);
+      transition: all .2s; display: flex; align-items: center; gap: 6px;
+    }
+    .btn-download:hover { opacity: .88; }
+    .output-meta { font-size: 12.5px; color: var(--text-2); }
+    .output-meta span { color: var(--text-1); font-weight: 600; }
+
+    /* ── LOG ── */
+    .log-panel { display: none; margin-bottom: 24px; }
+    .log-panel.visible { display: block; }
+    .log-inner {
+      background: #06080a; border: 1px solid var(--border); border-radius: 9px;
+      padding: 14px 16px; font-family: var(--font-m); font-size: 11.5px;
+      max-height: 140px; overflow-y: auto; color: var(--text-2);
+      line-height: 1.8;
+    }
+    .log-ok { color: var(--accent); }
+    .log-warn { color: var(--warn); }
+    .log-err { color: var(--danger); }
+
+    /* ── MODULE PANELS ── */
+    .module-panel { display: none; }
+    .module-panel.active { display: block; }
+
+    /* ── CHECKBOX OPTS ── */
+    .check-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+    .check-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .check-item input[type=checkbox] { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+    .check-item label { font-size: 13px; cursor: pointer; color: var(--text-2); }
+
+    /* ── MAPPER ── */
+    .mapper-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+    .mapper-row { display: flex; align-items: center; gap: 10px; }
+    .mapper-row .map-src {
+      flex: 1; padding: 8px 12px; border-radius: 6px;
+      background: var(--bg-card2); border: 1px solid var(--border);
+      color: var(--text-2); font-family: var(--font-m); font-size: 11.5px;
+    }
+    .mapper-arrow { color: var(--text-3); font-size: 14px; flex-shrink: 0; }
+    .mapper-row .map-dest {
+      flex: 1; padding: 8px 12px; border-radius: 6px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-1); font-family: var(--font-b); font-size: 12px;
+      outline: none; transition: border-color .2s;
+    }
+    .mapper-row .map-dest:focus { border-color: var(--border-hi); }
+
+    /* ── PAYWALL MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(4,6,8,0.92); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 40px; max-width: 600px; width: 100%;
+      transform: scale(.95); transition: transform .3s;
+      position: relative; overflow: hidden;
+    }
+    .modal-overlay.open .modal-box { transform: scale(1); }
+    .modal-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; color: var(--text-3); cursor: pointer;
+      font-size: 20px; transition: color .2s; line-height: 1;
+    }
+    .modal-close:hover { color: var(--text-1); }
+    .modal-tag { font-family: var(--font-m); font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; }
+    .modal-title { font-family: var(--font-d); font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; }
+    .modal-desc { font-size: 13.5px; color: var(--text-2); margin-bottom: 28px; line-height: 1.65; }
+    .modal-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+    @media(max-width:500px){ .modal-plans{grid-template-columns:1fr;} }
+    .modal-plan {
+      padding: 20px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--bg-card2); transition: border-color .2s;
+    }
+    .modal-plan.best { border-color: var(--accent); background: rgba(0,210,150,0.04); }
+    .modal-plan-name { font-family: var(--font-m); font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .modal-plan-price { font-family: var(--font-d); font-size: 30px; font-weight: 800; letter-spacing: -1px; margin-bottom: 6px; }
+    .modal-plan-price sup { font-size: 14px; vertical-align: top; margin-top: 6px; }
+    .modal-plan-price sub { font-size: 12px; color: var(--text-3); font-family: var(--font-b); }
+    .modal-plan-feat { font-size: 12px; color: var(--text-2); line-height: 1.6; margin-bottom: 14px; }
+    .modal-plan-cta {
+      display: block; text-align: center; padding: 10px;
+      border-radius: 7px; font-weight: 700; font-size: 12.5px;
+      cursor: pointer; text-decoration: none; transition: all .2s;
+      font-family: var(--font-b);
+    }
+    .modal-cta-main { background: var(--accent); color: #080a0c; border: none; }
+    .modal-cta-main:hover { opacity: .88; }
+    .modal-cta-sec { background: none; color: var(--text-1); border: 1px solid var(--border); }
+    .modal-cta-sec:hover { border-color: rgba(255,255,255,0.2); }
+    .modal-note { text-align: center; font-size: 11.5px; color: var(--text-3); }
+
+    /* ── AI BOT ── */
+    .bot-bubble {
+      position: fixed; bottom: 24px; right: 24px; z-index: 150;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; box-shadow: 0 4px 20px rgba(0,210,150,0.3);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .bot-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(0,210,150,0.45); }
+    .bot-panel {
+      position: fixed; bottom: 78px; right: 24px; z-index: 150;
+      width: 300px; border-radius: 14px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+      transform: scale(.9) translateY(12px); opacity: 0; pointer-events: none;
+      transform-origin: bottom right; transition: all .25s;
+      overflow: hidden;
+    }
+    .bot-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+    .bot-panel-header {
+      padding: 12px 14px; background: var(--bg-card2);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 9px;
+    }
+    .bot-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; flex-shrink: 0;
+    }
+    .bot-name { font-weight: 700; font-size: 13px; }
+    .bot-status { font-size: 10px; color: var(--accent); font-family: var(--font-m); }
+    .bot-panel-close { margin-left: auto; background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 16px; transition: color .2s; }
+    .bot-panel-close:hover { color: var(--text-1); }
+    .bot-msgs {
+      padding: 14px; max-height: 220px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .bot-msg { padding: 10px 12px; border-radius: 9px; font-size: 12.5px; line-height: 1.55; max-width: 90%; }
+    .bot-msg.from-bot { background: var(--bg-card2); border: 1px solid var(--border); align-self: flex-start; color: var(--text-2); }
+    .bot-msg.from-bot strong { color: var(--text-1); }
+    .bot-msg.from-user { background: rgba(0,210,150,0.12); border: 1px solid rgba(0,210,150,0.2); align-self: flex-end; color: var(--accent); }
+    .bot-quick { padding: 0 14px 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .bot-q-btn {
+      padding: 5px 10px; border-radius: 100px; font-size: 11px;
+      background: var(--bg-card2); border: 1px solid var(--border);
+      color: var(--text-2); cursor: pointer; font-family: var(--font-b);
+      transition: all .2s;
+    }
+    .bot-q-btn:hover { border-color: var(--border-hi); color: var(--accent); }
+    .bot-input-row {
+      padding: 10px 12px; border-top: 1px solid var(--border);
+      display: flex; gap: 8px; align-items: center;
+    }
+    .bot-input {
+      flex: 1; background: var(--bg-card2); border: 1px solid var(--border);
+      border-radius: 7px; padding: 7px 10px; font-size: 12px;
+      color: var(--text-1); font-family: var(--font-b); outline: none;
+      transition: border-color .2s;
+    }
+    .bot-input:focus { border-color: var(--border-hi); }
+    .bot-send {
+      background: var(--accent); border: none; border-radius: 7px;
+      width: 30px; height: 30px; cursor: pointer; font-size: 13px;
+      transition: opacity .2s; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bot-send:hover { opacity: .88; }
+
+    @media(max-width:768px){
+      .sidebar { display: none; }
+      .main { padding: 20px 16px; }
     }
   </style>
 </head>
-<body class="bg-neutral-950 text-neutral-100 antialiased min-h-screen flex flex-col relative">
+<body>
 
-  <!-- Global Header -->
-  <header class="border-b border-neutral-800 bg-neutral-950/70 backdrop-blur-xl sticky top-0 z-30 px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <span class="text-2xl font-bold tracking-tight text-white">DataSuitePro</span>
-      <span class="text-xs font-mono text-emerald-400 flex items-center gap-1.5 glow-pulse">
-        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span> 100% Client-Side Secure
-      </span>
+<!-- ═══ TOP BAR ═══ -->
+<div class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-mark">D</div>
+    DataSuite<span>Pro</span>
+  </a>
+  <div class="topbar-right">
+    <div class="free-counter" id="freeCounter">
+      <div class="counter-dots" id="counterDots">
+        <div class="counter-dot" id="dot0"></div>
+        <div class="counter-dot" id="dot1"></div>
+        <div class="counter-dot" id="dot2"></div>
+      </div>
+      <span id="counterText">3 free exports left</span>
     </div>
-    <div class="text-xs font-mono text-neutral-500 hidden md:block border-l border-neutral-800 pl-4">
-      Operator Framework: Preetam Dubey & Business Partner Commercial Partnership
-    </div>
-  </header>
+    <button class="btn-upgrade" onclick="openPaywall()">Upgrade Plan</button>
+    <a href="index.html" class="topbar-home">← Home</a>
+  </div>
+</div>
 
-  <!-- 4-Tab Navigation Module -->
-  <nav class="border-b border-neutral-800 bg-neutral-950/60 px-4 py-3">
-    <div class="max-w-6xl mx-auto grid grid-cols-4 gap-2 text-sm font-medium">
-      <button id="tab1" onclick="switchModule('tab1')" class="transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/50 backdrop-blur-md text-white shadow-sm">Multi-Format Transformer</button>
-      <button id="tab2" onclick="switchModule('tab2')" class="transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:text-white">Data Sanitizer & Cleaner</button>
-      <button id="tab3" onclick="switchModule('tab3')" class="transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:text-white">Bulk Merger & Splitter</button>
-      <button id="tab4" onclick="switchModule('tab4')" class="transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:text-white">Target Mapping Tool</button>
-    </div>
-  </nav>
+<!-- ═══ APP BODY ═══ -->
+<div class="app-body">
 
-  <!-- Main Workspace -->
-  <main class="flex-1 flex flex-col items-center justify-start p-6 md:p-10 max-w-6xl mx-auto w-full">
-    
-    <!-- Drag & Drop Ingest Area -->
-    <div id="dropZone" class="w-full border-2 border-dashed border-neutral-800 hover:border-emerald-500/50 transition-all duration-300 rounded-2xl p-10 flex flex-col items-center justify-center bg-neutral-900/30 backdrop-blur-sm cursor-pointer group mb-8">
-      <div class="text-4xl mb-3 opacity-70">📂</div>
-      <p class="text-neutral-400 text-sm font-mono">Drop CSV file here or click to browse</p>
-      <input type="file" id="fileInput" accept=".csv,text/csv" class="hidden">
-      <p class="text-xs text-neutral-600 mt-2">Client-side memory parsing · No upload</p>
-    </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Modules</div>
 
-    <!-- Metadata Banner (hidden by default) -->
-    <div id="metadataBanner" class="hidden w-full flex items-center justify-between bg-neutral-900 border border-neutral-800 rounded-xl px-6 py-4 mb-6 text-sm">
-      <span class="text-neutral-300">File: <span id="fileNameDisplay" class="text-white font-mono">—</span></span>
-      <span class="text-emerald-400 font-mono">Rows ingested: <span id="rowCountDisplay">0</span></span>
+    <div class="sidebar-item active" id="nav-01" onclick="switchModule('01')">
+      <span class="sidebar-icon">⚡</span>
+      <span>Multi-Format Transformer</span>
+      <span class="sidebar-num">01</span>
     </div>
-
-    <!-- Preview Table Grid -->
-    <div class="w-full overflow-x-auto border border-neutral-800 rounded-xl bg-neutral-950/60 backdrop-blur-md mb-8">
-      <table class="w-full text-left text-xs md:text-sm font-mono">
-        <thead class="bg-neutral-900 text-neutral-400 uppercase tracking-wider border-b border-neutral-800">
-          <tr>
-            <th class="px-5 py-3">UID</th>
-            <th class="px-5 py-3">Timestamp</th>
-            <th class="px-5 py-3">Ingest_Payload</th>
-            <th class="px-5 py-3">Status_Check</th>
-          </tr>
-        </thead>
-        <tbody id="previewTableBody" class="divide-y divide-neutral-800 text-neutral-200">
-          <tr><td colspan="4" class="px-5 py-8 text-center text-neutral-600">Awaiting file ingestion...</td></tr>
-        </tbody>
-      </table>
+    <div class="sidebar-item" id="nav-02" onclick="switchModule('02')">
+      <span class="sidebar-icon">🧹</span>
+      <span>Data Sanitizer</span>
+      <span class="sidebar-num">02</span>
+    </div>
+    <div class="sidebar-item" id="nav-03" onclick="switchModule('03')">
+      <span class="sidebar-icon">🗂️</span>
+      <span>Bulk Merger & Splitter</span>
+      <span class="sidebar-num">03</span>
+    </div>
+    <div class="sidebar-item" id="nav-04" onclick="switchModule('04')">
+      <span class="sidebar-icon">🗺️</span>
+      <span>Target Mapper</span>
+      <span class="sidebar-num">04</span>
     </div>
 
-    <!-- Execute Engine Button -->
-    <button id="executeEngineButton" class="w-full md:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl tracking-wide transition-all duration-300 shadow-[0_0_25px_rgba(16,185,129,0.3)] disabled:opacity-40 disabled:cursor-not-allowed" disabled>
-      Execute Engine & Export Data
-    </button>
-    <p class="text-xs text-neutral-600 mt-3 text-center">Free tier: up to 50 rows. Premium unlocks unlimited processing.</p>
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-label">Support</div>
+    <a href="mailto:datasuitepro.help@gmail.com" class="sidebar-item">
+      <span class="sidebar-icon">✉️</span>
+      <span>Contact Support</span>
+    </a>
+    <a href="index.html#pricing" class="sidebar-item">
+      <span class="sidebar-icon">💳</span>
+      <span>View Pricing</span>
+    </a>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- ═══ MODULE 01: TRANSFORMER ═══ -->
+    <div class="module-panel active" id="panel-01">
+      <div class="module-header">
+        <div class="module-tag">Module 01 — Multi-Format Transformer</div>
+        <div class="module-title">Convert Any Data File Format</div>
+        <div class="module-desc">Upload a CSV, JSON, or TSV file and convert it to any supported output format instantly. Processing is done entirely in your browser.</div>
+      </div>
+
+      <div class="dropzone" id="dz01" ondragover="onDragOver(event,'dz01')" ondragleave="onDragLeave('dz01')" ondrop="onDrop(event,'01')">
+        <input type="file" id="fileInput01" accept=".csv,.json,.tsv,.txt" onchange="handleFileSelect('01', this)">
+        <div class="dz-icon">📂</div>
+        <div class="dz-title">Drop your file here or click to browse</div>
+        <div class="dz-sub">Reads data entirely in your browser — nothing is uploaded</div>
+        <div class="dz-formats">
+          <span class="fmt-chip">CSV</span>
+          <span class="fmt-chip">JSON</span>
+          <span class="fmt-chip">TSV</span>
+        </div>
+      </div>
+
+      <div class="file-info" id="fileInfo01">
+        <div class="file-info-icon">📄</div>
+        <div class="file-info-text">
+          <div class="file-info-name" id="fileName01">—</div>
+          <div class="file-info-meta" id="fileMeta01">—</div>
+        </div>
+        <button class="btn-clear" onclick="clearFile('01')" title="Remove file">✕</button>
+      </div>
+
+      <div class="options-row">
+        <div class="opt-group">
+          <div class="opt-label">Output Format</div>
+          <select class="opt-select" id="outputFormat01">
+            <option value="csv">CSV — Comma Separated</option>
+            <option value="tsv">TSV — Tab Separated</option>
+            <option value="json">JSON — Array of Objects</option>
+            <option value="jsonl">JSONL — One Object Per Line</option>
+          </select>
+        </div>
+        <div class="opt-group">
+          <div class="opt-label">CSV Delimiter (if output CSV)</div>
+          <select class="opt-select" id="delimiter01">
+            <option value=",">Comma  ,</option>
+            <option value=";">Semicolon  ;</option>
+            <option value="|">Pipe  |</option>
+          </select>
+        </div>
+        <button class="btn-run" id="runBtn01" onclick="runTransformer()" disabled>
+          ⚡ Execute Transformer & Export
+        </button>
+      </div>
+
+      <div class="preview-wrap" id="preview01">
+        <div class="preview-header">
+          <div class="preview-header-left">
+            <div class="preview-title">File Preview</div>
+            <div class="preview-stats" id="previewStats01"></div>
+          </div>
+        </div>
+        <div class="preview-scroll">
+          <table id="previewTable01"></table>
+        </div>
+      </div>
+
+      <div class="log-panel" id="log01">
+        <div class="log-inner" id="logInner01"></div>
+      </div>
+
+      <div class="output-panel" id="output01">
+        <div class="output-header">
+          <div class="output-title">✓ Transform Complete</div>
+          <button class="btn-download" id="downloadBtn01">⬇ Download File</button>
+        </div>
+        <div class="output-meta" id="outputMeta01"></div>
+      </div>
+    </div>
+
+    <!-- ═══ MODULE 02: SANITIZER ═══ -->
+    <div class="module-panel" id="panel-02">
+      <div class="module-header">
+        <div class="module-tag">Module 02 — Data Sanitizer & Cleaner</div>
+        <div class="module-title">Clean, Deduplicate & Normalize</div>
+        <div class="module-desc">Remove duplicates, trim whitespace, standardize empty fields, and validate your data structure. Get a clean, report-ready file in seconds.</div>
+      </div>
+
+      <div class="dropzone" id="dz02" ondragover="onDragOver(event,'dz02')" ondragleave="onDragLeave('dz02')" ondrop="onDrop(event,'02')">
+        <input type="file" id="fileInput02" accept=".csv,.tsv,.txt" onchange="handleFileSelect('02', this)">
+        <div class="dz-icon">🧹</div>
+        <div class="dz-title">Drop your CSV or TSV file here</div>
+        <div class="dz-sub">Upload to begin — all cleaning runs locally</div>
+        <div class="dz-formats">
+          <span class="fmt-chip">CSV</span>
+          <span class="fmt-chip">TSV</span>
+        </div>
+      </div>
+
+      <div class="file-info" id="fileInfo02">
+        <div class="file-info-icon">📄</div>
+        <div class="file-info-text">
+          <div class="file-info-name" id="fileName02">—</div>
+          <div class="file-info-meta" id="fileMeta02">—</div>
+        </div>
+        <button class="btn-clear" onclick="clearFile('02')" title="Remove file">✕</button>
+      </div>
+
+      <div class="opt-label" style="margin-bottom:8px;">Cleaning Options</div>
+      <div class="check-group">
+        <label class="check-item"><input type="checkbox" id="opt-dedup" checked><label for="opt-dedup">Remove duplicate rows</label></label>
+        <label class="check-item"><input type="checkbox" id="opt-trim" checked><label for="opt-trim">Trim leading/trailing whitespace</label></label>
+        <label class="check-item"><input type="checkbox" id="opt-empty" checked><label for="opt-empty">Remove fully empty rows</label></label>
+        <label class="check-item"><input type="checkbox" id="opt-normalize"><label for="opt-normalize">Normalize column headers (lowercase_underscore)</label></label>
+        <label class="check-item"><input type="checkbox" id="opt-fillna"><label for="opt-fillna">Replace empty cells with N/A</label></label>
+      </div>
+
+      <div class="options-row">
+        <button class="btn-run" id="runBtn02" onclick="runSanitizer()" disabled>
+          🧹 Execute Sanitizer & Export
+        </button>
+      </div>
+
+      <div class="preview-wrap" id="preview02">
+        <div class="preview-header">
+          <div class="preview-header-left">
+            <div class="preview-title">Preview (first 8 rows)</div>
+            <div class="preview-stats" id="previewStats02"></div>
+          </div>
+        </div>
+        <div class="preview-scroll">
+          <table id="previewTable02"></table>
+        </div>
+      </div>
+
+      <div class="log-panel" id="log02">
+        <div class="log-inner" id="logInner02"></div>
+      </div>
+
+      <div class="output-panel" id="output02">
+        <div class="output-header">
+          <div class="output-title">✓ Sanitization Complete</div>
+          <button class="btn-download" id="downloadBtn02">⬇ Download Clean File</button>
+        </div>
+        <div class="output-meta" id="outputMeta02"></div>
+      </div>
+    </div>
+
+    <!-- ═══ MODULE 03: MERGER ═══ -->
+    <div class="module-panel" id="panel-03">
+      <div class="module-header">
+        <div class="module-tag">Module 03 — Bulk Merger & Splitter</div>
+        <div class="module-title">Merge Multiple Files or Split One</div>
+        <div class="module-desc">Combine multiple CSV files with matching column structures into a single master dataset, or split a large file into smaller batches by row count.</div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-bottom:20px;">
+        <button class="btn-run" id="mergeMode" onclick="setMergerMode('merge')" style="background:var(--accent);">Merge Mode</button>
+        <button class="btn-run" id="splitMode" onclick="setMergerMode('split')" style="background:var(--bg-card);color:var(--text-2);border:1px solid var(--border);">Split Mode</button>
+      </div>
+
+      <!-- MERGE -->
+      <div id="mergerMerge">
+        <div class="dropzone" id="dz03" ondragover="onDragOver(event,'dz03')" ondragleave="onDragLeave('dz03')" ondrop="onDropMulti(event)">
+          <input type="file" id="fileInput03" accept=".csv,.tsv" multiple onchange="handleMultiFile(this)">
+          <div class="dz-icon">🗂️</div>
+          <div class="dz-title">Drop multiple CSV files here (or click to select)</div>
+          <div class="dz-sub">All files must share the same column headers</div>
+          <div class="dz-formats">
+            <span class="fmt-chip">CSV</span>
+            <span class="fmt-chip">TSV</span>
+          </div>
+        </div>
+        <div id="mergeFileList" style="margin-bottom:16px;display:flex;flex-direction:column;gap:6px;"></div>
+        <div class="options-row">
+          <button class="btn-run" id="runBtn03" onclick="runMerger()" disabled>
+            🗂️ Merge All Files & Export
+          </button>
+        </div>
+      </div>
+
+      <!-- SPLIT -->
+      <div id="mergerSplit" style="display:none;">
+        <div class="dropzone" id="dz03s" ondragover="onDragOver(event,'dz03s')" ondragleave="onDragLeave('dz03s')" ondrop="onDrop(event,'03s')">
+          <input type="file" id="fileInput03s" accept=".csv,.tsv" onchange="handleFileSelect('03s', this)">
+          <div class="dz-icon">✂️</div>
+          <div class="dz-title">Drop a large CSV to split</div>
+          <div class="dz-sub">Split into smaller batches by row count</div>
+          <div class="dz-formats"><span class="fmt-chip">CSV</span></div>
+        </div>
+        <div class="file-info" id="fileInfo03s">
+          <div class="file-info-icon">📄</div>
+          <div class="file-info-text">
+            <div class="file-info-name" id="fileName03s">—</div>
+            <div class="file-info-meta" id="fileMeta03s">—</div>
+          </div>
+          <button class="btn-clear" onclick="clearFile('03s')">✕</button>
+        </div>
+        <div class="options-row">
+          <div class="opt-group">
+            <div class="opt-label">Rows per split file</div>
+            <input type="number" class="opt-input" id="splitRows" value="500" min="10">
+          </div>
+          <button class="btn-run" id="runBtn03s" onclick="runSplitter()" disabled>
+            ✂️ Split File & Download
+          </button>
+        </div>
+      </div>
+
+      <div class="log-panel" id="log03">
+        <div class="log-inner" id="logInner03"></div>
+      </div>
+
+      <div class="output-panel" id="output03">
+        <div class="output-header">
+          <div class="output-title">✓ Complete</div>
+          <button class="btn-download" id="downloadBtn03">⬇ Download</button>
+        </div>
+        <div class="output-meta" id="outputMeta03"></div>
+      </div>
+    </div>
+
+    <!-- ═══ MODULE 04: MAPPER ═══ -->
+    <div class="module-panel" id="panel-04">
+      <div class="module-header">
+        <div class="module-tag">Module 04 — Target Mapping Tool</div>
+        <div class="module-title">Remap Column Headers</div>
+        <div class="module-desc">Upload a file, then rename any column header to match your target system's schema. Download the remapped file instantly.</div>
+      </div>
+
+      <div class="dropzone" id="dz04" ondragover="onDragOver(event,'dz04')" ondragleave="onDragLeave('dz04')" ondrop="onDrop(event,'04')">
+        <input type="file" id="fileInput04" accept=".csv,.tsv" onchange="handleFileSelect('04', this)">
+        <div class="dz-icon">🗺️</div>
+        <div class="dz-title">Drop your source CSV here</div>
+        <div class="dz-sub">Column headers will appear below for remapping</div>
+        <div class="dz-formats"><span class="fmt-chip">CSV</span><span class="fmt-chip">TSV</span></div>
+      </div>
+
+      <div class="file-info" id="fileInfo04">
+        <div class="file-info-icon">📄</div>
+        <div class="file-info-text">
+          <div class="file-info-name" id="fileName04">—</div>
+          <div class="file-info-meta" id="fileMeta04">—</div>
+        </div>
+        <button class="btn-clear" onclick="clearFile('04')">✕</button>
+      </div>
+
+      <div id="mapperGrid" style="display:none;">
+        <div class="opt-label" style="margin-bottom:10px;">Column Mapping — Source → Target Name</div>
+        <div class="mapper-grid" id="mapperRows"></div>
+        <div class="options-row">
+          <button class="btn-run" id="runBtn04" onclick="runMapper()">
+            🗺️ Apply Mapping & Export
+          </button>
+        </div>
+      </div>
+
+      <div class="log-panel" id="log04">
+        <div class="log-inner" id="logInner04"></div>
+      </div>
+
+      <div class="output-panel" id="output04">
+        <div class="output-header">
+          <div class="output-title">✓ Mapping Applied</div>
+          <button class="btn-download" id="downloadBtn04">⬇ Download Remapped File</button>
+        </div>
+        <div class="output-meta" id="outputMeta04"></div>
+      </div>
+    </div>
+
   </main>
+</div>
 
-  <!-- Paywall Modal -->
-  <div id="paywallModal" class="hidden fixed inset-0 z-50 flex items-center justify-center paywall-backdrop p-4">
-    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative">
-      <button id="closePaywall" class="absolute top-5 right-5 text-neutral-500 hover:text-white text-2xl leading-none">&times;</button>
-      
-      <h2 class="text-2xl font-bold text-white mb-2">Unlock Full Processing Power</h2>
-      <p class="text-neutral-400 text-sm mb-6">Select a plan to remove the 50-row throttle and enable enterprise exports.</p>
-
-      <!-- Billing Toggle -->
-      <div class="flex items-center justify-center gap-4 mb-8 bg-neutral-800 p-1.5 rounded-xl w-fit mx-auto">
-        <button id="monthlyToggle" onclick="switchBillingCycle('monthly')" class="px-6 py-2 rounded-lg text-sm font-semibold transition bg-neutral-950 text-white shadow">Monthly</button>
-        <button id="yearlyToggle" onclick="switchBillingCycle('yearly')" class="px-6 py-2 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white">Yearly (2 Months Free)</button>
-      </div>
-
-      <!-- Pricing Cards Grid -->
-      <div class="grid md:grid-cols-2 gap-6">
-        
-        <!-- Professional Card -->
-        <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-6 flex flex-col">
-          <h3 class="text-lg font-semibold text-white mb-1">Professional</h3>
-          <p class="text-neutral-500 text-xs mb-5">100,000 Row Processing Array</p>
-          
-          <div class="price-display-monthly">
-            <span class="text-4xl font-bold text-white">$99</span><span class="text-neutral-400 text-sm">/mo</span>
-            <p class="text-neutral-500 text-xs mt-1">De-throttle engineering workflows.</p>
-          </div>
-          <div class="price-display-yearly hidden">
-            <span class="text-4xl font-bold text-white">$79</span><span class="text-neutral-400 text-sm">/mo</span>
-            <p class="text-emerald-400 text-xs mt-1">Billed annually: $948 upfront. Saves $240/yr.</p>
-            <p class="text-neutral-500 text-xs">Priority memory processing queues.</p>
-          </div>
-          
-          <button id="paddle-professional-monthly" class="mt-6 w-full py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl font-medium transition price-display-monthly" onclick="openPaddleCheckout('pro_monthly')">Get Professional Monthly</button>
-          <button id="paddle-professional-yearly" class="mt-6 w-full py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl font-medium transition price-display-yearly hidden" onclick="openPaddleCheckout('pro_yearly')">Get Professional Yearly</button>
-        </div>
-
-        <!-- Enterprise Card -->
-        <div class="bg-neutral-950 border border-emerald-800/60 rounded-2xl p-6 flex flex-col relative">
-          <span class="absolute -top-3 right-4 bg-emerald-600 text-black text-xs font-bold px-3 py-1 rounded-full">ENTERPRISE</span>
-          <h3 class="text-lg font-semibold text-white mb-1">Enterprise Suite</h3>
-          <p class="text-neutral-500 text-xs mb-5">Infinite Row Ingestion Array</p>
-          
-          <div class="price-display-monthly">
-            <span class="text-4xl font-bold text-white">$299</span><span class="text-neutral-400 text-sm">/mo</span>
-            <p class="text-neutral-500 text-xs mt-1">Complete unrestricted infrastructure.</p>
-          </div>
-          <div class="price-display-yearly hidden">
-            <span class="text-4xl font-bold text-white">$249</span><span class="text-neutral-400 text-sm">/mo</span>
-            <p class="text-emerald-400 text-xs mt-1">Billed annually: $2,988 upfront. Saves $600/yr.</p>
-            <p class="text-neutral-500 text-xs">Pure sandboxed local execution for compliance audits.</p>
-          </div>
-          
-          <button id="paddle-enterprise-monthly" class="mt-6 w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl transition price-display-monthly" onclick="openPaddleCheckout('ent_monthly')">Get Enterprise Monthly</button>
-          <button id="paddle-enterprise-yearly" class="mt-6 w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl transition price-display-yearly hidden" onclick="openPaddleCheckout('ent_yearly')">Get Enterprise Yearly</button>
-        </div>
-      </div>
-      <p class="text-neutral-600 text-xs text-center mt-6">Secured by Paddle. 100% client-side processing after upgrade.</p>
+<!-- ═══ PAYWALL MODAL ═══ -->
+<div class="modal-overlay" id="paywallModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closePaywall()">✕</button>
+    <div class="modal-tag">🔒 Free Tier Limit Reached</div>
+    <div class="modal-title">You've used your 3 free exports.</div>
+    <div class="modal-desc">
+      You've seen what DataSuite Pro can do — now unlock unlimited operations for your team.
+      Choose the plan that fits your scale.
     </div>
-  </div>
-
-  <!-- Concierge Chat Bot -->
-  <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
-    <div id="chatWindow" class="hidden w-80 h-96 bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-3 transition-all duration-200">
-      <div class="bg-neutral-800 px-4 py-3 text-sm font-semibold text-white border-b border-neutral-700">Concierge Terminal</div>
-      <div id="chatMessages" class="flex-1 p-4 space-y-3 overflow-y-auto text-xs font-mono text-neutral-300">
-        <p class="text-neutral-500">> System ready. Ask about plans or errors.</p>
+    <div class="modal-plans">
+      <div class="modal-plan">
+        <div class="modal-plan-name">Starter Suite</div>
+        <div class="modal-plan-price"><sup>$</sup>79<sub>/mo</sub></div>
+        <div class="modal-plan-feat">Up to 10,000 rows per operation · All 4 modules · Email support</div>
+        <a href="mailto:datasuitepro.help@gmail.com?subject=Starter Suite — Purchase" class="modal-plan-cta modal-cta-sec">Get Starter</a>
       </div>
-      <div class="p-3 border-t border-neutral-800 flex gap-2">
-        <input type="text" id="chatInput" placeholder="Type keyword..." class="flex-1 bg-neutral-950 border border-neutral-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" onkeydown="if(event.key==='Enter')sendChatMessage()">
-        <button onclick="sendChatMessage()" class="bg-neutral-700 hover:bg-neutral-600 px-3 py-2 rounded-lg text-xs text-white">Send</button>
+      <div class="modal-plan best">
+        <div class="modal-plan-name">Enterprise Pro</div>
+        <div class="modal-plan-price"><sup>$</sup>299<sub>/mo</sub></div>
+        <div class="modal-plan-feat">Unlimited rows · All modules · Priority 12hr support · Template library</div>
+        <a href="mailto:datasuitepro.help@gmail.com?subject=Enterprise Pro — Purchase" class="modal-plan-cta modal-cta-main">Get Enterprise Pro</a>
       </div>
     </div>
-    <button onclick="toggleChat()" class="w-12 h-12 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center text-xl chat-bubble-shadow hover:bg-neutral-700 transition text-emerald-400">
-      <span id="chatIcon">💬</span>
-    </button>
+    <p class="modal-note">Payment via Paddle. Plan activates instantly. Cancel anytime. · datasuitepro.help@gmail.com</p>
   </div>
+</div>
 
-  <script>
-    (function() {
-      // GLOBAL STATE
-      window.currentFile = null;
-      window.parsedRows = [];
-      window.isPremiumUser = false;
-      window.currentBillingCycle = 'monthly'; // default monthly
+<!-- ═══ AI HELP BOT ═══ -->
+<button class="bot-bubble" onclick="toggleBot()" title="Help & Support">💬</button>
 
-      // PADDLE INIT
-      if (typeof Paddle !== 'undefined') {
-        Paddle.Environment.set("sandbox");
-        Paddle.Initialize({
-          token: "test_7d27f61a269d16f5c5b3c2a9",
-          eventCallback: function(data) {
-            if (data.name === "checkout.completed") {
-              window.isPremiumUser = true;
-              document.getElementById('paywallModal').classList.add('hidden');
-              document.body.style.overflow = '';
-              // Auto-trigger download if file ready
-              if (window.currentFile && window.parsedRows.length > 0) {
-                executeDownload();
-              }
-            }
-          }
-        });
-      }
+<div class="bot-panel" id="botPanel">
+  <div class="bot-panel-header">
+    <div class="bot-avatar">🤖</div>
+    <div>
+      <div class="bot-name">DataSuite Assistant</div>
+      <div class="bot-status">● Online</div>
+    </div>
+    <button class="bot-panel-close" onclick="toggleBot()">✕</button>
+  </div>
+  <div class="bot-msgs" id="botMsgs">
+    <div class="bot-msg from-bot">Hi! I'm the DataSuite Pro assistant. Ask me anything about the platform, formats, pricing, or how to fix an error.</div>
+  </div>
+  <div class="bot-quick" id="botQuick">
+    <button class="bot-q-btn" onclick="botAsk('What file formats are supported?')">Supported formats?</button>
+    <button class="bot-q-btn" onclick="botAsk('How does pricing work?')">Pricing?</button>
+    <button class="bot-q-btn" onclick="botAsk('My file is not loading, what should I do?')">File not loading?</button>
+    <button class="bot-q-btn" onclick="botAsk('How do I use the mapper?')">How to use mapper?</button>
+  </div>
+  <div class="bot-input-row">
+    <input class="bot-input" id="botInput" type="text" placeholder="Ask a question…" onkeydown="if(event.key==='Enter')sendBotMsg()">
+    <button class="bot-send" onclick="sendBotMsg()">→</button>
+  </div>
+</div>
 
-      // Module Tabs Switching
-      window.switchModule = function(id) {
-        const tabs = ['tab1','tab2','tab3','tab4'];
-        tabs.forEach(t => {
-          const el = document.getElementById(t);
-          if (t === id) {
-            el.className = 'transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/50 backdrop-blur-md text-white shadow-sm';
-          } else {
-            el.className = 'transition-all duration-300 py-2.5 px-3 rounded-lg border border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:text-white';
-          }
-        });
-      };
+<script>
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const STATE = {
+  files: {},          // module id → parsed { headers, rows, rawText, type }
+  mergeFiles: [],     // array of { name, headers, rows }
+  usedExports: parseInt(localStorage.getItem('dsp_exports') || '0'),
+  FREE_LIMIT: 3,
+};
 
-      // File Handling
-      const dropZone = document.getElementById('dropZone');
-      const fileInput = document.getElementById('fileInput');
-      const executeBtn = document.getElementById('executeEngineButton');
-      const metadataBanner = document.getElementById('metadataBanner');
-      const fileNameDisplay = document.getElementById('fileNameDisplay');
-      const rowCountDisplay = document.getElementById('rowCountDisplay');
-      const previewBody = document.getElementById('previewTableBody');
+function saveExports() {
+  localStorage.setItem('dsp_exports', STATE.usedExports);
+  updateCounter();
+}
 
-      dropZone.addEventListener('click', () => fileInput.click());
-      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-emerald-400'); });
-      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-emerald-400'));
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('border-emerald-400');
-        if (e.dataTransfer.files.length) {
-          processFile(e.dataTransfer.files[0]);
-        }
-      });
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length) processFile(e.target.files[0]);
-      });
+function updateCounter() {
+  const left = Math.max(0, STATE.FREE_LIMIT - STATE.usedExports);
+  const text = document.getElementById('counterText');
+  if (left === 0) {
+    text.textContent = 'Free uses exhausted';
+    text.style.color = 'var(--danger)';
+  } else {
+    text.textContent = left + ' free export' + (left === 1 ? '' : 's') + ' left';
+    text.style.color = '';
+  }
+  for (let i = 0; i < 3; i++) {
+    document.getElementById('dot' + i).classList.toggle('used', i < STATE.usedExports);
+  }
+}
 
-      function processFile(file) {
-        window.currentFile = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const text = e.target.result;
-          parseCSVContent(text, file.name);
-        };
-        reader.readAsText(file, "UTF-8");
-      }
+function checkFreeLimit() {
+  if (STATE.usedExports >= STATE.FREE_LIMIT) {
+    openPaywall();
+    return false;
+  }
+  return true;
+}
 
-      function parseCSVContent(csvText, fileName) {
-        const lines = csvText.split('\n').filter(line => line.trim() !== '');
-        if (lines.length === 0) {
-          window.parsedRows = [];
-          updatePreview([]);
-          return;
-        }
-        
-        // Assume first line might be header; we still parse as data for preview robustness
-        const rows = [];
-        for (let i = 0; i < lines.length; i++) {
-          const cols = lines[i].split(',').map(c => c.trim());
-          // Fallback wrapper logic: ensure 4 clean columns
-          const uid = (cols[0] && cols[0] !== '-' && cols[0] !== '') ? cols[0] : `USR-${i}`;
-          const timestamp = (cols[1] && cols[1] !== '-' && cols[1] !== '') ? cols[1] : new Date().toISOString();
-          const payload = (cols[2] && cols[2] !== '-' && cols[2] !== '') ? cols[2] : `{"data_stream_id": ${i}}`;
-          const status = (cols[3] && cols[3] !== '-' && cols[3] !== '') ? cols[3] : 'Valid';
-          
-          rows.push([uid, timestamp, payload, status]);
-        }
-        window.parsedRows = rows;
-        updatePreview(rows);
-        fileNameDisplay.textContent = fileName;
-        rowCountDisplay.textContent = rows.length;
-        metadataBanner.classList.remove('hidden');
-        executeBtn.disabled = false;
-      }
+updateCounter();
 
-      function updatePreview(rows) {
-        if (!rows.length) {
-          previewBody.innerHTML = '<tr><td colspan="4" class="px-5 py-8 text-center text-neutral-600">No data parsed</td></tr>';
-          return;
-        }
-        const previewSlice = rows.slice(0, 5);
-        previewBody.innerHTML = previewSlice.map(r => 
-          `<tr class="hover:bg-neutral-900/50">
-            <td class="px-5 py-2.5 text-emerald-300">${escapeHtml(r[0])}</td>
-            <td class="px-5 py-2.5 text-neutral-400">${escapeHtml(r[1])}</td>
-            <td class="px-5 py-2.5 text-neutral-300 max-w-[200px] truncate">${escapeHtml(r[2])}</td>
-            <td class="px-5 py-2.5"><span class="text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full text-xs">${escapeHtml(r[3])}</span></td>
-          </tr>`
-        ).join('');
-      }
+/* ═══════════════════════════════════════════
+   PAYWALL
+═══════════════════════════════════════════ */
+function openPaywall() {
+  document.getElementById('paywallModal').classList.add('open');
+}
+function closePaywall() {
+  document.getElementById('paywallModal').classList.remove('open');
+}
 
-      function escapeHtml(text) {
-        return String(text).replace(/[&<>"]/g, function(m) {
-          if (m === '&') return '&amp;';
-          if (m === '<') return '&lt;';
-          if (m === '>') return '&gt;';
-          if (m === '"') return '&quot;';
-          return m;
-        });
-      }
+/* ═══════════════════════════════════════════
+   MODULE SWITCHER
+═══════════════════════════════════════════ */
+function switchModule(id) {
+  document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+}
 
-      // Execute Button Logic
-      executeBtn.addEventListener('click', () => {
-        if (!window.parsedRows.length) return;
-        if (window.parsedRows.length <= 50 || window.isPremiumUser) {
-          executeDownload();
-        } else {
-          // Show paywall
-          document.getElementById('paywallModal').classList.remove('hidden');
-          document.body.style.overflow = 'hidden';
-          // Ensure monthly active on open
-          switchBillingCycle('monthly');
-        }
-      });
+/* ═══════════════════════════════════════════
+   DRAG & DROP HELPERS
+═══════════════════════════════════════════ */
+function onDragOver(e, id) {
+  e.preventDefault();
+  document.getElementById(id).classList.add('drag-over');
+}
+function onDragLeave(id) {
+  document.getElementById(id).classList.remove('drag-over');
+}
+function onDrop(e, mid) {
+  e.preventDefault();
+  document.getElementById('dz' + mid).classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) fakeInputSelect(mid, file);
+}
+function onDropMulti(e) {
+  e.preventDefault();
+  document.getElementById('dz03').classList.remove('drag-over');
+  handleMultiFile({ files: e.dataTransfer.files });
+}
+function fakeInputSelect(mid, file) {
+  const input = document.getElementById('fileInput' + mid);
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+  handleFileSelect(mid, { files: dt.files });
+}
 
-      function executeDownload() {
-        if (!window.parsedRows.length) return;
-        const csvContent = "UID,Timestamp,Ingest_Payload,Status_Check\n" + 
-          window.parsedRows.map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(',')).join('\n');
-        const blob = new Blob([csvContent], {type: 'text/csv'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `datasuite_export_${new Date().toISOString().slice(0,10)}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
+/* ═══════════════════════════════════════════
+   FILE PARSING
+═══════════════════════════════════════════ */
+function detectDelimiter(text) {
+  const first = text.split('\n')[0];
+  if (first.split('\t').length > first.split(',').length) return '\t';
+  return ',';
+}
 
-      // Paywall Toggle & Close
-      window.switchBillingCycle = function(cycle) {
-        window.currentBillingCycle = cycle;
-        const monthlyToggle = document.getElementById('monthlyToggle');
-        const yearlyToggle = document.getElementById('yearlyToggle');
-        const monthlyElements = document.querySelectorAll('.price-display-monthly');
-        const yearlyElements = document.querySelectorAll('.price-display-yearly');
-        
-        if (cycle === 'monthly') {
-          monthlyToggle.className = 'px-6 py-2 rounded-lg text-sm font-semibold transition bg-neutral-950 text-white shadow';
-          yearlyToggle.className = 'px-6 py-2 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white';
-          monthlyElements.forEach(el => el.classList.remove('hidden'));
-          yearlyElements.forEach(el => el.classList.add('hidden'));
-        } else {
-          yearlyToggle.className = 'px-6 py-2 rounded-lg text-sm font-semibold transition bg-neutral-950 text-white shadow';
-          monthlyToggle.className = 'px-6 py-2 rounded-lg text-sm font-semibold transition text-neutral-400 hover:text-white';
-          monthlyElements.forEach(el => el.classList.add('hidden'));
-          yearlyElements.forEach(el => el.classList.remove('hidden'));
-        }
-      };
+function parseCSV(text, delim) {
+  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split('\n');
+  if (!lines.length) return { headers: [], rows: [] };
+  const headers = lines[0].split(delim).map(h => h.trim().replace(/^"|"$/g, ''));
+  const rows = lines.slice(1).map(l => {
+    const vals = l.split(delim).map(v => v.trim().replace(/^"|"$/g, ''));
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = vals[i] ?? '');
+    return obj;
+  });
+  return { headers, rows };
+}
 
-      document.getElementById('closePaywall').addEventListener('click', () => {
-        document.getElementById('paywallModal').classList.add('hidden');
-        document.body.style.overflow = '';
-      });
+function parseJSON(text) {
+  try {
+    const data = JSON.parse(text);
+    const arr = Array.isArray(data) ? data : [data];
+    if (!arr.length) return { headers: [], rows: [] };
+    const headers = Object.keys(arr[0]);
+    return { headers, rows: arr };
+  } catch {
+    return null;
+  }
+}
 
-      window.openPaddleCheckout = function(planId) {
-        if (typeof Paddle === 'undefined') {
-          alert('Paddle SDK loading; please refresh.');
-          return;
-        }
-        let priceId = '';
-        if (planId === 'pro_monthly') priceId = 'pri_01hqexamplepro monthly';
-        else if (planId === 'pro_yearly') priceId = 'pri_01hqexamplepro yearly';
-        else if (planId === 'ent_monthly') priceId = 'pri_01hqexampleent monthly';
-        else if (planId === 'ent_yearly') priceId = 'pri_01hqexampleent yearly';
-        
-        Paddle.Checkout.open({
-          items: [{ priceId: priceId, quantity: 1 }]
-        });
-      };
+function readFile(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = () => rej(new Error('Read failed'));
+    r.readAsText(file);
+  });
+}
 
-      // Concierge Chat
-      window.toggleChat = function() {
-        const chat = document.getElementById('chatWindow');
-        chat.classList.toggle('hidden');
-      };
+function humanSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1048576).toFixed(2) + ' MB';
+}
 
-      window.sendChatMessage = function() {
-        const input = document.getElementById('chatInput');
-        const msg = input.value.trim().toLowerCase();
-        if (!msg) return;
-        const messagesDiv = document.getElementById('chatMessages');
-        messagesDiv.innerHTML += `<p class="text-white">> ${input.value}</p>`;
-        
-        let reply = "I can assist with pricing, errors, or file processing queries.";
-        if (msg.includes('error') || msg.includes('mismatch')) reply = "DataSuitePro auto-corrects column mismatches using fallback UID/timestamp injection. No empty cells pass to export.";
-        else if (msg.includes('price') || msg.includes('cost') || msg.includes('buy') || msg.includes('package')) reply = "Professional ($99/mo) up to 100k rows. Enterprise ($299/mo) infinite rows. Yearly saves 2 months.";
-        else if (msg.includes('free')) reply = "Free tier processes 50 rows instantly. Upgrade for unlimited local execution.";
-        else if (msg.includes('merge') || msg.includes('premium')) reply = "Bulk Merger & Premium processing unlocked in paid plans. Contact operator framework for enterprise audit.";
-        
-        messagesDiv.innerHTML += `<p class="text-emerald-400">> ${reply}</p>`;
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        input.value = '';
-      };
+/* ═══════════════════════════════════════════
+   FILE SELECT HANDLER
+═══════════════════════════════════════════ */
+async function handleFileSelect(mid, input) {
+  const file = input.files ? input.files[0] : input;
+  if (!file) return;
 
-      // Initial tab highlight
-      switchModule('tab1');
-    })();
-  </script>
+  const text = await readFile(file);
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  let parsed;
+  if (ext === 'json') {
+    parsed = parseJSON(text);
+    if (!parsed) { logMsg(mid, 'err', 'Invalid JSON structure.'); return; }
+    parsed.type = 'json';
+  } else {
+    const delim = detectDelimiter(text);
+    parsed = parseCSV(text, delim);
+    parsed.type = delim === '\t' ? 'tsv' : 'csv';
+  }
+
+  parsed.rawText = text;
+  parsed.fileName = file.name;
+  parsed.fileSize = file.size;
+  STATE.files[mid] = parsed;
+
+  // Show file info
+  const fi = document.getElementById('fileInfo' + mid);
+  document.getElementById('fileName' + mid).textContent = file.name;
+  document.getElementById('fileMeta' + mid).textContent =
+    humanSize(file.size) + '  ·  ' + parsed.rows.length + ' rows  ·  ' + parsed.headers.length + ' columns';
+  fi.classList.add('visible');
+
+  // Enable run btn
+  const rb = document.getElementById('runBtn' + mid);
+  if (rb) rb.disabled = false;
+
+  // Preview
+  renderPreview(mid, parsed, 8);
+
+  // Module 04 mapper
+  if (mid === '04') buildMapperGrid(parsed.headers);
+
+  logMsg(mid, 'ok', '✓ Loaded: ' + file.name + ' — ' + parsed.rows.length + ' rows, ' + parsed.headers.length + ' columns');
+}
+
+/* ═══════════════════════════════════════════
+   CLEAR FILE
+═══════════════════════════════════════════ */
+function clearFile(mid) {
+  delete STATE.files[mid];
+  document.getElementById('fileInfo' + mid).classList.remove('visible');
+  const rb = document.getElementById('runBtn' + mid);
+  if (rb) rb.disabled = true;
+  hideElem('preview' + mid);
+  hideElem('output' + mid);
+  hideElem('log' + mid);
+  if (mid === '04') document.getElementById('mapperGrid').style.display = 'none';
+}
+
+function hideElem(id) {
+  const el = document.getElementById(id);
+  if (el) { el.classList.remove('visible'); }
+}
+
+/* ═══════════════════════════════════════════
+   RENDER PREVIEW TABLE
+═══════════════════════════════════════════ */
+function renderPreview(mid, parsed, limit) {
+  const wrap = document.getElementById('preview' + mid);
+  if (!wrap) return;
+  const tbl = document.getElementById('previewTable' + mid);
+  const stats = document.getElementById('previewStats' + mid);
+  if (!tbl) return;
+
+  const rows = parsed.rows.slice(0, limit);
+  let html = '<thead><tr><th>#</th>' + parsed.headers.map(h => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>';
+  rows.forEach((row, i) => {
+    html += '<tr><td class="row-num">' + (i + 1) + '</td>' +
+      parsed.headers.map(h => '<td title="' + esc(row[h] || '') + '">' + esc((row[h] || '').toString().substring(0, 60)) + '</td>').join('') + '</tr>';
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+  if (stats) stats.textContent = parsed.rows.length + ' total rows · ' + parsed.headers.length + ' columns';
+  wrap.classList.add('visible');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ═══════════════════════════════════════════
+   LOG
+═══════════════════════════════════════════ */
+function logMsg(mid, type, msg) {
+  const panel = document.getElementById('log' + mid);
+  const inner = document.getElementById('logInner' + mid);
+  if (!panel || !inner) return;
+  panel.classList.add('visible');
+  const cls = type === 'ok' ? 'log-ok' : type === 'warn' ? 'log-warn' : 'log-err';
+  const ts = new Date().toLocaleTimeString();
+  inner.innerHTML += '<span class="' + cls + '">[' + ts + '] ' + esc(msg) + '</span>\n';
+  inner.scrollTop = inner.scrollHeight;
+}
+
+/* ═══════════════════════════════════════════
+   OUTPUT HELPERS
+═══════════════════════════════════════════ */
+function showOutput(mid, meta, downloadFn) {
+  const panel = document.getElementById('output' + mid);
+  const metaEl = document.getElementById('outputMeta' + mid);
+  const dlBtn = document.getElementById('downloadBtn' + mid);
+  if (!panel) return;
+  metaEl.innerHTML = meta;
+  dlBtn.onclick = downloadFn;
+  panel.classList.add('visible');
+}
+
+function triggerDownload(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+/* ═══════════════════════════════════════════
+   SERIALIZERS
+═══════════════════════════════════════════ */
+function toCSV(headers, rows, delim) {
+  const d = delim || ',';
+  const quote = v => { v = String(v ?? ''); return (v.includes(d) || v.includes('"') || v.includes('\n')) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  const lines = [headers.map(quote).join(d)];
+  rows.forEach(row => lines.push(headers.map(h => quote(row[h] ?? '')).join(d)));
+  return lines.join('\n');
+}
+
+function toJSON(headers, rows) {
+  return JSON.stringify(rows.map(row => {
+    const obj = {};
+    headers.forEach(h => obj[h] = row[h] ?? '');
+    return obj;
+  }), null, 2);
+}
+
+function toJSONL(headers, rows) {
+  return rows.map(row => {
+    const obj = {};
+    headers.forEach(h => obj[h] = row[h] ?? '');
+    return JSON.stringify(obj);
+  }).join('\n');
+}
+
+/* ═══════════════════════════════════════════
+   MODULE 01: TRANSFORMER
+═══════════════════════════════════════════ */
+function runTransformer() {
+  if (!checkFreeLimit()) return;
+  const parsed = STATE.files['01'];
+  if (!parsed) { logMsg('01', 'err', 'No file loaded.'); return; }
+
+  const format = document.getElementById('outputFormat01').value;
+  const delim = document.getElementById('delimiter01').value;
+
+  logMsg('01', 'ok', 'Processing ' + parsed.rows.length + ' rows…');
+
+  let content, ext, mime;
+  if (format === 'csv') {
+    content = toCSV(parsed.headers, parsed.rows, delim);
+    ext = 'csv'; mime = 'text/csv';
+  } else if (format === 'tsv') {
+    content = toCSV(parsed.headers, parsed.rows, '\t');
+    ext = 'tsv'; mime = 'text/tab-separated-values';
+  } else if (format === 'json') {
+    content = toJSON(parsed.headers, parsed.rows);
+    ext = 'json'; mime = 'application/json';
+  } else {
+    content = toJSONL(parsed.headers, parsed.rows);
+    ext = 'jsonl'; mime = 'application/jsonlines';
+  }
+
+  const outName = parsed.fileName.replace(/\.[^.]+$/, '') + '_transformed.' + ext;
+  STATE.usedExports++;
+  saveExports();
+  logMsg('01', 'ok', '✓ Transform complete → ' + outName + ' (' + parsed.rows.length + ' rows)');
+  showOutput('01',
+    'Output: <span>' + outName + '</span> · Format: <span>' + format.toUpperCase() + '</span> · Rows: <span>' + parsed.rows.length + '</span> · Columns: <span>' + parsed.headers.length + '</span>',
+    () => triggerDownload(content, outName, mime)
+  );
+}
+
+/* ═══════════════════════════════════════════
+   MODULE 02: SANITIZER
+═══════════════════════════════════════════ */
+function runSanitizer() {
+  if (!checkFreeLimit()) return;
+  const parsed = STATE.files['02'];
+  if (!parsed) { logMsg('02', 'err', 'No file loaded.'); return; }
+
+  let rows = parsed.rows.map(r => ({ ...r }));
+  const before = rows.length;
+  const opts = {
+    dedup: document.getElementById('opt-dedup').checked,
+    trim: document.getElementById('opt-trim').checked,
+    empty: document.getElementById('opt-empty').checked,
+    normalize: document.getElementById('opt-normalize').checked,
+    fillna: document.getElementById('opt-fillna').checked,
+  };
+
+  // Trim
+  if (opts.trim) {
+    rows = rows.map(r => {
+      const nr = {};
+      parsed.headers.forEach(h => nr[h] = (r[h] || '').toString().trim());
+      return nr;
+    });
+    logMsg('02', 'ok', 'Trimmed whitespace from all cells.');
+  }
+
+  // Fill NA
+  if (opts.fillna) {
+    rows = rows.map(r => {
+      const nr = {};
+      parsed.headers.forEach(h => nr[h] = (r[h] === '' || r[h] == null) ? 'N/A' : r[h]);
+      return nr;
+    });
+    logMsg('02', 'ok', 'Empty cells replaced with N/A.');
+  }
+
+  // Remove empty rows
+  if (opts.empty) {
+    const before2 = rows.length;
+    rows = rows.filter(r => parsed.headers.some(h => (r[h] || '').toString().trim() !== '' && r[h] !== 'N/A'));
+    logMsg('02', 'ok', 'Removed ' + (before2 - rows.length) + ' fully empty rows.');
+  }
+
+  // Dedup
+  if (opts.dedup) {
+    const seen = new Set();
+    const before3 = rows.length;
+    rows = rows.filter(r => {
+      const key = JSON.stringify(r);
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    logMsg('02', 'ok', 'Removed ' + (before3 - rows.length) + ' duplicate rows.');
+  }
+
+  // Normalize headers
+  let headers = [...parsed.headers];
+  if (opts.normalize) {
+    headers = headers.map(h => h.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''));
+    rows = rows.map(r => {
+      const nr = {};
+      parsed.headers.forEach((oh, i) => nr[headers[i]] = r[oh]);
+      return nr;
+    });
+    logMsg('02', 'ok', 'Column headers normalized to lowercase_underscore.');
+  }
+
+  const removed = before - rows.length;
+  logMsg('02', 'ok', '✓ Sanitization complete. ' + removed + ' rows removed. ' + rows.length + ' rows remain.');
+
+  const outName = (parsed.fileName || 'data').replace(/\.[^.]+$/, '') + '_cleaned.csv';
+  const content = toCSV(headers, rows, ',');
+  STATE.usedExports++;
+  saveExports();
+
+  showOutput('02',
+    'Output: <span>' + outName + '</span> · Rows cleaned: <span>' + removed + ' removed</span> · Final rows: <span>' + rows.length + '</span>',
+    () => triggerDownload(content, outName, 'text/csv')
+  );
+}
+
+/* ═══════════════════════════════════════════
+   MODULE 03: MERGER & SPLITTER
+═══════════════════════════════════════════ */
+let mergerMode = 'merge';
+
+function setMergerMode(mode) {
+  mergerMode = mode;
+  document.getElementById('mergerMerge').style.display = mode === 'merge' ? 'block' : 'none';
+  document.getElementById('mergerSplit').style.display = mode === 'split' ? 'block' : 'none';
+  const mb = document.getElementById('mergeMode');
+  const sb = document.getElementById('splitMode');
+  mb.style.background = mode === 'merge' ? 'var(--accent)' : 'var(--bg-card)';
+  mb.style.color = mode === 'merge' ? '#080a0c' : 'var(--text-2)';
+  sb.style.background = mode === 'split' ? 'var(--accent)' : 'var(--bg-card)';
+  sb.style.color = mode === 'split' ? '#080a0c' : 'var(--text-2)';
+}
+
+async function handleMultiFile(input) {
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+  STATE.mergeFiles = [];
+  for (const f of files) {
+    const text = await readFile(f);
+    const delim = detectDelimiter(text);
+    const parsed = parseCSV(text, delim);
+    STATE.mergeFiles.push({ name: f.name, headers: parsed.headers, rows: parsed.rows });
+  }
+  const list = document.getElementById('mergeFileList');
+  list.innerHTML = STATE.mergeFiles.map((f, i) =>
+    '<div class="file-info visible"><span class="file-info-icon">📄</span>' +
+    '<div class="file-info-text"><div class="file-info-name">' + esc(f.name) + '</div>' +
+    '<div class="file-info-meta">' + f.rows.length + ' rows · ' + f.headers.length + ' cols</div></div></div>'
+  ).join('');
+  document.getElementById('runBtn03').disabled = false;
+  logMsg('03', 'ok', 'Loaded ' + files.length + ' files.');
+}
+
+function runMerger() {
+  if (!checkFreeLimit()) return;
+  if (!STATE.mergeFiles.length) { logMsg('03', 'err', 'No files loaded.'); return; }
+
+  const baseHeaders = STATE.mergeFiles[0].headers;
+  let allRows = [];
+  STATE.mergeFiles.forEach(f => {
+    allRows = allRows.concat(f.rows);
+  });
+
+  logMsg('03', 'ok', 'Merged ' + STATE.mergeFiles.length + ' files — ' + allRows.length + ' total rows.');
+  const content = toCSV(baseHeaders, allRows, ',');
+  STATE.usedExports++;
+  saveExports();
+
+  showOutput('03',
+    'Files merged: <span>' + STATE.mergeFiles.length + '</span> · Total rows: <span>' + allRows.length + '</span> · Columns: <span>' + baseHeaders.length + '</span>',
+    () => triggerDownload(content, 'merged_dataset.csv', 'text/csv')
+  );
+}
+
+function runSplitter() {
+  if (!checkFreeLimit()) return;
+  const parsed = STATE.files['03s'];
+  if (!parsed) { logMsg('03', 'err', 'No file loaded.'); return; }
+  const chunkSize = parseInt(document.getElementById('splitRows').value) || 500;
+  const { headers, rows } = parsed;
+  const chunks = [];
+  for (let i = 0; i < rows.length; i += chunkSize) chunks.push(rows.slice(i, i + chunkSize));
+
+  logMsg('03', 'ok', 'Splitting into ' + chunks.length + ' files of ~' + chunkSize + ' rows…');
+
+  // Download each chunk sequentially
+  chunks.forEach((chunk, idx) => {
+    const content = toCSV(headers, chunk, ',');
+    const fn = (parsed.fileName || 'data').replace(/\.[^.]+$/, '') + '_part' + (idx + 1) + '.csv';
+    setTimeout(() => triggerDownload(content, fn, 'text/csv'), idx * 300);
+  });
+
+  STATE.usedExports++;
+  saveExports();
+
+  showOutput('03',
+    'Split into <span>' + chunks.length + ' files</span> of ~<span>' + chunkSize + ' rows</span> each.',
+    () => {}
+  );
+  document.getElementById('downloadBtn03').textContent = '✓ All files downloaded';
+}
+
+/* ═══════════════════════════════════════════
+   MODULE 04: MAPPER
+═══════════════════════════════════════════ */
+function buildMapperGrid(headers) {
+  const grid = document.getElementById('mapperRows');
+  grid.innerHTML = headers.map((h, i) =>
+    '<div class="mapper-row">' +
+    '<div class="map-src">' + esc(h) + '</div>' +
+    '<span class="mapper-arrow">→</span>' +
+    '<input class="map-dest" id="mapDest' + i + '" type="text" value="' + esc(h) + '" placeholder="New column name">' +
+    '</div>'
+  ).join('');
+  document.getElementById('mapperGrid').style.display = 'block';
+}
+
+function runMapper() {
+  if (!checkFreeLimit()) return;
+  const parsed = STATE.files['04'];
+  if (!parsed) { logMsg('04', 'err', 'No file loaded.'); return; }
+
+  const oldHeaders = parsed.headers;
+  const newHeaders = oldHeaders.map((_, i) => {
+    const v = document.getElementById('mapDest' + i).value.trim();
+    return v || oldHeaders[i];
+  });
+
+  const rows = parsed.rows.map(row => {
+    const nr = {};
+    oldHeaders.forEach((oh, i) => nr[newHeaders[i]] = row[oh] ?? '');
+    return nr;
+  });
+
+  logMsg('04', 'ok', 'Mapping applied: ' + oldHeaders.map((h, i) => h !== newHeaders[i] ? h + '→' + newHeaders[i] : null).filter(Boolean).join(', ') || 'No changes.');
+
+  const content = toCSV(newHeaders, rows, ',');
+  const outName = (parsed.fileName || 'data').replace(/\.[^.]+$/, '') + '_remapped.csv';
+  STATE.usedExports++;
+  saveExports();
+
+  showOutput('04',
+    'Output: <span>' + outName + '</span> · Rows: <span>' + rows.length + '</span> · Columns remapped: <span>' + newHeaders.length + '</span>',
+    () => triggerDownload(content, outName, 'text/csv')
+  );
+}
+
+/* ═══════════════════════════════════════════
+   BOT
+═══════════════════════════════════════════ */
+const BOT_KB = {
+  'format': 'DataSuite Pro supports <strong>CSV, TSV, JSON, and JSONL</strong> as both input and output formats in Module 01. Module 02 and 03 work with CSV and TSV. Module 04 works with CSV.',
+  'csv': 'DataSuite Pro supports CSV files across all 4 modules. Just drop your .csv file into the dropzone.',
+  'json': 'JSON files are supported in Module 01 (Transformer). The file must be a valid JSON array of objects.',
+  'pric': 'Starter Suite: <strong>$79/month</strong> or $749/year (up to 10,000 rows per operation). Enterprise Pro: <strong>$299/month</strong> or $2,988/year (unlimited rows). First 3 exports are completely free — no card required.',
+  'free': 'You get <strong>3 free exports</strong> with no account and no credit card. After that, choose a paid plan. Email datasuitepro.help@gmail.com to subscribe.',
+  'upload': 'Your files are <strong>never uploaded to any server</strong>. All processing runs entirely inside your browser using local JavaScript. Zero server contact.',
+  'safe': 'DataSuite Pro processes everything <strong>100% locally in your browser</strong>. Files never leave your machine.',
+  'error': 'If your file is not loading: (1) make sure it is a CSV, JSON, or TSV file. (2) Check the file is not empty. (3) For JSON, ensure it is a valid array of objects. If problems persist, email datasuitepro.help@gmail.com.',
+  'load': 'If your file is not loading: ensure it is CSV, TSV, or JSON. For CSV, the first row must be headers. For JSON, it must be an array of objects like [{"col":"value"}].',
+  'mapp': 'Module 04 (Target Mapper): Upload a CSV file → column headers appear in a grid → type the new name for each column → click Execute → download the remapped file.',
+  'merg': 'Module 03 (Merger): Select "Merge Mode" → drop multiple CSV files with the same column headers → click Merge → download one combined CSV.',
+  'split': 'Module 03 (Splitter): Select "Split Mode" → upload a large CSV → set rows per file → click Split → all smaller files download automatically.',
+  'clean': 'Module 02 (Sanitizer): Upload a CSV → choose cleaning options (dedup, trim, remove empty rows, normalize headers) → click Execute → download the cleaned file.',
+  'pay': 'Payments are handled securely by Paddle. Your subscription activates <strong>immediately</strong> after payment — no manual approval. Email datasuitepro.help@gmail.com to get your payment link.',
+  'cancel': 'You can cancel your subscription at any time. Your plan stays active until the end of the billing period. Email datasuitepro.help@gmail.com to cancel.',
+  'support': 'For any issue, email <strong>datasuitepro.help@gmail.com</strong>. Starter plan: 48hr response. Enterprise Pro: 12hr priority response.',
+  'contact': 'Reach the DataSuite Pro team at <strong>datasuitepro.help@gmail.com</strong>. We respond to all messages.',
+  'refund': 'Our refund policy is published at the footer of the homepage. For refund requests, email datasuitepro.help@gmail.com.',
+};
+
+const BOT_DEFAULT = 'I am not sure about that specific question. Please email <strong>datasuitepro.help@gmail.com</strong> and the team will help you directly.';
+
+function botAnswer(q) {
+  const lower = q.toLowerCase();
+  for (const [key, answer] of Object.entries(BOT_KB)) {
+    if (lower.includes(key)) return answer;
+  }
+  return BOT_DEFAULT;
+}
+
+let botOpen = false;
+
+function toggleBot() {
+  botOpen = !botOpen;
+  document.getElementById('botPanel').classList.toggle('open', botOpen);
+  if (botOpen) document.getElementById('botInput').focus();
+}
+
+function botAsk(q) {
+  addBotMsg(q, 'user');
+  document.getElementById('botQuick').style.display = 'none';
+  setTimeout(() => addBotMsg(botAnswer(q), 'bot'), 400);
+}
+
+function sendBotMsg() {
+  const input = document.getElementById('botInput');
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+  botAsk(q);
+}
+
+function addBotMsg(text, role) {
+  const msgs = document.getElementById('botMsgs');
+  const div = document.createElement('div');
+  div.className = 'bot-msg ' + (role === 'bot' ? 'from-bot' : 'from-user');
+  div.innerHTML = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+/* ═══ Close modal on overlay click ═══ */
+document.getElementById('paywallModal').addEventListener('click', function(e) {
+  if (e.target === this) closePaywall();
+});
+</script>
+
 </body>
 </html>
